@@ -1,0 +1,80 @@
+{
+  "name": "EasyV",
+  "version": "2.2.0",
+  "main": "dist-electron/main/index.js",
+  "description": "Electron Vite React boilerplate.",
+  "author": "念一 <nianyi@dtstack.com>",
+  "license": "MIT",
+  "private": true,
+  "debug": {
+    "env": {
+      "VITE_DEV_SERVER_URL": "http://127.0.0.1:7777/"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build && electron-builder",
+    "rebuild": "electron-rebuild -f -w better-sqlite3",
+    "preview": "vite preview",
+    "pree2e": "vite build --mode=test",
+    "e2e": "playwright test",
+    "postinstall": "node node_modules/electron/install.js"
+  },
+  "dependencies": {
+    "@electron/rebuild": "^3.3.1",
+    "@types/adm-zip": "^0.5.4",
+    "@types/unzip": "^0.1.4",
+    "adm-zip": "^0.5.10",
+    "antd": "^5.11.0",
+    "better-sqlite3": "^9.1.1",
+    "connected-react-router": "^6.9.3",
+    "electron-updater": "^6.1.1",
+    "iconv-lite": "^0.6.3",
+    "lodash-es": "^4.17.21",
+    "react-router-dom": "^6.20.1",
+    "sqlite3": "^5.1.6",
+    "typeorm": "^0.3.17",
+    "uuid": "^9.0.1",
+    "vite-plugin-imp": "^2.4.0"
+  },
+  "config": {
+    "electron": {
+      "mirror": "https://registry.npmmirror.com/-/binary/electron/"
+    }
+  },
+  "build": {
+    "productName": "EasyV",
+    "appId": "dtstack.easyv.com",
+    "directories": {
+      "output": "build"
+    },
+    "mac": {
+      "target": "dmg"
+    },
+    "dmg": {
+      "backgroundColor": "#fff"
+    }
+  },
+  "repository": "https://github.com/electron/electron-quick-start",
+  "devDependencies": {
+    "@playwright/test": "^1.37.1",
+    "@types/react": "^18.2.20",
+    "@types/react-dom": "^18.2.7",
+    "@vitejs/plugin-react": "^4.0.4",
+    "autoprefixer": "^10.4.16",
+    "electron": "^26.0.0",
+    "electron-builder": "^24.6.3",
+    "electron-rebuild": "^3.2.9",
+    "postcss": "^8.4.31",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tailwindcss": "^3.3.3",
+    "typescript": "^5.1.6",
+    "vite": "^4.4.9",
+    "vite-plugin-electron": "^0.15.3",
+    "vite-plugin-electron-renderer": "^0.14.5"
+  },
+  "engines": {
+    "node": "^14.18.0 || >=16.0.0"
+  }
+}

@@ -1,0 +1,47 @@
+.screen {
+  background: radial-gradient(
+      66.07% 38.1% at 49.81% 100%,
+      rgba(57, 148, 255, 0.114) 0%,
+      rgba(255, 255, 255, 0) 79.53%
+    ),
+    radial-gradient(
+      48.47% 51.06% at 86.69% -5.29%,
+      rgba(200, 232, 255, 0.057) 0%,
+      rgba(194, 230, 255, 0) 79.53%
+    ),
+    radial-gradient(
+      102.47% 289.76% at -2.47% 39.42%,
+      rgba(202, 233, 255, 0.0183) 0%,
+      rgba(255, 255, 255, 0) 100%,
+      rgba(219, 240, 255, 0) 100%
+    ),
+    radial-gradient(
+      93.49% 64.02% at 42.21% -7.41%,
+      rgba(228, 244, 255, 0.102) 0%,
+      rgba(160, 215, 255, 0) 79.53%
+    );
+  box-shadow: 0 -8px 12px #00000029, inset 0 1px #ffffff0f;
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  border-radius: 8px;
+  transition: all 0.2s linear;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.screen:before {
+  content: "";
+  position: absolute;
+
+  background: transparent;
+  pointer-events: none;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  border: 1px solid #ffffff12;
+  border-bottom-color: #768eb035;
+  border-right-color: #768eb035;
+  border-radius: 8px;
+}

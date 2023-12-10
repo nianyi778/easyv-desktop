@@ -1,0 +1,1 @@
+export const defaultScreenImg = 'https://workspace.easyv.cloud/static/png/default_screen-448d67f6.png'
