@@ -1,6 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import { app, ipcRenderer } from 'electron'
 /**
  * @description 创建json 文件
  * */
@@ -38,15 +37,4 @@ export function getFilePath(filePath: string): string {
     }
     const appData = window.appConfig.appDataPath;
     return path.join('file://', appData, filePath);
-}
-
-export async function getLocalFile(filePath: string) {
-    if (filePath) {
-        const uint8Array = await ipcRenderer.invoke('get-image', filePath);
-        const buffer = Buffer.from(uint8Array);
-        const base64String = buffer.toString('base64');
-        const dataUrl = `data:image/png;base64,${base64String}`;
-        return dataUrl;
-    }
-    return null;
 }

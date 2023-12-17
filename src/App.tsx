@@ -24,7 +24,7 @@ function App() {
   }
 
   return (
-    <div className='app h-screen w-screen'>
+    <div className='h-screen w-screen'>
       {/* <Header></Header> */}
       <Outlet />
     </div>

@@ -3,6 +3,7 @@ import {
 } from "react-router-dom";
 import App from '@/App';
 import { lazy } from "react";
+import Layout from "@/pages/components/Layout";
 const ShareScreen = lazy(() => import('@/pages/shareScreen'))
 const Home = lazy(() => import('@/pages/index'))
 
@@ -13,7 +14,7 @@ export const routers = createHashRouter([
         children: [
             {
                 index: true,
-                element: <Home />,
+                element: <Layout><Home /></Layout>,
             },
             {
                 path: "shareScreen/:screenId",
