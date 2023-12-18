@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { checkFilePath } from './file';
 import path from 'path';
-import type { ComponentConfig, ContainerConfig, Layer, PanelConfig, ScreenJsonType, ScreenType, SourceConfig } from '@/type/screen';
+import type { ComponentConfig, ComponentContainerConfig, ContainerConfig, Layer, PanelConfig, ScreenJsonType, ScreenType, SourceConfig, TransformComponentContainerType, TransformComponentType, TransformContainerType, TransformPanelType, TransformScreenType, screenPreviewType } from '@/type/screen';
 
 /**
  * @description 获取当前本地存在的所有大屏列表
@@ -49,7 +49,6 @@ export function getScreenData(id: string | number) {
  * @param data  本地json 读出的数据
 */
 export function cleanLargeScreenData(data: ScreenJsonType) {
-    console.log(data);
     const {
         screenConfig,
         containersConfig = [],
@@ -72,18 +71,57 @@ export function cleanLargeScreenData(data: ScreenJsonType) {
     let source = sourceConfig.map(p => transformSource(p));
 
     let screens = Array.isArray(screenConfig) ? screenConfig : [screenConfig];
-    // screens = screens.concat(componentContainerConfig.reduce((all, cur) => {
-
-    //     return all;
-    // }, []))
-
 
     const screenSerialize = screens.map(s => transformScreen(s));
 
-    return { filters, screens };
+
+    const stateConfigs = panelConfig.reduce<Omit<ScreenJsonType, 'info'>[]>((all, cur) => {
+        return all.concat(cur.stateConfig);
+    }, []);
+    const panelScreens = reduceScreens(stateConfigs);
+
+    const containerConfigs = componentContainerConfig.reduce<Omit<ScreenJsonType, 'info'>[]>((all, cur) => {
+        return all.concat(cur.subScreenConfig);
+    }, []);
+    const containerScreens = reduceScreens(containerConfigs);
+
+    return {
+        filters: filters.concat(panelScreens.filters).concat(containerScreens.filters),
+        screens: screenSerialize.concat(panelScreens.screens).concat(containerScreens.screens),
+        source: source.concat(panelScreens.source).concat(containerScreens.source),
+        panel: panel.concat(panelScreens.panel).concat(containerScreens.panel),
+        containers: containers.concat(panelScreens.containers).concat(containerScreens.containers),
+        components: components.concat(panelScreens.components).concat(containerScreens.components),
+        componentContainers: componentContainers.concat(panelScreens.componentContainers).concat(containerScreens.componentContainers)
+    };
 }
 
-function transformComponentContainer(comContainer: ContainerConfig) {
+
+function reduceScreens(data: Omit<ScreenJsonType, 'info'>[]) {
+    const screenData = Array.isArray(data) ? data : [];
+    return screenData.reduce<screenPreviewType>((all, cur) => {
+        const state = cleanLargeScreenData(cur);
+        all.filters = all.filters.concat(state.filters);
+        all.screens = all.screens.concat(state.screens);
+        all.source = all.source.concat(state.source);
+        all.panel = all.panel.concat(state.panel);
+        all.containers = all.containers.concat(state.containers);
+        all.components = all.components.concat(state.components);
+        all.componentContainers = all.componentContainers.concat(state.componentContainers);
+        return all;
+    }, {
+        filters: [],
+        screens: [],
+        source: [],
+        panel: [],
+        containers: [],
+        components: [],
+        componentContainers: []
+    });
+}
+
+
+function transformComponentContainer(comContainer: ComponentContainerConfig['componentContainer']): TransformComponentContainerType {
     const { id, name, config, autoUpdate, dataFrom, staticData, dataConfig, } = comContainer;
     const dataConfigs = getDataConfigs({ dataConfig, staticData })
 
@@ -104,7 +142,7 @@ function transformSource(sourceConfig: SourceConfig) {
     }
 }
 
-function transformPanel(panelConfig: PanelConfig) {
+function transformPanel(panelConfig: PanelConfig): TransformPanelType {
     const { id, name, screenId, type, states, updatedAt, uuid, createdAt, config } = panelConfig.config;
     return {
         id, name, screenId,
@@ -117,14 +155,7 @@ function transformPanel(panelConfig: PanelConfig) {
     }
 }
 
-function transformScreen(screenConfig: ScreenType): {
-    id: ScreenType['id'];
-    name: ScreenType['name'];
-    config: unknown[];
-    layers: Layer[];
-    components: number[];
-    uniqueTag: ScreenType['uniqueTag']
-} {
+function transformScreen(screenConfig: ScreenType): TransformScreenType {
     const { id, name, config, layers, components, uniqueTag } = screenConfig;
 
     return {
@@ -136,16 +167,15 @@ function transformScreen(screenConfig: ScreenType): {
     }
 }
 
-function transformContainer(containerConfig: ContainerConfig) {
-    const { id, name, config, autoUpdate, staticData, events, filters, screenId, triggers, useFilter, enable, dataConfig } = containerConfig;
+function transformContainer(containerConfig: ContainerConfig): TransformContainerType {
+    const { id, name, subScreenId, autoUpdate, staticData, events, filters, screenId, useFilter, enable, dataConfig } = containerConfig;
     const dataConfigs = getDataConfigs({ dataConfig, staticData })
     return {
         id, name,
-        config: JSON.parse(config),
         autoUpdate: JSON.parse(autoUpdate),
         events: JSON.parse(events),
         filters: JSON.parse(filters),
-        triggers: JSON.parse(triggers),
+        subScreenId,
         dataConfigs,
         screenId,
         useFilter,
@@ -153,7 +183,7 @@ function transformContainer(containerConfig: ContainerConfig) {
     }
 }
 
-function transformComponent(componentConfig: ComponentConfig) {
+function transformComponent(componentConfig: ComponentConfig): TransformComponentType {
     const { id, name, config, autoUpdate, useFilter, type, base, staticData, uniqueTag, dataConfig, dataType, events, filters, from, isDataConfig, screenId, triggers } = componentConfig;
     const dataConfigs = getDataConfigs({ dataConfig, staticData })
     return {

@@ -13,5 +13,7 @@ export default function ShareScreen() {
         return <PageLoading />
     }
 
+    console.log(screenData);
+
     return <ScreenDetail />
 }

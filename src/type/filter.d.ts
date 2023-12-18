@@ -14,3 +14,8 @@ export interface Filter {
     type: FilterType;
     updateAt: Date<string>;
 }
+
+export interface ComponentFilter {
+    id: number;
+    enable: boolean;
+}

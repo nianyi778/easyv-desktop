@@ -5,6 +5,23 @@ export enum PanelType {
     ref
 }
 
+export enum DataFrom {
+    norm,
+    container
+}
+
+
+export interface TransformPanelType {
+    config: unknown[];
+    createdAt: Date<string>;
+    id: number;
+    name: string;
+    screenId: number;
+    states: unknown[];
+    type: PanelType;
+    updatedAt: Date<string>;
+    uuid: string;
+}
 interface PanelConfig {
     config: {
         config: string;
@@ -22,6 +39,14 @@ interface PanelConfig {
 }
 
 
+export interface TransformScreenType {
+    id: ScreenType['id'];
+    name: ScreenType['name'];
+    config: unknown[];
+    layers: Layer[];
+    components: number[];
+    uniqueTag: ScreenType['uniqueTag']
+}
 
 interface ScreenType {
     id: number;
@@ -43,7 +68,7 @@ interface ScreenType {
 }
 
 export interface ScreenJsonType {
-    info: {
+    info?: {
         version: number;
         refScreenIds?: string[];
     };
@@ -64,6 +89,30 @@ export interface SourceConfig {
     type: DataTypeNum
 }
 
+export interface DataConfigs {
+    [DataType]: {
+        data: unknown;
+    }
+}
+
+export interface AutoUpdate {
+    isAuto: false;
+    interval: number;
+}
+
+export interface TransformContainerType {
+    id: number;
+    name: string;
+    filters: ComponentFilter[];
+    dataConfigs: DataConfigs;
+    screenId: number;
+    useFilter: boolean;
+    events: unknown[];
+    subScreenId?: number;
+    autoUpdate?: AutoUpdate;
+    enable: boolean;
+}
+
 interface ContainerConfig {
     autoUpdate: string;
     dataConfig: null | string;
@@ -76,10 +125,35 @@ interface ContainerConfig {
     name: string;
     screenId: number;
     staticData: string;
-    triggers: string;
     useFilter: boolean;
     config: string;
     subScreenId: number;
+}
+
+
+export interface TransformComponentType {
+    from: 0 | 1; // 0 官方组件/1自定义组件
+    id: ContainerConfig['id'];
+    name: ContainerConfig['name'];
+    config: unknown[];
+    autoUpdate?: AutoUpdate;
+    base: {
+        module_name: string;
+        version: string;
+    },
+    uniqueTag: string;
+    useFilter: boolean;
+    dataType: ContainerConfig['dataType'];
+    dataConfigs: DataConfigs;
+    dataConfigs: unknown[];
+    events: unknown[];
+    filters: ComponentFilter[];
+    screenId: ContainerConfig['screenId'];
+    uniqueTag: string;
+    type: null | unknown;
+    triggers: unknown[];
+    isDataConfig: 1 | 0;
+    subScreenId?: number;
 }
 
 interface ComponentConfig {
@@ -96,12 +170,23 @@ interface ComponentConfig {
     name: ContainerConfig['name'];
     isDataConfig: 1 | 0;
     parent: null | number;
+    subScreenId?: number;
     screenId: ContainerConfig['screenId'];
     staticData: ContainerConfig['staticData'];
     triggers: ContainerConfig['triggers'];
     uniqueTag: string;
     type: null | unknown;
-    useFilter: 0 | 1;
+    useFilter: boolean
+}
+
+export interface TransformComponentContainerType {
+    id: number;
+    name: string;
+    config: unknown[];
+    autoUpdate?: AutoUpdate;
+    dataFrom: DataFrom;
+    config?: unknown[];
+    dataConfigs: DataConfigs;
 }
 
 interface ComponentContainerConfig {
@@ -158,4 +243,17 @@ export enum DataTypeNum {
     WEBSOCKET = 14,
     KINGBASE = 15,
     FROM_CONTAINER = 16,
+}
+
+
+
+
+export interface screenPreviewType {
+    filters: Filter[];
+    screens: TransformScreenType[];
+    source: SourceConfig[];
+    panel: TransformPanelType[];
+    containers: TransformContainerType[];
+    components: TransformComponentType[];
+    componentContainers: TransformComponentContainerType[];
 }
