@@ -48,7 +48,7 @@ export function getScreenData(id: string | number) {
  * @returns 标准大屏数据
  * @param data  本地json 读出的数据
 */
-export function cleanLargeScreenData(data: ScreenJsonType) {
+export function cleanLargeScreenData(data: ScreenJsonType): screenPreviewType {
     const {
         screenConfig,
         containersConfig = [],

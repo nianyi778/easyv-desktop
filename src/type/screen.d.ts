@@ -246,10 +246,12 @@ export enum DataTypeNum {
 }
 
 
-
+interface TransformFilterType extends Filter {
+    callbackKeys: string[]
+}
 
 export interface screenPreviewType {
-    filters: Filter[];
+    filters: TransformFilterType[];
     screens: TransformScreenType[];
     source: SourceConfig[];
     panel: TransformPanelType[];

@@ -6,6 +6,8 @@ import ScreenDetail from './components/ScreenDetail';
 export default function ShareScreen() {
     const { screenId } = useParams();
     const screenData = screenId && useGetScreen(screenId);
+
+
     if (!screenId) {
         return <span>数据异常，请回退</span>
     }
@@ -13,7 +15,5 @@ export default function ShareScreen() {
         return <PageLoading />
     }
 
-    console.log(screenData);
-
-    return <ScreenDetail />
+    return <ScreenDetail screenId={+screenId} />
 }
