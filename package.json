@@ -28,6 +28,7 @@
     "adm-zip": "^0.5.10",
     "antd": "^5.11.0",
     "better-sqlite3": "^9.1.1",
+    "classnames": "^2.3.2",
     "connected-react-router": "^6.9.3",
     "electron-updater": "^6.1.1",
     "iconv-lite": "^0.6.3",

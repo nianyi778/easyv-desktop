@@ -202,7 +202,9 @@ export interface Layer {
     name: string;
     show: boolean;
     lock: boolean;
-    moduleName?: string;
+    moduleName: string;
+    collapsed?: boolean;
+    components?: Layer[];
 }
 
 export enum DataType {
