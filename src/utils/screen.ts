@@ -55,7 +55,7 @@ export function cleanLargeScreenData(data: ScreenJsonType): screenPreviewType {
         panelConfig,
         sourceConfig,
         filterConfig,
-        componentContainerConfig,
+        componentContainerConfig = [],
         componentsConfig,
     } = data;
 
@@ -63,7 +63,6 @@ export function cleanLargeScreenData(data: ScreenJsonType): screenPreviewType {
         ...f,
         callbackKeys: JSON.parse(f.callbackKeys)
     }));
-
     let componentContainers = componentContainerConfig.map(c => transformComponentContainer(c.componentContainer));
     let components = componentsConfig.map(c => transformComponent(c));
     let containers = containersConfig.map(c => transformContainer(c));

@@ -8,17 +8,19 @@ import type { UploadFile } from 'antd/es/upload/interface';
 const { Dragger } = Upload;
 
 
-export default function ImportScreen({ children }: { children: ReactNode }) {
+export default function ImportScreen({ children, onHide }: { children: ReactNode, onHide?: () => void }) {
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [open, setOpen] = useState(false);
 
     const handleOk = useCallback(() => {
         // 123
         setOpen(false);
+        onHide?.();
     }, []);
     const handleCancel = useCallback(() => {
         //handleCancel
         setOpen(false);
+        onHide?.();
     }, [])
 
     const props: UploadProps = {

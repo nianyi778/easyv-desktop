@@ -9,7 +9,7 @@ import { routers } from '@/router/index';
 import {
   RecoilRoot,
 } from 'recoil';
-
+import { RecoilDevTools } from 'recoil-gear';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
@@ -17,6 +17,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       algorithm: theme.darkAlgorithm,
     }}>
       <RecoilRoot>
+        <RecoilDevTools />
         <Suspense fallback={<Spin />}>
           <RouterProvider router={routers} fallbackElement={<Spin />} />
         </Suspense>

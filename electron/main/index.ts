@@ -3,7 +3,7 @@ import { release } from 'node:os'
 import { join } from 'node:path'
 import { update } from './update'
 import { mainInitHand } from './dbServices/dbServicesInit'
-
+import URL from 'url'
 // The built directory structure
 //
 // ├─┬ dist-electron
@@ -63,7 +63,13 @@ async function createWindow() {
     win.webContents.openDevTools()
   } else {
     // prod
-    win.loadFile(`fill://${indexHtml}`)
+    win.loadFile(
+      URL.format({
+        pathname: indexHtml,
+        protocol: 'file:',
+        slashes: true
+      })
+    )
   }
 
   // Test actively push message to the Electron-Renderer

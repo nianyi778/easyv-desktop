@@ -2,7 +2,10 @@
 
 
 interface Window {
+    define: any;
+    component: Record<string, unknown>;
     appConfig: {
         appDataPath: string;
     }
 }
+

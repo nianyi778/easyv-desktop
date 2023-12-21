@@ -11,4 +11,7 @@ export const importScreenKey = [
     'reservePlanConfig.json',
     'screenConfig.json',
     'sourceConfig.json',
+    'scene.json',
+    'blueprint.json',
+    'constantsConfig.json',
 ]

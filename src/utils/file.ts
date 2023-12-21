@@ -31,10 +31,25 @@ export function checkFilePath(src = ''): string {
 }
 
 
-export function getFilePath(filePath: string): string {
+export function getFilePath({
+    filePath,
+    fileType
+}: {
+    filePath: string;
+    fileType: 'screenResource' | "screenConfig"
+}): string {
     if (!filePath) {
         return '';
     }
     const appData = window.appConfig.appDataPath;
-    return path.join('file://', appData, filePath);
+    return path.join('file://', appData, fileType, filePath);
+}
+
+
+
+export function getResourceFile(filePath: string) {
+    return getFilePath({
+        filePath,
+        fileType: 'screenResource',
+    })
 }
