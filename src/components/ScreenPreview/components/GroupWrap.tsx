@@ -1,4 +1,4 @@
-import { Layer } from "@/type/screen";
+import { Layer } from "@/type/screen.type";
 
 
 export default function GroupWrap({ id, components }: { id: string; components: Layer[] }) {

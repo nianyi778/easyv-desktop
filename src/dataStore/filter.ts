@@ -1,7 +1,7 @@
-import { screenPreviewType } from '@/type/screen';
+import { ScreenPreviewType } from '@/type/screen.type';
 import { atom } from 'recoil';
 
-export const filter = atom<screenPreviewType['filters']>({
+export const filters = atom<ScreenPreviewType['filters']>({
     key: 'filters',
     default: [],
 });

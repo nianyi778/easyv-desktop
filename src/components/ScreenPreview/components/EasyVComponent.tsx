@@ -1,18 +1,23 @@
 import { useEffect, useState } from 'react';
 import { define } from '@/utils/define';
-import { TransformComponentType } from '@/type/screen';
+import { TransformComponentType } from '@/type/screen.type';
 import LoadingSpinner from '@/components/LoadingAnimation';
 import ComponentEmpty from '@/components/ComponentEmpty';
 
+
+interface EasyVComponentType {
+    config: unknown[];
+    name: string;
+    id: number; base: TransformComponentType['base']; spaceId?: number;
+    height: number; width: number; left: number; top: number;
+    uniqueTag: string;
+    data: unknown[]
+}
+
 export default function EasyVComponent(
-    { id, base, spaceId, uniqueTag, height, config, width, left, top }: {
-        config: unknown[];
-        id: number; base: TransformComponentType['base']; spaceId?: number;
-        height: number; width: number; left: number; top: number;
-        uniqueTag: string;
-    }) {
+    { id, base, spaceId, uniqueTag, height, name, config, width, left, top, data }: EasyVComponentType) {
     const [loadedScript, setLoadedScript] = useState(false);
-    const [component, setComponent] = useState<any>();
+    const [component, setComponent] = useState<any>(null);
 
     useEffect(() => {
         const { version, module_name } = base;
@@ -27,15 +32,14 @@ export default function EasyVComponent(
                         window.component = {};
                     }
                     window.component[`${module_name}@${version}`] = com;
-                    setComponent(com);
-                    setLoadedScript(true);
+                    setComponent((_: any) => com);
+                    setLoadedScript(true)
                 },
                 spaceId,
             );
         }
 
     }, [base, spaceId]);
-
 
     if (!loadedScript) {
         return (
@@ -52,21 +56,25 @@ export default function EasyVComponent(
     }
 
     if (!component) {
-        return <ComponentEmpty />
+        return <ComponentEmpty
+            text={`${id}-${name}(加载失败)`}
+            style={{
+                width,
+                height,
+                lineHeight: height + 'px',
+            }} />
     }
 
-    const Com = component;
+    const Com = component as any;
 
     return <div id={uniqueTag}
         style={{
             position: 'absolute',
             pointerEvents: 'auto',
         }}>
-        {
-            component ? <Com id={id} data={[]} configuration={config} actions={[]}
-                events={[]} iState={{
-                    show: true
-                }} /> : null
-        }
+        <Com id={id} data={data} configuration={config} actions={[]}
+            events={[]} iState={{
+                show: true
+            }} />
     </div>
 }

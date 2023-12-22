@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { checkFilePath } from './file';
 import path from 'path';
-import type { ComponentConfig, ComponentContainerConfig, ContainerConfig, Layer, PanelConfig, ScreenJsonType, ScreenType, SourceConfig, TransformComponentContainerType, TransformComponentType, TransformContainerType, TransformPanelType, TransformScreenType, screenPreviewType } from '@/type/screen';
+import { ScreenJsonType, ScreenPreviewType, ComponentConfig, TransformComponentContainerType, SourceConfig, TransformPanelType, TransformScreenType, TransformContainerType, TransformComponentType, ComponentContainerConfig, ContainerConfig, ScreenType, PanelConfig } from '@/type/screen.type';
 
 /**
  * @description 获取当前本地存在的所有大屏列表
@@ -48,7 +48,7 @@ export function getScreenData(id: string | number) {
  * @returns 标准大屏数据
  * @param data  本地json 读出的数据
 */
-export function cleanLargeScreenData(data: ScreenJsonType): screenPreviewType {
+export function cleanLargeScreenData(data: ScreenJsonType): ScreenPreviewType {
     const {
         screenConfig,
         containersConfig = [],
@@ -98,7 +98,7 @@ export function cleanLargeScreenData(data: ScreenJsonType): screenPreviewType {
 
 function reduceScreens(data: Omit<ScreenJsonType, 'info'>[]) {
     const screenData = Array.isArray(data) ? data : [];
-    return screenData.reduce<screenPreviewType>((all, cur) => {
+    return screenData.reduce<ScreenPreviewType>((all, cur) => {
         const state = cleanLargeScreenData(cur);
         all.filters = all.filters.concat(state.filters);
         all.screens = all.screens.concat(state.screens);
@@ -219,4 +219,23 @@ function getDataConfigs({
     }
     newConfig['static'] = JSON.parse(staticData)
     return newConfig;
+}
+
+
+
+/**
+ * @description 计算scale top left view
+ * */
+export function calculateScaleAndPosition(actualWidth: number, actualHeight: number, targetWidth: number, targetHeight: number) {
+    const scaleX = actualWidth / targetWidth;
+    const scaleY = actualHeight / targetHeight;
+    const scale = Math.min(scaleX, scaleY);
+
+    const scaledWidth = targetWidth * scale;
+    const scaledHeight = targetHeight * scale;
+
+    const left = (actualWidth - scaledWidth) / 2;
+    const top = (actualHeight - scaledHeight) / 2;
+
+    return { scale, left, top };
 }

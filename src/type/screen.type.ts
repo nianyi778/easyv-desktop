@@ -1,4 +1,4 @@
-import type { Filter } from './filter';
+import type { ComponentFilter, Filter } from './filter.type';
 
 export enum PanelType {
     panel,
@@ -12,27 +12,33 @@ export enum DataFrom {
 
 
 export interface TransformPanelType {
-    config: unknown[];
-    createdAt: Date<string>;
+    config: {
+        height: number;
+        hideDefault: boolean;
+        left: number;
+        top: number;
+        width: number;
+    };
+    createdAt: string;
     id: number;
     name: string;
     screenId: number;
-    states: unknown[];
+    states: number[];
     type: PanelType;
-    updatedAt: Date<string>;
+    updatedAt: string;
     uuid: string;
 }
-interface PanelConfig {
+export interface PanelConfig {
     config: {
         config: string;
-        createdAt: Date<string>;
+        createdAt: string;
         deleted: boolean;
         id: number;
         name: string;
         screenId: number;
         states: string;
         type: PanelType;
-        updatedAt: Date<string>;
+        updatedAt: string;
         uuid: string;
     };
     stateConfig: Omit<ScreenJsonType, 'info'>[]
@@ -48,7 +54,7 @@ export interface TransformScreenType {
     uniqueTag: ScreenType['uniqueTag']
 }
 
-interface ScreenType {
+export interface ScreenType {
     id: number;
     name: string;
     assets: string;
@@ -89,11 +95,65 @@ export interface SourceConfig {
     type: DataTypeNum
 }
 
+// export interface DataConfigs {
+//     [K in DataType]: {
+//         data: unknown[];
+//     }
+// }
 export interface DataConfigs {
-    [DataType]: {
-        data: unknown;
-    }
+    static: {
+        data: unknown[];
+    };
+    api: {
+        data: unknown[];
+    };
+    mysql: {
+        data: unknown[];
+    };
+    csv: {
+        data: unknown[];
+    };
+    oracle: {
+        data: unknown[];
+    };
+    mssql: {
+        data: unknown[];
+    };
+    apiGateway: {
+        data: unknown[];
+    };
+    postgresql: {
+        data: unknown[];
+    };
+    clickhouse: {
+        data: unknown[];
+    };
+    dtInsight: {
+        data: unknown[];
+    };
+    dtableapi: {
+        data: unknown[];
+    };
+    damengdb: {
+        data: unknown[];
+    };
+    db2: {
+        data: unknown[];
+    };
+    mqtt: {
+        data: unknown[];
+    };
+    websocket: {
+        data: unknown[];
+    };
+    kingbase: {
+        data: unknown[];
+    };
+    fromContainer: {
+        data: unknown[];
+    };
 }
+
 
 export interface AutoUpdate {
     isAuto: false;
@@ -113,7 +173,7 @@ export interface TransformContainerType {
     enable: boolean;
 }
 
-interface ContainerConfig {
+export interface ContainerConfig {
     autoUpdate: string;
     dataConfig: null | string;
     dataType: DataType;
@@ -145,18 +205,16 @@ export interface TransformComponentType {
     useFilter: boolean;
     dataType: ContainerConfig['dataType'];
     dataConfigs: DataConfigs;
-    dataConfigs: unknown[];
     events: unknown[];
     filters: ComponentFilter[];
     screenId: ContainerConfig['screenId'];
-    uniqueTag: string;
     type: null | unknown;
     triggers: unknown[];
     isDataConfig: 1 | 0;
     subScreenId?: number;
 }
 
-interface ComponentConfig {
+export interface ComponentConfig {
     actions: string;
     autoUpdate: ContainerConfig['autoUpdate'];
     base: string;
@@ -173,7 +231,7 @@ interface ComponentConfig {
     subScreenId?: number;
     screenId: ContainerConfig['screenId'];
     staticData: ContainerConfig['staticData'];
-    triggers: ContainerConfig['triggers'];
+    triggers: string;
     uniqueTag: string;
     type: null | unknown;
     useFilter: boolean
@@ -185,11 +243,10 @@ export interface TransformComponentContainerType {
     config: unknown[];
     autoUpdate?: AutoUpdate;
     dataFrom: DataFrom;
-    config?: unknown[];
     dataConfigs: DataConfigs;
 }
 
-interface ComponentContainerConfig {
+export interface ComponentContainerConfig {
     subScreenConfig: Omit<ScreenJsonType, 'info'>;
     filterRels: unknown[];
     dataContainerRels: unknown[];
@@ -248,11 +305,11 @@ export enum DataTypeNum {
 }
 
 
-interface TransformFilterType extends Filter {
+interface TransformFilterType extends Omit<Filter, 'callbackKeys'> {
     callbackKeys: string[]
 }
 
-export interface screenPreviewType {
+export interface ScreenPreviewType {
     filters: TransformFilterType[];
     screens: TransformScreenType[];
     source: SourceConfig[];
@@ -260,4 +317,12 @@ export interface screenPreviewType {
     containers: TransformContainerType[];
     components: TransformComponentType[];
     componentContainers: TransformComponentContainerType[];
+}
+
+
+export enum ScreenEnumType {
+    "screen" = 'screen',
+    panel = "panel",
+    ref = "ref",
+    container = "container"
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import * as ReactDOM from 'react-dom';
-import _ from 'lodash-es';
+import _ from 'lodash';
 import * as d3 from 'd3';
 import * as THREE from 'three';
 import * as MDStyles from '@material-ui/styles';

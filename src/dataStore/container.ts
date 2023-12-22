@@ -1,6 +1,6 @@
 import { atom } from 'recoil';
 
-export const container = atom({
+export const containers = atom({
     key: 'containersById',
     default: {},
 });

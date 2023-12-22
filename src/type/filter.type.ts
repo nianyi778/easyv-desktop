@@ -5,14 +5,14 @@ enum FilterType {
 export interface Filter {
     callbackKeys: string;
     content: string;
-    createAt: Date<string>;
+    createAt: string;
     deleted: boolean;
     filterId: string;
     id: number;
     name: string;
     parentId: number;
     type: FilterType;
-    updateAt: Date<string>;
+    updateAt: string;
 }
 
 export interface ComponentFilter {

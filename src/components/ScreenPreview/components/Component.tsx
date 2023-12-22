@@ -1,6 +1,6 @@
 import { useRecoilValue } from 'recoil';
 import { components } from '@/dataStore';
-import { getComponentConfig } from '@lidakai/utils';
+import { getComponentDimension } from '@lidakai/utils';
 import EasyVComponent from './EasyVComponent';
 
 export default function Component({ id }: { id: number }) {
@@ -10,23 +10,28 @@ export default function Component({ id }: { id: number }) {
     if (!component) {
         return null;
     }
-    const { uniqueTag, config } = component;
-    const { chart } = getComponentConfig(config);
-    const { dimension } = chart;
-    const { chartDimension, chartPosition } = dimension;
-    const { width, height } = chartDimension;
-    const { left, top } = chartPosition;
+    const { uniqueTag, config, name, dataConfigs } = component;
+    const { width, height, left, top } = getComponentDimension(config);
+
+    const { data } = dataConfigs['static'];
 
     return <div
         style={{
             width,
             height,
-            left, top
+            left: left, top: top,
         }}
-        className={`absolute`}
+        className={`absolute pointer-events-none`}
     >
-        <EasyVComponent
-            uniqueTag={uniqueTag}
-            id={id} base={component.base} config={config} left={left} top={top} width={width} height={height} />
+        <div
+            className={`absolute`}
+            style={{
+                left: -1 * left, top: -1 * top,
+            }}>
+            <EasyVComponent
+                uniqueTag={uniqueTag}
+                data={data}
+                id={id} base={component.base} name={name} config={config} left={left} top={top} width={width} height={height} />
+        </div>
     </div>
 }
