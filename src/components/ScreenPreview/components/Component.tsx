@@ -10,7 +10,7 @@ export default function Component({ id }: { id: number }) {
     if (!component) {
         return null;
     }
-    const { uniqueTag, config, name, dataConfigs } = component;
+    const { uniqueTag, config, name, dataConfigs, events } = component;
     const { width, height, left, top } = getComponentDimension(config);
 
     const { data } = dataConfigs['static'];
@@ -31,7 +31,7 @@ export default function Component({ id }: { id: number }) {
             <EasyVComponent
                 uniqueTag={uniqueTag}
                 data={data}
-                id={id} base={component.base} name={name} config={config} left={left} top={top} width={width} height={height} />
+                id={id} base={component.base} name={name} events={events} config={config} left={left} top={top} width={width} height={height} />
         </div>
     </div>
 }

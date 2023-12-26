@@ -11,11 +11,12 @@ interface EasyVComponentType {
     id: number; base: TransformComponentType['base']; spaceId?: number;
     height: number; width: number; left: number; top: number;
     uniqueTag: string;
-    data: unknown[]
+    data: unknown[];
+    events: unknown[];
 }
 
 export default function EasyVComponent(
-    { id, base, spaceId, uniqueTag, height, name, config, width, left, top, data }: EasyVComponentType) {
+    { id, base, spaceId, uniqueTag, height, name, events, config, width, left, top, data }: EasyVComponentType) {
     const [loadedScript, setLoadedScript] = useState(false);
     const [component, setComponent] = useState<any>(null);
 
@@ -73,7 +74,7 @@ export default function EasyVComponent(
             pointerEvents: 'auto',
         }}>
         <Com id={id} data={data} configuration={config} actions={[]}
-            events={[]} iState={{
+            events={events} iState={{
                 show: true
             }} />
     </div>

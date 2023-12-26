@@ -11,8 +11,7 @@ function Index() {
     const [screens, setScreens] = useState<any[]>([])
 
     useEffect(() => {
-        const screen = getScreens();
-        setScreens(screen);
+        onHide();
     }, [])
 
     const onHide = function () {

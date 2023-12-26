@@ -10,8 +10,6 @@ import {
   RecoilRoot,
 } from 'recoil';
 import { RecoilDevTools } from 'recoil-gear';
-import _ from 'lodash';
-window._ = _;
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>

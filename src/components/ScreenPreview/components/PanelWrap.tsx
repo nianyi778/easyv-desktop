@@ -7,7 +7,6 @@ export default function PanelWrap({ id }: { id: string; }) {
 
     const panelsById = useRecoilValue(panels);
     const panel = panelsById[getId(id)];
-    console.log(panel, 'panel')
     if (!panel) {
         return <div>panel</div>
     }

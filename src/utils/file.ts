@@ -4,7 +4,7 @@ import path from 'path';
  * @description 创建json 文件
  * */
 export function createJson(data: Record<string, unknown>) {
-    const filePath = checkFilePath('/screenConfig/');
+    const filePath = checkFilePath('/screenConfig/', true);
     filePath && Object.keys(data).forEach(value => {
         // 将 JavaScript 对象转换为 JSON 字符串
         const jsonData = JSON.stringify(data[value]);
@@ -14,18 +14,20 @@ export function createJson(data: Record<string, unknown>) {
     })
 }
 
-
-export function checkFilePath(src = ''): string {
+export function checkFilePath(src = '', isReadOnly = true): string {
     if (src) {
-        const appData = window.appConfig.appDataPath;
-        const filePath = path.join(appData, src)
-        // 检查目录是否存在，如果不存在则创建目录
-        if (!fs.existsSync(filePath)) {
-            fs.mkdirSync(filePath);
-            console.log('目录创建成功！');
+        try {
+            const appData = window.appConfig.appDataPath;
+            const filePath = path.join(appData, src)
+            // 检查目录是否存在，如果不存在则创建目录
+            if (!isReadOnly && !fs.existsSync(filePath)) {
+                fs.mkdirSync(filePath);
+                console.log('目录创建成功！');
+            }
+            return filePath;
+        } catch (e) {
+            console.warn(`error ${e}`, `src ${src}`, `isReadOnly ${isReadOnly}`)
         }
-
-        return filePath;
     }
     return '';
 }

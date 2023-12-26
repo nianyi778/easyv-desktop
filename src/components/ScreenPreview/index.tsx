@@ -2,18 +2,33 @@ import { getScreenDimension, reduceConfig } from "@lidakai/utils";
 import ScreenPreview from "./components";
 import { useRecoilValue } from "recoil";
 import { screens } from "@/dataStore";
-import { ScreenEnumType } from "@/type/screen.type";
+import { ScreenEnumType, TransformScreenType } from "@/type/screen.type";
 import { useGetScreen } from "@/pages/hooks";
+import { useEffect, useState } from "react";
 
 export default function ScreenMain({ screenId, type, width, height }: { screenId: number; type?: ScreenEnumType, width: number; height: number }) {
     const screensById = useRecoilValue(screens);
-    let screen = screensById[screenId];
-    if (!screen) {
-        if (screenId) {
-            console.log('大屏没数据了', screenId);
-            useGetScreen(screenId);
-            // screenData && useAsyncScreen(screenData);
+    const getScreeData = useGetScreen();
+    const [screen, setScreen] = useState<TransformScreenType | null>(null);
+
+    useEffect(() => {
+        const data = screensById[screenId];
+        if (!data) {
+            if (screenId && !data) {
+                (async () => {
+                    const result = await getScreeData(screenId);
+                    if (result) {
+                        const screen = result?.screens.find(d => d.id === screenId);
+                        screen && setScreen(screen);
+                    }
+                })()
+            }
+        } else {
+            setScreen(data);
         }
+    }, [screenId, screensById])
+
+    if (!screen) {
         return null;
     }
 

@@ -13,7 +13,8 @@ function App() {
         setRender(true)
       }
       window.appConfig = {
-        appDataPath: appData
+        appDataPath: appData,
+        ASSETS_URL: `file://${appData}/screenResource/`
       }
     })()
   }, [])

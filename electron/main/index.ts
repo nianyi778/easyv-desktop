@@ -4,6 +4,7 @@ import { join } from 'node:path'
 import { update } from './update'
 import { mainInitHand } from './dbServices/dbServicesInit'
 import URL from 'url'
+
 // The built directory structure
 //
 // ├─┬ dist-electron

@@ -91,7 +91,7 @@ const getDependencies = (name: string) => {
 };
 
 /** 检查所有依赖加载情况 */
-const checkDependencies = (name: string, dependencies: any[], tenantId?: number) => {
+const checkDependencies = (name: string, dependencies: string[], tenantId?: number) => {
   let flag = true;
   dependencies.map((depName) => {
     if (!modules[depName] || !modules[depName].fired) {
@@ -117,11 +117,6 @@ const define = (name: string, dependencies: any, factory: any, tenantId?: number
     if (!modules[name]) {
       modules[name] = { exports: {}, loaded: false, fired: false };
     }
-
-    /** 是否已经加载过 */
-    // if (modules[name].loaded) {
-    //   return;
-    // }
 
     modules[name].factory = factory;
     modules[name].loaded = true;
@@ -150,5 +145,6 @@ define('react-dom', [], () => ({
 define('@material-ui/styles', [], () => ({
   default: MDStyles,
 }));
+
 
 export { define };

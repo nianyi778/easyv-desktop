@@ -11,15 +11,14 @@ export function getScreens() {
     const filePath = checkFilePath('/screenConfig/');
     const files = fs.readdirSync(filePath);
     const screens: any[] = [];
-    files.forEach(file => {
-        const result = fs.readFileSync(path.join(filePath, file), 'utf-8');
+    files.filter(d => d).forEach(file => {
         try {
+            const result = fs.readFileSync(path.join(filePath, file), 'utf-8');
             screens.push(JSON.parse(result))
         } catch (e) {
-            console.log(e);
+            console.log(e, file);
         }
     })
-
     return screens;
 }
 
