@@ -6,6 +6,8 @@ import { lazy } from "react";
 import Layout from "@/components/Layout";
 const ShareScreen = lazy(() => import('@/pages/shareScreen'))
 const Home = lazy(() => import('@/pages/index'))
+import ErrorBoundary from './ErrorBoundary';
+import SuspenseRouter from "./SuspenseRouter";
 
 export const routers = createHashRouter([
     {
@@ -14,11 +16,13 @@ export const routers = createHashRouter([
         children: [
             {
                 index: true,
-                element: <Layout><Home /></Layout>,
+                element: <SuspenseRouter><Layout><Home /></Layout></SuspenseRouter>,
+                errorElement: <ErrorBoundary></ErrorBoundary>
             },
             {
                 path: "shareScreen/:screenId",
-                element: <ShareScreen />,
+                element: <SuspenseRouter><ShareScreen /></SuspenseRouter>,
+                errorElement: <ErrorBoundary></ErrorBoundary>
             },
         ],
     },

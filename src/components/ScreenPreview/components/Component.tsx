@@ -1,17 +1,16 @@
-import { useRecoilValue } from 'recoil';
-import { components } from '@/dataStore';
 import { getComponentDimension } from '@lidakai/utils';
 import EasyVComponent from './EasyVComponent';
+import { TransformComponentType } from '@/type/screen.type';
+import { useEffect } from 'react';
 
-export default function Component({ id }: { id: number }) {
-    const componentsById = useRecoilValue(components);
-    const component = componentsById[id];
+export default function Component({ id, component }: { id: number; component: TransformComponentType }) {
 
-    if (!component) {
-        return null;
-    }
-    const { uniqueTag, config, name, dataConfigs, events } = component;
+    const { uniqueTag, config, name, dataConfigs, events, autoUpdate } = component;
     const { width, height, left, top } = getComponentDimension(config);
+
+    // useEffect(()=>{
+
+    // },[autoUpdate])
 
     const { data } = dataConfigs['static'];
 

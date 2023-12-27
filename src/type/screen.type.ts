@@ -18,6 +18,11 @@ export interface TransformPanelType {
         left: number;
         top: number;
         width: number;
+        allowScroll: boolean;
+        animateType: string;
+        animationDuration: number;
+        autoCarousel: boolean;
+        interval: number;
     };
     createdAt: string;
     id: number;
@@ -259,6 +264,8 @@ export interface Layer {
     name: string;
     show: boolean;
     lock: boolean;
+    movable?: boolean;
+    opacity?: number;
     moduleName: string;
     collapsed?: boolean;
     components?: Layer[];

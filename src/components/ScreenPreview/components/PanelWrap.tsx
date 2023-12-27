@@ -22,7 +22,7 @@ export default function PanelWrap({ id }: { id: string; }) {
             top,
         }}>
         {
-            states.map(state => <Panel key={state} screenId={state} width={width} type={type} height={height} />)
+            states.concat().reverse().map(state => <Panel key={state} screenId={state} width={width} type={type} height={height} />)
         }
     </div>
 }

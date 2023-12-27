@@ -9,21 +9,22 @@ export default function ScreenPreview({ layers }: { layers: TransformScreenType[
     if (!Array.isArray(layers)) {
         return null;
     }
-
     return layers.concat()
         .reverse().filter(l => l.show).map(layer => {
             if (isComponent(layer.id as number)) {
                 return <ComponentWrap key={layer.id} id={layer.id as number} />
             }
             if (isContainer(layer.id as string)) {
-
+                return 'container'
             }
             if (isPanel(layer.id as string) || isRef(layer.id as string)) {
                 return <PanelWrap key={layer.id} id={layer.id as string} />
 
             }
             if (isGroup(layer.id as string)) {
-                return <GroupWrap key={layer.id} id={layer.id as string} components={layer.components as Layer[]} />
+                return <GroupWrap key={layer.id} config={{
+                    opacity: layer.opacity || 1
+                }} id={layer.id as string} components={layer.components as Layer[]} />
             }
             return null;
         }).filter(d => d)

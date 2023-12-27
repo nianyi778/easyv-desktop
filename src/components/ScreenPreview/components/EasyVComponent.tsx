@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { JSXElementConstructor, ReactElement, ReactNode, useCallback, useEffect, useState } from 'react';
 import { define } from '@/utils/define';
 import { TransformComponentType } from '@/type/screen.type';
 import LoadingSpinner from '@/components/LoadingAnimation';
 import ComponentEmpty from '@/components/ComponentEmpty';
-
+import ErrorBoundary from './ComErrorBoundary';
+import { getComponentConfig } from '@lidakai/utils';
 
 interface EasyVComponentType {
     config: unknown[];
@@ -42,6 +43,11 @@ export default function EasyVComponent(
 
     }, [base, spaceId]);
 
+    const getCallbackValue = useCallback(() => { }, []);
+    const handleEmit = useCallback(() => { }, []);
+    const postMessage = useCallback(() => { }, []);
+    const handleEmitEvent = useCallback(() => { }, []);
+
     if (!loadedScript) {
         return (
             <LoadingSpinner
@@ -66,16 +72,64 @@ export default function EasyVComponent(
             }} />
     }
 
-    const Com = component as any;
 
-    return <div id={uniqueTag}
-        style={{
-            position: 'absolute',
-            pointerEvents: 'auto',
-        }}>
-        <Com id={id} data={data} configuration={config} actions={[]}
-            events={events} iState={{
-                show: true
+    const childrenData: unknown[] = [];
+    const iState = {
+        show: true
+    };
+    const bindedInteractionState = {};
+    const childrenConfig: unknown[] = [];
+    const interactionCallbackValues = {}
+
+
+
+    const Com = component;
+
+    return <ErrorBoundary customErrorChildren={
+        <ComponentEmpty
+            text={`${id}-${name}组件 (加载失败)`}
+            style={{
+                width,
+                height,
+                left,
+                top,
+                position: 'absolute',
+                lineHeight: height + 'px',
+                backgroundColor: 'transparent'
             }} />
-    </div>
+    } >
+        <div id={uniqueTag}
+            style={{
+                position: 'absolute',
+                pointerEvents: 'auto',
+            }}>
+
+            <Com
+                id={id}
+                data={data}
+                configuration={getComponentConfig(config)}
+                actions={[]}
+                events={events}
+                width={width}
+                height={height}
+                top={top}
+                left={left}
+                iState={iState}
+                bindedInteractionState={bindedInteractionState}
+                childrenData={childrenData}
+                childrenConfig={childrenConfig}
+                callbackValues={interactionCallbackValues}
+
+                emitEvent={handleEmitEvent}
+                postMessage={postMessage}
+                emit={handleEmit}
+                getCallbackValue={getCallbackValue}
+                onRelative={(...args: any[]) => {
+                    console.log(args);
+                }}
+            />
+        </div>
+
+    </ErrorBoundary>
+
 }

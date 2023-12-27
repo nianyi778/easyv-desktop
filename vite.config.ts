@@ -18,6 +18,7 @@ export default defineConfig(({ command }) => {
   const sourcemap = isServe || !!process.env.VSCODE_DEBUG
 
   return {
+    base: './',
     resolve: {
       alias: {
         '@': path.join(__dirname, 'src')
@@ -26,6 +27,11 @@ export default defineConfig(({ command }) => {
     // optimizeDeps: {
     //   exclude: commonjsPackages,
     // },
+    build: {
+      rollupOptions: {
+        external: ['lodash/default'],
+      },
+    },
     css: {
       preprocessorOptions: {
         less: {
@@ -68,7 +74,7 @@ export default defineConfig(({ command }) => {
               minify: isBuild,
               outDir: 'dist-electron/main',
               rollupOptions: {
-                external: Object.keys('dependencies' in pkg ? pkg.dependencies : {}),
+                external: Object.keys('dependencies' in pkg ? pkg.dependencies : {}).concat('lodash/default'),
               },
             },
           },

@@ -17,5 +17,5 @@ export function isRef(id: string) {
 }
 
 export function isGroup(id: string) {
-    return /^group_[0-9]+/.test(id)
+    return /^group_\w+/.test(id)
 }
