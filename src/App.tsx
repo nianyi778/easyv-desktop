@@ -19,7 +19,6 @@ function App() {
     })()
   }, [])
 
-
   if (!isRender) {
     return null;
   }

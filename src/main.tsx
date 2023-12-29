@@ -10,7 +10,7 @@ import { routers } from '@/router/index';
 import {
   RecoilRoot,
 } from 'recoil';
-import { RecoilDevTools } from 'recoil-gear';
+// import { RecoilDevTools } from 'recoil-gear';
 import _ from 'lodash';
 window._ = _;
 
@@ -20,7 +20,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       algorithm: theme.darkAlgorithm,
     }}>
       <RecoilRoot>
-        <RecoilDevTools />
+        {/* <RecoilDevTools /> */}
         <Suspense fallback={<RouterSpin />}>
           <RouterProvider router={routers} fallbackElement={<RouterSpin />} />
         </Suspense>

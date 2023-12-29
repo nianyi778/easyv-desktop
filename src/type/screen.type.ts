@@ -202,10 +202,12 @@ export interface TransformComponentType {
     name: ContainerConfig['name'];
     config: unknown[];
     autoUpdate?: AutoUpdate;
+    parent: number | null;
     base: {
         module_name: string;
         version: string;
     },
+    children?: number[];
     uniqueTag: string;
     useFilter: boolean;
     dataType: ContainerConfig['dataType'];
@@ -249,6 +251,9 @@ export interface TransformComponentContainerType {
     autoUpdate?: AutoUpdate;
     dataFrom: DataFrom;
     dataConfigs: DataConfigs;
+    useFilter: boolean;
+    subScreenId: number;
+    // filters: ComponentFilter[];
 }
 
 export interface ComponentContainerConfig {

@@ -31,7 +31,6 @@ export default function ScreenMain({ screenId, type, width, height }: { screenId
     if (!screen) {
         return null;
     }
-
     const { config, layers } = screen;
     let styles = {};
     if (type === ScreenEnumType.screen) {

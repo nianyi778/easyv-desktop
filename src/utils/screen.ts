@@ -43,6 +43,21 @@ export function getScreenData(id: string | number) {
 }
 
 /**
+ * @description 维护组件children 信息
+ * */
+function maintainComponentChildren(components: TransformComponentType[]): TransformComponentType[] {
+    return components.reduce((all, cur) => {
+        if (cur.parent) {
+            const index = all.findIndex(i => i.id === cur.parent);
+            if (~index) {
+                all[index].children = Array.isArray(all[index].children) ? all[index].children?.concat(cur.id) : [cur.id]
+            }
+        }
+        return all;
+    }, components);
+}
+
+/**
  * @description 清洗从本地json 读出的数据，处理成标准数据结构
  * @returns 标准大屏数据
  * @param data  本地json 读出的数据
@@ -67,6 +82,8 @@ export function cleanLargeScreenData(data: ScreenJsonType): ScreenPreviewType {
     let containers = containersConfig.map(c => transformContainer(c));
     let panel = panelConfig.map(p => transformPanel(p));
     let source = sourceConfig.map(p => transformSource(p));
+
+    components = maintainComponentChildren(components);
 
     let screens = Array.isArray(screenConfig) ? screenConfig : [screenConfig];
 
@@ -120,7 +137,7 @@ function reduceScreens(data: Omit<ScreenJsonType, 'info'>[]) {
 
 
 function transformComponentContainer(comContainer: ComponentContainerConfig['componentContainer']): TransformComponentContainerType {
-    const { id, name, config, autoUpdate, dataFrom, staticData, dataConfig, } = comContainer;
+    const { id, name, config, autoUpdate, dataFrom, staticData, dataConfig, subScreenId, useFilter } = comContainer;
     const dataConfigs = getDataConfigs({ dataConfig, staticData })
 
     return {
@@ -129,6 +146,8 @@ function transformComponentContainer(comContainer: ComponentContainerConfig['com
         autoUpdate: JSON.parse(autoUpdate),
         dataFrom,
         dataConfigs,
+        subScreenId,
+        useFilter
     }
 }
 
@@ -182,7 +201,7 @@ function transformContainer(containerConfig: ContainerConfig): TransformContaine
 }
 
 function transformComponent(componentConfig: ComponentConfig): TransformComponentType {
-    const { id, name, config, autoUpdate, useFilter, type, base, staticData, uniqueTag, dataConfig, dataType, events, filters, from, isDataConfig, screenId, triggers } = componentConfig;
+    const { id, name, config, autoUpdate, useFilter, type, base, staticData, uniqueTag, parent, dataConfig, dataType, events, filters, from, isDataConfig, screenId, triggers } = componentConfig;
     const dataConfigs = getDataConfigs({ dataConfig, staticData })
     return {
         id, name,
@@ -195,6 +214,7 @@ function transformComponent(componentConfig: ComponentConfig): TransformComponen
         type,
         dataType,
         dataConfigs,
+        parent,
         events: JSON.parse(events),
         filters: JSON.parse(filters),
         screenId,

@@ -4,6 +4,7 @@ import React from "react";
 const GroupWrap = React.lazy(() => import('./GroupWrap'));
 const ComponentWrap = React.lazy(() => import('./ComponentWrap'));
 const PanelWrap = React.lazy(() => import('./PanelWrap'));
+const ContainerWrap = React.lazy(() => import('./ContainerWrap'));
 
 export default function ScreenPreview({ layers }: { layers: TransformScreenType['layers']; }) {
     if (!Array.isArray(layers)) {
@@ -15,7 +16,7 @@ export default function ScreenPreview({ layers }: { layers: TransformScreenType[
                 return <ComponentWrap key={layer.id} id={layer.id as number} />
             }
             if (isContainer(layer.id as string)) {
-                return 'container'
+                return <ContainerWrap key={layer.id} id={layer.id as string}></ContainerWrap>
             }
             if (isPanel(layer.id as string) || isRef(layer.id as string)) {
                 return <PanelWrap key={layer.id} id={layer.id as string} />
