@@ -1,0 +1,8 @@
+.window-header {
+  -webkit-user-select: none;
+  -webkit-app-region: drag;
+}
+
+.window-header:active {
+  cursor: move;
+}

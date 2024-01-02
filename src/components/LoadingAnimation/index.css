@@ -1,0 +1,18 @@
+@keyframes loading-animation {
+  0% {
+    opacity: 0.08;
+  }
+  50% {
+    opacity: 0.16;
+  }
+  100% {
+    opacity: 0.08;
+  }
+}
+
+.loading-spinner {
+  width: 0px;
+  height: 0px;
+  background-color: #929292; /* 背景颜色 */
+  animation: loading-animation 4s infinite; /* 使用动画并设置为无限循环 */
+}
