@@ -8,7 +8,7 @@ import { ScreenJsonType, ScreenPreviewType, ComponentConfig, TransformComponentC
  * @returns 大屏列表json
 */
 export function getScreens() {
-    const filePath = checkFilePath('/screenConfig/');
+    const filePath = checkFilePath('/screenConfig/', false);
     const files = fs.readdirSync(filePath);
     const screens: any[] = [];
     files.filter(d => d).forEach(file => {
