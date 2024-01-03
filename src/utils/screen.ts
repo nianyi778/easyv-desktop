@@ -201,7 +201,7 @@ function transformContainer(containerConfig: ContainerConfig): TransformContaine
 }
 
 function transformComponent(componentConfig: ComponentConfig): TransformComponentType {
-    const { id, name, config, autoUpdate, useFilter, type, base, staticData, uniqueTag, parent, dataConfig, dataType, events, filters, from, isDataConfig, screenId, triggers } = componentConfig;
+    const { id, name, config, autoUpdate, dataFrom, useFilter, actions, type, base, staticData, uniqueTag, parent, dataConfig, dataType, events, filters, from, isDataConfig, screenId, triggers } = componentConfig;
     const dataConfigs = getDataConfigs({ dataConfig, staticData })
     return {
         id, name,
@@ -212,7 +212,9 @@ function transformComponent(componentConfig: ComponentConfig): TransformComponen
         triggers: triggers && JSON.parse(triggers),
         useFilter,
         type,
+        dataFrom,
         dataType,
+        actions: actions && JSON.parse(actions),
         dataConfigs,
         parent,
         events: JSON.parse(events),

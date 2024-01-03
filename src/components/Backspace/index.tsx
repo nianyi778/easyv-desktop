@@ -2,6 +2,7 @@ import {
     CloseCircleOutlined
 } from '@ant-design/icons';
 import { useKeyPress } from 'ahooks';
+import { message } from 'antd';
 import { useEffect, useState } from 'react';
 
 
@@ -10,6 +11,10 @@ export default function Backspace({ onBack }: { onBack: () => void }) {
     // https://github.com/alibaba/hooks/blob/master/packages/hooks/src/useKeyPress/index.ts#L21
     useKeyPress('ctrl.z', () => {
         setVisible(true)
+    });
+
+    useKeyPress('ctrl.r', () => {
+        window.location.reload();
     });
 
     useEffect(() => {

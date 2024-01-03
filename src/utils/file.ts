@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { ipcRenderer } from 'electron'
 import path from 'path';
 /**
  * @description 创建json 文件
@@ -44,14 +45,37 @@ export function getFilePath({
         return '';
     }
     const appData = window.appConfig.appDataPath;
-    return path.join('file://', appData, fileType, filePath);
+    return path.join(appData, fileType, filePath);
+}
+
+
+export function fillJoin({
+    filePath,
+}: {
+    filePath: string;
+}): string {
+    if (!filePath) {
+        return '';
+    }
+    return path.join('file:\/\/', filePath);
 }
 
 
 
-export function getResourceFile(filePath: string) {
-    return getFilePath({
+
+export function getResourceFile(filePath: string, isFill: boolean = true): string {
+    const path = getFilePath({
         filePath,
         fileType: 'screenResource',
-    })
+    });
+
+    return isFill ? fillJoin({ filePath: path }) : path;
+}
+
+/**
+ * @description 绝对地址base64
+ * */
+export function convertFileToBase64(filePath: string) { // 绝对地址
+    const appData = ipcRenderer.invoke('convertFileToBase64', getResourceFile(filePath, false));
+    return appData;
 }

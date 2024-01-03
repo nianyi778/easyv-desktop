@@ -15,7 +15,9 @@ export default function ShareScreen() {
     useEffect(() => {
         (async () => {
             const data = await screenData(screenId as string);
-            data && setScreen(data);
+            setTimeout(() => {
+                data && setScreen(data);
+            }, 1000);
         })()
     }, [])
 

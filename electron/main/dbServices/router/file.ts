@@ -1,18 +1,19 @@
-import { app, ipcMain } from "electron";
+import { ipcMain } from "electron";
 import fs from 'fs';
-import path from 'path';
 
-export const getImages = () => {
-    ipcMain.handle('get-image', async (_, dirPath) => {
-        const appData = app.getPath('userData');
-        const imageExtensions = ['jpg', 'jpeg', 'png', 'webp'];
-        const file = fs.readFileSync(path.join(appData, '/screenResource/', dirPath));
-        console.log(file);
-        // const images = files.filter((file) =>
-        //     imageExtensions.includes(extname(file).toLowerCase().slice(1)))
-        //     .map((file) => {
-        //         return { src: `${dirPath}/${file}` }
-        //     });
-        return file;
+export const getFile = () => {
+    ipcMain.handle('convertFileToBase64', (_, filePath: string) => {
+        try {
+            // 读取 文件内容
+            const fileContent = fs.readFileSync(filePath, 'utf8');
+
+            // 将 文件内容进行 Base64 编码
+            const base64Data = Buffer.from(fileContent).toString('base64');
+
+            return base64Data;
+        } catch (error) {
+            console.error('Error converting file to Base64:', error);
+            return null;
+        }
     })
 };

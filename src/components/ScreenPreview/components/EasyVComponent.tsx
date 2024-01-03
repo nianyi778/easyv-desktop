@@ -1,10 +1,12 @@
-import { JSXElementConstructor, ReactElement, ReactNode, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { define } from '@/utils/define';
 import { TransformComponentType } from '@/type/screen.type';
 import LoadingSpinner from '@/components/LoadingAnimation';
 import ComponentEmpty from '@/components/ComponentEmpty';
 import ErrorBoundary from './ComErrorBoundary';
 import { getComponentConfig } from '@lidakai/utils';
+import { ChildrenConfig } from '@/type/component.type';
+// import Parent from './Test';
 
 interface EasyVComponentType {
     config: unknown[];
@@ -14,13 +16,16 @@ interface EasyVComponentType {
     uniqueTag: string;
     data: unknown[];
     events: unknown[];
+    childrenData: unknown[];
+    childrenConfig: ChildrenConfig[];
+    childrenEvents: unknown[];
+    actions?: unknown[]
 }
 
 export default function EasyVComponent(
-    { id, base, spaceId, uniqueTag, height, name, events, config, width, left, top, data }: EasyVComponentType) {
+    { id, base, spaceId, uniqueTag, height, name, events, config, actions, width, left, top, data, childrenData, childrenConfig, childrenEvents }: EasyVComponentType) {
     const [loadedScript, setLoadedScript] = useState(false);
     const [component, setComponent] = useState<any>(null);
-
     useEffect(() => {
         const { version, module_name } = base;
         if (version && module_name) {
@@ -62,7 +67,7 @@ export default function EasyVComponent(
         );
     }
 
-    if (!component) {
+    if (!component || !id) {
         return <ComponentEmpty
             text={`${id}-${name}(加载失败)`}
             style={{
@@ -73,12 +78,10 @@ export default function EasyVComponent(
     }
 
 
-    const childrenData: unknown[] = [];
     const iState = {
         show: true
     };
     const bindedInteractionState = {};
-    const childrenConfig: unknown[] = [];
     const interactionCallbackValues = {}
 
 
@@ -103,23 +106,23 @@ export default function EasyVComponent(
                 position: 'absolute',
                 pointerEvents: 'auto',
             }}>
-
+            {/* <Parent id={id} /> */}
             <Com
                 id={id}
-                data={data}
+                data={data || []}
                 configuration={getComponentConfig(config)}
-                actions={[]}
-                events={events}
+                actions={actions || []}
+                events={events || []}
                 width={width}
                 height={height}
                 top={top}
                 left={left}
                 iState={iState}
                 bindedInteractionState={bindedInteractionState}
-                childrenData={childrenData}
-                childrenConfig={childrenConfig}
+                childrenData={childrenData || []}
+                childrenConfig={childrenConfig || []}
                 callbackValues={interactionCallbackValues}
-
+                childrenEvents={childrenEvents}
                 emitEvent={handleEmitEvent}
                 postMessage={postMessage}
                 emit={handleEmit}

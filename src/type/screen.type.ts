@@ -186,7 +186,8 @@ export interface ContainerConfig {
     events: string;
     filters: string;
     id: number;
-    dataFrom: 0 | 1;
+    // dataFrom: 0 | 1;
+    dataFrom: DataFrom;
     name: string;
     screenId: number;
     staticData: string;
@@ -207,6 +208,8 @@ export interface TransformComponentType {
         module_name: string;
         version: string;
     },
+    actions?: unknown[];
+    dataFrom: DataFrom;
     children?: number[];
     uniqueTag: string;
     useFilter: boolean;
@@ -226,6 +229,7 @@ export interface ComponentConfig {
     autoUpdate: ContainerConfig['autoUpdate'];
     base: string;
     config: string;
+    dataFrom: DataFrom;
     dataConfig: ContainerConfig['dataConfig'];
     dataType: ContainerConfig['dataType'];
     events: ContainerConfig['events'];

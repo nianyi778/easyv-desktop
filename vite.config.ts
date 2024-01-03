@@ -101,6 +101,21 @@ export default defineConfig(({ command }) => {
       // Use Node.js API in the Renderer-process
       renderer(),
     ],
+    // proxy: {
+    //   '/api': {
+    //     target: 'http://localhost:3000', // 实际接口的地址
+    //     changeOrigin: true,
+    //     rewrite: (path) => path.replace(/^\/api/, ''), // 去除 '/api' 前缀
+    //     onProxyReq: (proxyReq, req, res) => {
+    //       // 自定义处理请求的逻辑
+    //       // 例如，将请求转发到本地文件夹下的文件
+    //       if (req.url.startsWith('/api/static')) {
+    //         const filePath = req.url.replace('/api/static', '/path/to/local/folder');
+    //         proxyReq.path = filePath;
+    //       }
+    //     },
+    //   },
+    // },
     server: process.env.VSCODE_DEBUG && (() => {
       const url = new URL(pkg.debug.env.VITE_DEV_SERVER_URL)
       return {
