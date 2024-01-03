@@ -257,6 +257,7 @@ export interface TransformComponentContainerType {
     dataConfigs: DataConfigs;
     useFilter: boolean;
     subScreenId: number;
+    dataType: DataType;
     // filters: ComponentFilter[];
 }
 

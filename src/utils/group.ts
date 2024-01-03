@@ -7,13 +7,21 @@ export interface SizeType {
     height: number;
 }
 
-export function reduceCompute(data: SizeType[]): SizeType {
+export interface ComputeSizeType extends SizeType {
+    minLeft: number;
+    minTop: number;
+}
+
+
+export function reduceCompute(data: SizeType[]): ComputeSizeType {
 
     const defaultSize = {
         width: 0,
         height: 0,
         left: 0,
-        top: 0
+        top: 0,
+        minLeft: 0,
+        minTop: 0
     }
 
     if (Array.isArray(data) && data.length) {
@@ -26,7 +34,9 @@ export function reduceCompute(data: SizeType[]): SizeType {
             width: maxWidth + (maxLeft - minLeft),
             height: maxHeight + (maxTop - minTop),
             left: minLeft,
-            top: minTop
+            top: minTop,
+            minLeft: minLeft,
+            minTop: minTop
         }
     }
 

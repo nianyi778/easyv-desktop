@@ -4,22 +4,8 @@ export interface ComContainerReduceConfig {
         useBackground: boolean;
         backgroundColor: string;
     };
-    autoLayout: {
-        columnNumber: number;
-        layoutType: 'column' | 'line';
-        lineNumber: number;
-        spacing: {
-            lineSize: number;
-            columnSize: number;
-        }
-    };
-    scrollSettings: {
-        animationTypes: "single";
-        backgroundFixed: boolean;
-        beyondScroll: "auto";
-        enableScrolling: boolean;
-        interval: number;
-    },
+    autoLayout: AutoLayoutConfigProps;
+    scrollSettings: ScrollSettingsConfigProps,
     chart: {
         dimension: {
             chartDimension: {
@@ -32,4 +18,25 @@ export interface ComContainerReduceConfig {
             }
         }
     }
+}
+
+
+
+export interface AutoLayoutConfigProps {
+    layoutType: 'line' | 'column';
+    lineNumber: number;
+    columnNumber: number;
+    spacing: {
+        lineSize: number;
+        columnSize: number;
+    };
+}
+
+export interface ScrollSettingsConfigProps {
+    animationTypes: 'single' | 'all';
+    beyondScroll: 'auto' | 'manual';
+    enableScrolling: boolean;
+    interval: number;
+    backgroundFixed: boolean;
+    runningModel: 'continuous' | 'startAnew';
 }

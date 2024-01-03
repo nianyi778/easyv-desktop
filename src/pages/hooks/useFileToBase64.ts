@@ -1,18 +1,25 @@
 
 import { getResourceFile } from '@/utils';
 import { ipcRenderer } from 'electron'
-import { useCallback } from 'react';
+import { useEffect, useState } from 'react';
 
 /**
  * @description 绝对地址base64
  * */
-export function useFileToBase64() {
-    const convertFileToBase64 = useCallback((filePath: string) => {
-        const base64 = ipcRenderer.invoke('convertFileToBase64', getResourceFile(filePath, false));
-        console.log(base64)
-        return base64;
-    }, [])
+export function useFileToBase64(): [string | null, (file: string) => void] {
+    const [base64, setBase64] = useState<string | null>(null);
+    const [filePath, setFilePath] = useState<string | null>(null);
 
-    return convertFileToBase64;
+    useEffect(() => {
+        if (filePath) {
+            (async () => {
+                const base64Data = await ipcRenderer.invoke('convertFileToBase64', getResourceFile(filePath, false));
+                console.log(base64Data, '----===')
+                base64Data && setBase64(base64Data);
+            })()
+        }
+    }, [filePath]);
+
+    return [base64, setFilePath];
 }
 

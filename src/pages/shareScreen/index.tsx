@@ -17,7 +17,7 @@ export default function ShareScreen() {
             const data = await screenData(screenId as string);
             setTimeout(() => {
                 data && setScreen(data);
-            }, 1000);
+            }, 0);
         })()
     }, [])
 

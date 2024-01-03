@@ -137,7 +137,7 @@ function reduceScreens(data: Omit<ScreenJsonType, 'info'>[]) {
 
 
 function transformComponentContainer(comContainer: ComponentContainerConfig['componentContainer']): TransformComponentContainerType {
-    const { id, name, config, autoUpdate, dataFrom, staticData, dataConfig, subScreenId, useFilter } = comContainer;
+    const { id, name, config, autoUpdate, dataFrom, staticData, dataConfig, subScreenId, useFilter, dataType } = comContainer;
     const dataConfigs = getDataConfigs({ dataConfig, staticData })
 
     return {
@@ -147,6 +147,7 @@ function transformComponentContainer(comContainer: ComponentContainerConfig['com
         dataFrom,
         dataConfigs,
         subScreenId,
+        dataType,
         useFilter
     }
 }

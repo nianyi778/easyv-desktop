@@ -57,7 +57,7 @@ export default function GroupWrap({ id, components: layers, config }: GroupWrapT
         }
         return null;
     }).filter(d => d);
-    const { width, height, left, top } = reduceCompute(sizeArray as SizeType[]);
+    const { width, height, left, top, minLeft, minTop } = reduceCompute(sizeArray as SizeType[]);
     return <div id={id} className=" absolute" style={{
         width: width,
         height: height,
@@ -65,6 +65,11 @@ export default function GroupWrap({ id, components: layers, config }: GroupWrapT
         top: top,
         opacity: opacity
     }}>
-        <Group width={width} height={height} layers={layers} />
+        <div className=" absolute" style={{
+            left: -1 * minLeft,
+            top: -1 * minTop
+        }}>
+            <Group width={width} height={height} layers={layers} />
+        </div>
     </div>
 }

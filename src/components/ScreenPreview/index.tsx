@@ -53,6 +53,8 @@ export default function ScreenMain({ screenId, type, width, height }: { screenId
             backgroundColor: backgroundColor
         };
         styles = bgClass
+    } else if (type === ScreenEnumType.container) {
+        // 不处理
     }
 
 
