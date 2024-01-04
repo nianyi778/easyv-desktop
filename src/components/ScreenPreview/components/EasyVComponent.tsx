@@ -6,7 +6,6 @@ import ComponentEmpty from '@/components/ComponentEmpty';
 import ErrorBoundary from './ComErrorBoundary';
 import { getComponentConfig } from '@lidakai/utils';
 import { ChildrenConfig } from '@/type/component.type';
-// import Parent from './Test';
 
 interface EasyVComponentType {
     config: unknown[];

@@ -1,3 +1,4 @@
+import { AnimateType } from '@/constants';
 import type { ComponentFilter, Filter } from './filter.type';
 
 export enum PanelType {
@@ -17,9 +18,9 @@ export interface TransformPanelType {
         hideDefault: boolean;
         left: number;
         top: number;
+        animateType: AnimateType;
         width: number;
         allowScroll: boolean;
-        animateType: string;
         animationDuration: number;
         autoCarousel: boolean;
         interval: number;

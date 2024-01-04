@@ -1,7 +1,7 @@
 import { useRecoilValue } from 'recoil';
 import { panels } from '@/dataStore'
 import { getId } from '@lidakai/utils';
-import Panel from './Panel';
+import PanelAnimation from './PanelAnimation';
 
 export default function PanelWrap({ id }: { id: string; }) {
 
@@ -13,16 +13,17 @@ export default function PanelWrap({ id }: { id: string; }) {
     const { config, states, type } = panel;
     const { width, height, left, top } = config;
 
+
     return <div id={id}
-        className=" absolute"
+        className=" absolute overflow-hidden"
         style={{
             width,
             height,
             left,
             top,
         }}>
-        {
-            states.concat().reverse().map(state => <Panel key={state} screenId={state} width={width} type={type} height={height} />)
-        }
+
+        <PanelAnimation states={states} config={config} type={type} />
+
     </div>
 }

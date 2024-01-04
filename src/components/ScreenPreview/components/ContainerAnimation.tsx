@@ -1,13 +1,13 @@
 import { AutoLayoutConfigProps, ScrollSettingsConfigProps } from "@/type/com-container.type";
 import chunk from "lodash/chunk";
-import { CSSProperties, useMemo } from "react";
+import { CSSProperties, memo, useMemo } from "react";
 import ScreenPreview from '../index';
 import { ScreenEnumType } from "@/type/screen.type";
 
 /**
  * @description 组件容器动画
  * */
-export default function ContainerAnimation({
+function ContainerAnimation({
     bgStyle,
     containerId,
     subScreenId,
@@ -97,3 +97,5 @@ export default function ContainerAnimation({
     </div>
 
 }
+
+export default memo(ContainerAnimation);

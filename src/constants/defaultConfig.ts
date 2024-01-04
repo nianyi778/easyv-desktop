@@ -13,3 +13,17 @@ export const defaultActions = [
     { name: '切换组件状态', value: 'switchState' },
     { name: '更新组件配置', value: 'updateConfig' }
 ];
+
+
+export enum AnimateType {
+    'none' = "none",
+    'opacity' = 'opacity',
+    'moveLeft' = "moveLeft",
+    'moveRight' = "moveRight",
+    'moveTop' = "moveTop",
+    'moveBottom' = "moveBottom",
+    'boxFlipTB' = 'boxFlipTB',
+    'boxFlipLF' = 'boxFlipLF',
+    'flipVertical' = 'flipVertical',
+    'flipLateral' = 'flipLateral',
+}
