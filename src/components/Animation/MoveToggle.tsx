@@ -3,8 +3,8 @@ import { ReactNode, useMemo, useRef, useState } from 'react';
 import { AnimationState, Config } from './index';
 import { AnimateType } from '@/constants';
 
-export default function MoveToggle({ children, config, type }: { children: ReactNode, config: Config; type: AnimateType }) {
-    const { visible, childrenWidth = 200, unmount } = config;
+export default function MoveToggle({ children, config, type }: { children: ReactNode, config: Required<Config>; type: AnimateType }) {
+    const { visible, childrenWidth, unmount, animationDuration } = config;
     const ref = useRef(null);
     const [animationState, setAnimationState] = useState<AnimationState>(AnimationState.default);
     const { direction, positive } = useMemo(() => {
@@ -28,26 +28,24 @@ export default function MoveToggle({ children, config, type }: { children: React
     const springConfig = useMemo(() => {
         return visible ? {
             opacity: 1,
-            display: 'block',
+            visibility: 'visible',
             transform: `translate${direction}(0px)`,
         } : {
             to: [
                 {
-                    display: 'block',
+                    visibility: 'visible',
                     opacity: 0,
                     transform: `translate${direction}(${positive * childrenWidth}px)`
                 },
-                // {
-                //     opacity: 0,
-                //     transform: `translate${direction}(0px)`,
-                //     display: 'none'
-                // },
             ],
         }
     }, [visible, direction, childrenWidth, positive]);
 
     const props = useSpring({
         ...springConfig,
+        config: {
+            duration: (animationDuration * 1000)
+        },
         onStart() {
             setAnimationState(AnimationState.start);
         },
@@ -56,7 +54,7 @@ export default function MoveToggle({ children, config, type }: { children: React
             // 状态重置
             !visible && ctrl.set({
                 transform: `translate${direction}(0px)`,
-                display: 'none'
+                visibility: 'hidden'
             });
 
             setAnimationState(AnimationState.end);

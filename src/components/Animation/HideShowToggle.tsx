@@ -5,10 +5,8 @@ import { Config } from './index';
 /**
  * @description 显示/隐藏 切换
  * */
-export default function HideShowToggle({ children, config }: { children: ReactNode, config: Config }) {
-    const { visible, unmount } = config;
-
-
+export default function HideShowToggle({ children, config }: { children: ReactNode, config: Required<Config> }) {
+    const { visible, unmount, animationDuration = 1 } = config;
 
     const springConfig = visible ? {
         opacity: 1,
@@ -17,7 +15,11 @@ export default function HideShowToggle({ children, config }: { children: ReactNo
         opacity: 0,
         transform: 'translateY(-20px)'
     }
-    const props = useSpring(springConfig);
+    const props = useSpring({
+        ...springConfig, config: {
+            duration: (animationDuration * 1000)
+        },
+    });
 
 
 

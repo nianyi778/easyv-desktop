@@ -14,17 +14,19 @@ export interface Config {
     visible: boolean;
     unmount?: boolean;
     childrenWidth?: number;
+    animationDuration?: number;
 }
 
 const defaultConfig = {
     visible: false,
     unmount: true,
-    childrenWidth: 200
+    childrenWidth: 200, // px
+    animationDuration: 1 // s
 }
 
 export default function Animation({ type = AnimateType.opacity, children, config }: { type: AnimateType; children: ReactNode; config: Config }) {
 
-    const newConfig = { ...defaultConfig, ...config }
+    const newConfig = { ...defaultConfig, ...config } as Required<Config>
 
     switch (type) {
         case AnimateType.moveLeft:
