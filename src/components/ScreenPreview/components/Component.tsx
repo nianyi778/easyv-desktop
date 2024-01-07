@@ -2,8 +2,14 @@ import { getComponentConfig, getComponentDimension } from '@lidakai/utils';
 import EasyVComponent from './EasyVComponent';
 import { TransformComponentType } from '@/type/screen.type';
 import { memo, useEffect } from 'react';
+import { isEqual } from 'lodash-es';
 
-function Component({ id, component, children = [] }: { id: number; component: TransformComponentType; children?: TransformComponentType[] }) {
+
+interface Props {
+    id: number; component: TransformComponentType; children?: TransformComponentType[]
+}
+
+function Component({ id, component, children = [] }: Props) {
 
     const { uniqueTag, config, name, dataConfigs, events, autoUpdate, actions } = component;
     const { width, height, left, top } = getComponentDimension(config);
@@ -114,5 +120,10 @@ function Component({ id, component, children = [] }: { id: number; component: Tr
     </div>
 }
 
+function areEqual(props: Props, nextProps: Props) {
+
+    return props.id === nextProps.id && isEqual(props.component, nextProps.component) && isEqual(props.children, nextProps.children);
+}
+
 // memo 必须留着
-export default memo(Component)
+export default memo(Component, areEqual)

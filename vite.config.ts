@@ -29,7 +29,7 @@ export default defineConfig(({ command }) => {
     // },
     build: {
       rollupOptions: {
-        external: ['lodash/default'],
+        external: ['lodash-es/default'],
       },
     },
     css: {
@@ -74,7 +74,7 @@ export default defineConfig(({ command }) => {
               minify: isBuild,
               outDir: 'dist-electron/main',
               rollupOptions: {
-                external: Object.keys('dependencies' in pkg ? pkg.dependencies : {}).concat('lodash/default'),
+                external: Object.keys('dependencies' in pkg ? pkg.dependencies : {}).concat('lodash-es/default'),
               },
             },
           },
@@ -101,6 +101,7 @@ export default defineConfig(({ command }) => {
       // Use Node.js API in the Renderer-process
       renderer(),
     ],
+
     // proxy: {
     //   '/api': {
     //     target: 'http://localhost:3000', // 实际接口的地址

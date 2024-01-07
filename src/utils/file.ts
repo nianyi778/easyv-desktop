@@ -57,7 +57,7 @@ export function fillJoin({
     if (!filePath) {
         return '';
     }
-    return path.join('file:\/\/', filePath);
+    return path.join('file:', filePath);
 }
 
 

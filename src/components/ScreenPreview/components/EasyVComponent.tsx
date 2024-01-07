@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
-import { define } from '@/utils/define';
+import { memo, useCallback, useEffect, useState } from 'react';
+import { define, modules, moduleDependencies, dependencyModules } from '@/utils/define';
 import { TransformComponentType } from '@/type/screen.type';
 import LoadingSpinner from '@/components/LoadingAnimation';
 import ComponentEmpty from '@/components/ComponentEmpty';
@@ -21,36 +21,49 @@ interface EasyVComponentType {
     actions?: unknown[]
 }
 
-export default function EasyVComponent(
+function EasyVComponent(
     { id, base, spaceId, uniqueTag, height, name, events, config, actions, width, left, top, data, childrenData, childrenConfig, childrenEvents }: EasyVComponentType) {
     const [loadedScript, setLoadedScript] = useState(false);
     const [component, setComponent] = useState<any>(null);
+    const [isComponentMounted, setComponentMounted] = useState(true);
+
     useEffect(() => {
         const { version, module_name } = base;
         if (version && module_name) {
             // 加载组件js
-            const random = Math.random();
             define(
-                `com_${id}_${random}`,
+                `com_${id}`,
                 [`${module_name}@${version}`],
                 (com: any) => {
                     if (!window.component) {
                         window.component = {};
                     }
                     window.component[`${module_name}@${version}`] = com;
-                    setComponent((_: any) => com);
-                    setLoadedScript(true)
+                    if (isComponentMounted) {
+                        setComponent((_: any) => com);
+                        setLoadedScript(true)
+                    }
                 },
                 spaceId,
             );
         }
 
-    }, [base, spaceId]);
+        return () => {
+            setComponentMounted(false);
+            delete modules[`com_${id}`];
+            delete moduleDependencies[`com_${id}`];
+            dependencyModules[`${base.module_name}@${base.version}`] = dependencyModules[
+                `${base.module_name}@${base.version}`
+            ]?.filter((d: string) => d !== `com_${id}`);
+        }
+
+    }, [base, spaceId, isComponentMounted]);
 
     const getCallbackValue = useCallback(() => { }, []);
     const handleEmit = useCallback(() => { }, []);
     const postMessage = useCallback(() => { }, []);
     const handleEmitEvent = useCallback(() => { }, []);
+    const onRelative = useCallback(() => { }, []);
 
     if (!loadedScript) {
         return (
@@ -105,7 +118,6 @@ export default function EasyVComponent(
                 position: 'absolute',
                 pointerEvents: 'auto',
             }}>
-            {/* <Parent id={id} /> */}
             <Com
                 id={id}
                 data={data || []}
@@ -121,17 +133,17 @@ export default function EasyVComponent(
                 childrenData={childrenData || []}
                 childrenConfig={childrenConfig || []}
                 callbackValues={interactionCallbackValues}
-                childrenEvents={childrenEvents}
                 emitEvent={handleEmitEvent}
                 postMessage={postMessage}
                 emit={handleEmit}
                 getCallbackValue={getCallbackValue}
-                onRelative={(...args: any[]) => {
-                    console.log(args);
-                }}
+                onRelative={onRelative}
             />
         </div>
 
     </ErrorBoundary>
 
 }
+
+
+export default EasyVComponent;

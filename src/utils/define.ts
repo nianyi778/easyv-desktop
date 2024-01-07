@@ -1,6 +1,6 @@
 import React from 'react';
 import * as ReactDOM from 'react-dom';
-import _ from 'lodash';
+import * as _ from 'lodash-es';
 import * as d3 from 'd3';
 import * as THREE from 'three';
 import * as MDStyles from '@material-ui/styles';
@@ -94,6 +94,8 @@ const getDependencies = (name: string) => {
 const checkDependencies = (name: string, dependencies: string[], tenantId?: number) => {
   let flag = true;
   dependencies.map((depName) => {
+
+    console.log(name, modules, depName, dependencyModules);
     if (!modules[depName] || !modules[depName].fired) {
       loadModule(depName, tenantId);
       flag = false;

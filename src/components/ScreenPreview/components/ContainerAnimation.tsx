@@ -1,5 +1,5 @@
 import { AutoLayoutConfigProps, ScrollSettingsConfigProps } from "@/type/com-container.type";
-import chunk from "lodash/chunk";
+import { chunk } from "lodash-es";
 import { CSSProperties, memo, useMemo } from "react";
 import ScreenPreview from '../index';
 import { ScreenEnumType } from "@/type/screen.type";
