@@ -72,7 +72,7 @@ export default function ContainerWrap({ id }: { id: string }) {
             left,
             top,
         }}>
-        <ContainerAnimation boxEffectiveSize={size} subScreenId={container.subScreenId} bgStyle={styles} containerData={containerData} containerId={id} autoLayoutConfig={autoLayout} scrollSettingsConfig={scrollSettings} />
+        <ContainerAnimation boxEffectiveSize={size} width={width} height={height} subScreenId={container.subScreenId} bgStyle={styles} containerData={containerData} containerId={id} autoLayoutConfig={autoLayout} scrollSettingsConfig={scrollSettings} />
     </div >
 }
 
