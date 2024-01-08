@@ -26,22 +26,35 @@ export default function MoveToggle({ children, config, type }: { children: React
     }, [type]);
 
     const springConfig = useMemo(() => {
+
         return visible ? {
             opacity: 1,
             visibility: 'visible',
             transform: `translate${direction}(0px)`,
         } : {
-            to: [
-                {
-                    visibility: 'visible',
-                    opacity: 0,
-                    transform: `translate${direction}(${positive * childrenWidth}px)`
-                },
-            ],
+            to: async (next: any) => {
+                if (animationState === AnimationState.default || (props?.opacity && props?.opacity.goal === 0)) {
+                    await next({
+                        transform: `translate${direction}(0px)`,
+                        visibility: 'hidden',
+                        opacity: 0,
+                    });
+                } else {
+                    await next({
+                        visibility: 'visible',
+                        opacity: 0,
+                        transform: `translate${direction}(${positive * childrenWidth}px)`
+                    })
+                }
+
+            }
         }
     }, [visible, direction, childrenWidth, positive]);
 
-    const props = useSpring({
+    const props = useSpring<{
+        visibility: "hidden" | "visible",
+        opacity: number;
+    }>({
         ...springConfig,
         config: {
             duration: (animationDuration * 1000)
@@ -50,18 +63,19 @@ export default function MoveToggle({ children, config, type }: { children: React
             setAnimationState(AnimationState.start);
         },
         onRest(_, ctrl) {
-
             // 状态重置
-            !visible && ctrl.set({
-                transform: `translate${direction}(0px)`,
-                visibility: 'hidden'
-            });
+            !visible && ctrl.set(async (next: any) => await next(
+                {
+                    transform: `translate${direction}(0px)`,
+                    visibility: 'hidden'
+                }
+            ));
 
             setAnimationState(AnimationState.end);
         },
     });
 
-    if (unmount && !visible && animationState === AnimationState.end) {
+    if (unmount && !visible && (animationState === AnimationState.end || animationState === AnimationState.default)) {
         return null;
     }
 

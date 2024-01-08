@@ -25,7 +25,6 @@ function EasyVComponent(
     { id, base, spaceId, uniqueTag, height, name, events, config, actions, width, left, top, data, childrenData, childrenConfig, childrenEvents }: EasyVComponentType) {
     const [loadedScript, setLoadedScript] = useState(false);
     const [component, setComponent] = useState<any>(null);
-    const [isComponentMounted, setComponentMounted] = useState(true);
 
     useEffect(() => {
         const { version, module_name } = base;
@@ -39,17 +38,14 @@ function EasyVComponent(
                         window.component = {};
                     }
                     window.component[`${module_name}@${version}`] = com;
-                    if (isComponentMounted) {
-                        setComponent((_: any) => com);
-                        setLoadedScript(true)
-                    }
+                    setComponent((_: any) => com);
+                    setLoadedScript(true)
                 },
                 spaceId,
             );
         }
 
         return () => {
-            setComponentMounted(false);
             delete modules[`com_${id}`];
             delete moduleDependencies[`com_${id}`];
             dependencyModules[`${base.module_name}@${base.version}`] = dependencyModules[
@@ -57,7 +53,7 @@ function EasyVComponent(
             ]?.filter((d: string) => d !== `com_${id}`);
         }
 
-    }, [base, spaceId, isComponentMounted]);
+    }, [base, spaceId]);
 
     const getCallbackValue = useCallback(() => { }, []);
     const handleEmit = useCallback(() => { }, []);

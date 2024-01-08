@@ -95,7 +95,6 @@ const checkDependencies = (name: string, dependencies: string[], tenantId?: numb
   let flag = true;
   dependencies.map((depName) => {
 
-    console.log(name, modules, depName, dependencyModules);
     if (!modules[depName] || !modules[depName].fired) {
       loadModule(depName, tenantId);
       flag = false;
