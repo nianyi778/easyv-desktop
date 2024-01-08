@@ -58,7 +58,7 @@ export default function ScreenMain({ screenId, type, width, height }: { screenId
     }
 
 
-    return <div id={`screen_${screenId}`} style={{
+    return <div id={`screen_${screenId}`} className="pointer-events-none" style={{
         ...styles,
         width,
         height

@@ -20,6 +20,21 @@ export function isGroup(id: string) {
     return /^group_\w+/.test(id)
 }
 
+
+// 组件容器
+export function isContainerChildren(id: string): boolean {
+    return /^\$container_[0-9]+\([container|component|group].+\)/.test(id);
+}
+
+export function isJsonString(str: string) {
+    try {
+        JSON.parse(str);
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
 /**
  *
  * @param callback 回调

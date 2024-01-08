@@ -26,6 +26,7 @@ export function useGetScreen(): (id: number | string) => Promise<ScreenPreviewTy
                     await setContainersById(c => ({ ...c, ...arrayToObj(containers) }));
                     await setComContainersById(c => ({ ...c, ...arrayToObj(componentContainers) }));
                     await setComponentsById(c => ({ ...c, ...arrayToObj(components) }));
+                    // 统计事件
                     return result;
                 }
             }

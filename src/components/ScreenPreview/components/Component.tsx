@@ -115,7 +115,20 @@ function Component({ id, component, children = [] }: Props) {
             <EasyVComponent
                 uniqueTag={uniqueTag}
                 data={data}
-                id={id} base={component.base} name={name} actions={actions} childrenData={[]} childrenConfig={childrenConfig} childrenEvents={childrenEvents} events={events} config={config} left={left} top={top} width={width} height={height} />
+                id={id}
+                base={component.base}
+                name={name}
+                actions={actions}
+                childrenData={[]}
+                childrenConfig={childrenConfig}
+                childrenEvents={childrenEvents}
+                events={events}
+                config={config}
+                left={left}
+                top={top}
+                width={width}
+                height={height}
+            />
         </div>
     </div>
 }

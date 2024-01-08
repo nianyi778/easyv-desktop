@@ -1,5 +1,6 @@
 import { AnimateType } from '@/constants';
 import type { ComponentFilter, Filter } from './filter.type';
+import { ActionType } from '@/constants/defaultConfig';
 
 export enum PanelType {
     panel,
@@ -173,7 +174,7 @@ export interface TransformContainerType {
     dataConfigs: DataConfigs;
     screenId: number;
     useFilter: boolean;
-    events: unknown[];
+    events: Events[];
     subScreenId?: number;
     autoUpdate?: AutoUpdate;
     enable: boolean;
@@ -197,7 +198,41 @@ export interface ContainerConfig {
     subScreenId: number;
 }
 
-
+export interface Events {
+    unmount: boolean;
+    trigger: string;
+    stateId: string;
+    name: string;
+    id: string;
+    reverse: boolean;
+    actions: Events[];
+    scale: {
+        x: number;
+        y: number;
+        lock: boolean;
+        origin: string;
+    };
+    translate: {
+        toX: number;
+        toY: number;
+    };
+    conditions: unknown[];
+    conditionType: 'all';
+    componentScope: 'current';
+    componentConfig: Record<string, unknown>;
+    component: (string | number)[];
+    animation: {
+        type: 'opacity';
+        timingFunction: 'linear';
+        duration: number;
+        delay: number;
+    };
+    actionName: string;
+    actionId: string;
+    action: ActionType;
+    actionData: Record<string, unknown>;
+}
+// action
 export interface TransformComponentType {
     from: 0 | 1; // 0 官方组件/1自定义组件
     id: ContainerConfig['id'];
@@ -216,7 +251,7 @@ export interface TransformComponentType {
     useFilter: boolean;
     dataType: ContainerConfig['dataType'];
     dataConfigs: DataConfigs;
-    events: unknown[];
+    events: Events[];
     filters: ComponentFilter[];
     screenId: ContainerConfig['screenId'];
     type: null | unknown;

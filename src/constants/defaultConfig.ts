@@ -1,17 +1,28 @@
 export const defaultScreenImg = 'https://workspace.easyv.cloud/static/png/default_screen-448d67f6.png'
 
 
+export enum ActionType {
+    Show = 'show',
+    Hide = 'hide',
+    ShowHide = 'show/hide',
+    Translate = 'translate',
+    Scale = 'scale',
+    Rotate = 'rotate',
+    UpdateData = 'updateData',
+    SwitchState = 'switchState',
+    UpdateConfig = 'updateConfig'
+}
 
 export const defaultActions = [
-    { name: '显示', value: 'show' },
-    { name: '隐藏', value: 'hide' },
-    { name: '显隐切换', value: 'show/hide' },
-    { name: '移动', value: 'translate' },
-    { name: '缩放', value: 'scale' },
-    { name: '旋转', value: 'rotate' },
-    { name: '更新数据', value: 'updateData' },
-    { name: '切换组件状态', value: 'switchState' },
-    { name: '更新组件配置', value: 'updateConfig' }
+    { name: '显示', value: ActionType.Show },
+    { name: '隐藏', value: ActionType.Hide },
+    { name: '显隐切换', value: ActionType.ShowHide },
+    { name: '移动', value: ActionType.Translate },
+    { name: '缩放', value: ActionType.Scale },
+    { name: '旋转', value: ActionType.Rotate },
+    { name: '更新数据', value: ActionType.UpdateData },
+    { name: '切换组件状态', value: ActionType.SwitchState },
+    { name: '更新组件配置', value: ActionType.UpdateConfig }
 ];
 
 
@@ -27,3 +38,4 @@ export enum AnimateType {
     'flipVertical' = 'flipVertical',
     'flipLateral' = 'flipLateral',
 }
+
