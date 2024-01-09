@@ -7,6 +7,7 @@ const PanelWrap = React.lazy(() => import('./PanelWrap'));
 const ContainerWrap = React.lazy(() => import('./ContainerWrap'));
 
 function ScreenPreview({ layers }: { layers: TransformScreenType['layers']; }) {
+
     if (!Array.isArray(layers)) {
         return null;
     }

@@ -8,11 +8,9 @@ import { useSetRecoilState } from 'recoil';
 export function useInteraction() {
     const setInteraction = useSetRecoilState(interactions);
     const updateInteraction = useCallback((interaction: Interaction) => {
-        console.log(interaction, 'interaction');
         interaction && setInteraction((inits) => inits.concat(interaction))
-    }, [setInteraction])
+    }, [setInteraction]);
 
 
     return updateInteraction;
-
 }

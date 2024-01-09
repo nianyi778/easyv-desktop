@@ -21,7 +21,7 @@ function PanelAnimation({ states, config, type }: { config: TransformPanelType['
 
     return states.concat().reverse().map(screen => <Animation key={screen} type={animateType} config={{
         visible: curState === screen,
-        unmount: true,
+        unmount: false,
         childrenWidth: width,
         animationDuration
     }}><Panel screenId={screen} width={width} type={type} height={height} /></Animation>)

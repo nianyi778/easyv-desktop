@@ -25,6 +25,7 @@ const loadModule = (name: string, tenantId?: number) => {
       } else {
         script.src = getResourceFile(`${basePath}components/${moduleName}/${moduleVersion}/${moduleName}.js`);
       }
+
       try {
         document.getElementsByTagName('head')[0].appendChild(script);
         script.onerror = function () {

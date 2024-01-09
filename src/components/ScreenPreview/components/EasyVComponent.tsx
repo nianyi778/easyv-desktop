@@ -187,19 +187,7 @@ function EasyVComponent(
     const interactionCallbackValues = {}
 
     const Com = component;
-    return <ErrorBoundary customErrorChildren={
-        <ComponentEmpty
-            text={`${id}-${name}组件 (加载失败)`}
-            style={{
-                width,
-                height,
-                left,
-                top,
-                position: 'absolute',
-                lineHeight: height + 'px',
-                backgroundColor: 'transparent'
-            }} />
-    } >
+    return <ErrorBoundary id={id} data={data} >
         <div id={uniqueTag}
             className=' pointer-events-auto absolute'
         >

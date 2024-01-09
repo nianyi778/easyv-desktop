@@ -4,6 +4,8 @@ import { useRecoilValue } from 'recoil';
 import { isComponent, isContainer, isPanel, reduceCompute, SizeType } from "@/utils";
 import { getId, getComponentDimension } from "@lidakai/utils";
 import Group from "./Group";
+import { interactions } from '@/dataStore';
+
 interface GroupWrapType {
     id: string;
     components: Layer[];
@@ -17,6 +19,9 @@ export default function GroupWrap({ id, components: layers, config }: GroupWrapT
     const componentsById = useRecoilValue(components);
     const panelsById = useRecoilValue(panels);
     const comContainersById = useRecoilValue(comContainers);
+
+    const interaction = useRecoilValue(interactions);
+    console.log(interaction, 'interaction');
 
     const sizeArray = layers.map(layer => {
         if (isComponent(layer.id as number)) {
