@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, memo } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { define, modules, moduleDependencies, dependencyModules } from '@/utils/define';
 import { Events, TransformComponentType } from '@/type/screen.type';
 import LoadingSpinner from '@/components/LoadingAnimation';
@@ -29,34 +29,43 @@ function EasyVComponent(
     { id, base, spaceId, uniqueTag, height, name, events, config, actions, width, left, top, data, childrenData, childrenConfig, childrenEvents }: EasyVComponentType) {
     const [loadedScript, setLoadedScript] = useState(false);
     const [component, setComponent] = useState<any>(null);
+    const refRandom = useRef(0);
     const updateInteraction = useInteraction();
     const ref = useRef<NodeJS.Timeout[]>([]); // 延时器
 
     useEffect(() => {
         const { version, module_name } = base;
+        if (!window.component) {
+            window.component = {};
+        }
         if (version && module_name) {
-            // 加载组件js
-            define(
-                `com_${id}`,
-                [`${module_name}@${version}`],
-                (com: any) => {
-                    if (!window.component) {
-                        window.component = {};
-                    }
-                    window.component[`${module_name}@${version}`] = com;
-                    setComponent((_: any) => com);
-                    setLoadedScript(true)
-                },
-                spaceId,
-            );
+            if (!window.component[`${module_name}@${version}`]) {
+                // 加载组件js
+                const random = Math.random();
+                refRandom.current = random;
+                define(
+                    `com_${id}_${random}`,
+                    [`${module_name}@${version}`],
+                    (com: any) => {
+                        window.component[`${module_name}@${version}`] = com;
+                        setComponent((_: any) => com);
+                        setLoadedScript(true)
+                    },
+                    spaceId,
+                );
+            } else {
+                setComponent((_: any) => window.component[`${module_name}@${version}`]);
+                setLoadedScript(true)
+            }
         }
 
         return () => {
-            delete modules[`com_${id}`];
-            delete moduleDependencies[`com_${id}`];
+            const name = `com_${id}_${refRandom.current}`
+            delete modules[name];
+            delete moduleDependencies[name];
             dependencyModules[`${base.module_name}@${base.version}`] = dependencyModules[
                 `${base.module_name}@${base.version}`
-            ]?.filter((d: string) => d !== `com_${id}`);
+            ]?.filter((d: string) => d !== name);
         }
 
     }, [base, spaceId]);
@@ -222,4 +231,4 @@ function EasyVComponent(
 }
 
 
-export default memo(EasyVComponent);
+export default EasyVComponent;

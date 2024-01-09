@@ -1,12 +1,12 @@
 import { Layer, TransformScreenType } from "@/type/screen.type";
 import { isComponent, isContainer, isPanel, isRef, isGroup } from '@/utils/index';
-import React from "react";
+import React, { memo } from "react";
 const GroupWrap = React.lazy(() => import('./GroupWrap'));
 const ComponentWrap = React.lazy(() => import('./ComponentWrap'));
 const PanelWrap = React.lazy(() => import('./PanelWrap'));
 const ContainerWrap = React.lazy(() => import('./ContainerWrap'));
 
-export default function ScreenPreview({ layers }: { layers: TransformScreenType['layers']; }) {
+function ScreenPreview({ layers }: { layers: TransformScreenType['layers']; }) {
     if (!Array.isArray(layers)) {
         return null;
     }
@@ -30,3 +30,6 @@ export default function ScreenPreview({ layers }: { layers: TransformScreenType[
             return null;
         }).filter(d => d)
 }
+
+
+export default memo(ScreenPreview)

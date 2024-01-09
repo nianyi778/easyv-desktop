@@ -4,9 +4,10 @@ import { memo, useEffect, useState } from 'react';
 import { useRafInterval } from 'ahooks';
 import Animation from '@/components/Animation';
 
+const initIndex = 0;
+
 function PanelAnimation({ states, config, type }: { config: TransformPanelType['config']; states: number[]; type: PanelType }) {
     const { width, height, autoCarousel, interval = 1, animationDuration, animateType } = config;
-    const initIndex = 0;
     const [index, setIndex] = useState(initIndex);
     const maxLen = states.length;
     const clear = autoCarousel && useRafInterval(() => {
@@ -20,7 +21,7 @@ function PanelAnimation({ states, config, type }: { config: TransformPanelType['
 
     return states.concat().reverse().map(screen => <Animation key={screen} type={animateType} config={{
         visible: curState === screen,
-        unmount: false,
+        unmount: true,
         childrenWidth: width,
         animationDuration
     }}><Panel screenId={screen} width={width} type={type} height={height} /></Animation>)

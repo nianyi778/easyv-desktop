@@ -6,7 +6,7 @@ import Backspace from '@/components/Backspace';
 import { useEffect, useState } from 'react';
 import { ScreenPreviewType } from '@/type/screen.type';
 
-export default function ShareScreen() {
+function ShareScreen() {
     const { screenId } = useParams();
     const screenData = useGetScreen();
     const navigate = useNavigate();
@@ -17,7 +17,7 @@ export default function ShareScreen() {
             const data = await screenData(screenId as string);
             setTimeout(() => {
                 data && setScreen(data);
-            }, 0);
+            }, 500);
         })()
     }, [])
 
@@ -36,3 +36,6 @@ export default function ShareScreen() {
         <ScreenDetail screenId={+screenId} />
     </>
 }
+
+
+export default ShareScreen;

@@ -9,6 +9,7 @@ export default function HideShowToggle({ children, config }: { children: ReactNo
     const { visible, unmount, animationDuration = 1 } = config;
     const [animationState, setAnimationState] = useState<AnimationState>(AnimationState.default);
 
+
     const springConfig = visible ? {
         visibility: 'visible',
         opacity: 1,

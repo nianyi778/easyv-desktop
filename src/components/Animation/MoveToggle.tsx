@@ -1,12 +1,20 @@
 import { useSpring, animated } from '@react-spring/web';
-import { ReactNode, useMemo, useRef, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimationState, Config } from './index';
 import { AnimateType } from '@/constants';
 
 export default function MoveToggle({ children, config, type }: { children: ReactNode, config: Required<Config>; type: AnimateType }) {
     const { visible, childrenWidth, unmount, animationDuration } = config;
-    const ref = useRef(null);
+    const ref = useRef(false);
     const [animationState, setAnimationState] = useState<AnimationState>(AnimationState.default);
+
+    useEffect(() => {
+        if (visible && !ref.current) {
+            ref.current = true;
+            setAnimationState(AnimationState.end);
+        }
+    }, [visible])
+
     const { direction, positive } = useMemo(() => {
         let d;
         switch (type) {
@@ -79,7 +87,7 @@ export default function MoveToggle({ children, config, type }: { children: React
         return null;
     }
 
-    return <animated.div style={props} ref={ref} >
+    return <animated.div style={props}  >
         {children}
     </animated.div>
 }
