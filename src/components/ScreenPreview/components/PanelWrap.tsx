@@ -7,6 +7,7 @@ export default function PanelWrap({ id }: { id: string; }) {
 
     const panelsById = useRecoilValue(panels);
     const panel = panelsById[getId(id)];
+
     if (!panel) {
         return <div>panel</div>
     }
@@ -23,7 +24,7 @@ export default function PanelWrap({ id }: { id: string; }) {
             top,
         }}>
 
-        <PanelAnimation states={states} config={config} type={type} />
+        <PanelAnimation states={states} id={id} config={config} type={type} />
 
     </div>
 }

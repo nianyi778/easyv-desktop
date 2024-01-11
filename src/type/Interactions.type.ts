@@ -11,10 +11,13 @@ export interface Interaction {
     "state": {
         "unmount": boolean;
         "show": "$not" | boolean;
+        "stateId"?: number;
     };
     data?: unknown;
     activeState: {
         animation: {
+            from?: Record<string, unknown>,
+            to?: Record<string, unknown>,
             config: Events['animation'];
             key: ActionType
         }

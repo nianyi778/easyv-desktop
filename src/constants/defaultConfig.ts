@@ -10,7 +10,9 @@ export enum ActionType {
     Rotate = 'rotate',
     UpdateData = 'updateData',
     SwitchState = 'switchState',
-    UpdateConfig = 'updateConfig'
+    AutoSwitchState = 'autoSwitchState',
+    UpdateConfig = 'updateConfig',
+    SetIndex = 'setIndex',
 }
 
 export const defaultActions = [

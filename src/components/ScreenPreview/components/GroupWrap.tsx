@@ -19,7 +19,7 @@ export default function GroupWrap({ id, components: layers, config }: GroupWrapT
     const panelsById = useRecoilValue(panels);
     const comContainersById = useRecoilValue(comContainers);
 
-    const [groupEvent] = useEvents('group', id);
+    const groupEvent = useEvents('group', id);
 
     const sizeArray = layers.map(layer => {
         if (isComponent(layer.id as number)) {

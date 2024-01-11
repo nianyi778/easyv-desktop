@@ -6,7 +6,7 @@ import { AnimationState, Config } from './index';
  * @description 显示/隐藏 切换
  * */
 export default function HideShowToggle({ children, config }: { children: ReactNode, config: Required<Config> }) {
-    const { visible, unmount, animationDuration = 1 } = config;
+    const { visible, unmount, animationDuration = 1000 } = config;
     const [animationState, setAnimationState] = useState<AnimationState>(AnimationState.default);
     const ref = useRef(false);
 
@@ -16,6 +16,7 @@ export default function HideShowToggle({ children, config }: { children: ReactNo
             setAnimationState(AnimationState.end);
         }
     }, [visible])
+
 
     const springConfig = visible ? {
         visibility: 'visible',
@@ -41,7 +42,7 @@ export default function HideShowToggle({ children, config }: { children: ReactNo
     }>({
         ...springConfig,
         config: {
-            duration: (animationDuration * 1000)
+            duration: animationDuration
         },
         onStart() {
             setAnimationState(AnimationState.start);

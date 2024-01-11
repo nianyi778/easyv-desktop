@@ -48,7 +48,7 @@ export default function Flip({ children, config }: { children: ReactNode, config
     }>({
         ...springConfig,
         config: {
-            duration: (animationDuration * 1000)
+            duration: (animationDuration)
         },
         onStart() {
             setAnimationState(AnimationState.start);

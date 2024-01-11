@@ -19,7 +19,6 @@ export function useEvents(eventType: "group" | "component" | "panel" | "ref", id
 
 
     const eventData = useMemo(() => {
-        console.log(event, '-=-=event');
         if (event && id === getId(event.component)) {
             switch (eventType) {
                 case "group":

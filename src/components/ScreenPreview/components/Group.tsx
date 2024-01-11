@@ -8,8 +8,6 @@ import { Interaction } from '@/type/Interactions.type';
 interface Props { width: number, height: number; layers: Layer[]; event: Interaction | null }
 
 function Group({ width, height, layers, event: groupEvent }: Props) {
-
-    console.log(groupEvent, 'groupEvent');
     const ref = useRef(defaultAnimation);
     const {
         show,
@@ -38,10 +36,9 @@ function Group({ width, height, layers, event: groupEvent }: Props) {
         return ref.current;
     }, [groupEvent]);
 
-
     return <Animation type={AnimateType.opacity} config={{
         visible: show,
-        animationDuration: duration / 1000,
+        animationDuration: duration,
         unmount: unmount
     }}>
         <div style={{

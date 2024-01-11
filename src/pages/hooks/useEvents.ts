@@ -3,24 +3,23 @@ import { useMemo } from 'react';
 import { interactions } from '@/dataStore/interactions';
 import { useRecoilValue } from 'recoil';
 
-
-export function useEvents(eventType: "group" | "component" | "panel" | "ref", id: string | number) {
+export function useEvents(eventType: "group" | "component" | "panel" | "ref", id?: string | number) {
 
     const interaction = useRecoilValue(interactions);
     const eventData = useMemo(() => {
         if (Array.isArray(interaction)) {
             switch (eventType) {
                 case "group":
-                    return interaction.filter(i => isGroup(i.component as string) && getId(i.component) === id)
+                    return interaction.find(i => isGroup(i.component as string) && i.component === id)
                     break;
                 case "component":
-                    return interaction.filter(i => isComponent(i.component as string) && getId(i.component) === id)
+                    return interaction.find(i => isComponent(i.component as string) && i.component === id)
                     break;
                 case "panel":
-                    return interaction.filter(i => isPanel(i.component as string) && getId(i.component) === id)
+                    return interaction.find(i => isPanel(i.component as string) && i.component === id)
                     break;
                 case "ref":
-                    return interaction.filter(i => isRef(i.component as string) && getId(i.component) === id)
+                    return interaction.find(i => isRef(i.component as string) && i.component === id)
                     break;
                 default:
                     break;
@@ -31,7 +30,7 @@ export function useEvents(eventType: "group" | "component" | "panel" | "ref", id
 
     }, [eventType, interaction, id]);
 
-    return Array.isArray(eventData) ? eventData : [];
+    return eventData ? eventData : null;
 }
 
 

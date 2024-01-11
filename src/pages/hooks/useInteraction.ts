@@ -4,15 +4,22 @@ import { useSetRecoilState } from 'recoil';
 import { interactions } from "@/dataStore";
 import { ActionType } from '@/constants/defaultConfig';
 import { isUndefined } from "lodash-es";
-// import { q } from '@/utils/events';
+import { defaultActions } from '@/constants/defaultConfig';
+import { q } from '@/utils/events';
 
 /**
  * @description 统计事件
  * */
 export function useInteraction() {
     const setInteraction = useSetRecoilState(interactions);
-    const updateInteraction = useCallback((interaction: Interaction) => {
-        interaction && setInteraction((inits) => mergeInteraction(inits, interaction));
+    const updateInteraction = useCallback((interaction: Interaction, isDefaultAction: boolean = true) => {
+        console.log(isDefaultAction, interaction, '4671');
+        if (isDefaultAction) {
+            interaction && setInteraction((inits) => mergeInteraction(inits, interaction));
+        } else {
+            // 自定义组件
+            q.push(interaction).catch((err) => console.error(err)); // 加入队列
+        }
     }, []);
     return updateInteraction;
 }
@@ -21,27 +28,28 @@ type StateKeys = keyof Interaction['state'];
 
 const defaultState = {
     unmount: false,
-    show: true
+    show: true,
+    stateId: -1
 }
 
-function mergeInteraction(oldInteractions: Interaction[], newInteraction: Interaction): Interaction[] {
+export function mergeInteraction(oldInteractions: Interaction[], newInteraction: Interaction): Interaction[] {
     const eventState = oldInteractions.find((d: Interaction) => {
         const { dynamicData, component } = newInteraction;
         if (dynamicData) {
-            return (d.id || d.component) === component && dynamicData === d.dynamicData;
+            // return (d.id || d.component) === component && dynamicData === d.dynamicData;
         }
         return (d.id || d.component) === component;
     });
-    const { component, type, dynamicData, state = defaultState, activeState = {}, controllers } = newInteraction;
+    const { component, dynamicData, state = defaultState, activeState = {} } = newInteraction;
     const { unmount = defaultState.unmount } = state as Interaction['state']; // 是否卸载，默认false 未卸载
     let updateInteraction = { ...newInteraction, id: component };
+
     if (eventState) {
         return oldInteractions.reduce<Interaction[]>((acc, interaction) => {
             const isCurrent =
                 interaction.component === component // 组件id
-                && interaction.type === type // 类型相同
-                && retentionType.includes(interaction.type) // 且属于白名单内
-                && (interaction.dynamicData ? interaction.dynamicData === dynamicData : true); // 兼容自定义代码块
+            // && (interaction.dynamicData ? interaction.dynamicData === dynamicData : true); // 兼容自定义代码块
+
             if (isCurrent) {
                 // 同一个被控组件，且类型相同
                 const newState = Object.keys(state).reduce<Record<string, unknown>>((obj, key) => {
@@ -75,15 +83,6 @@ function mergeInteraction(oldInteractions: Interaction[], newInteraction: Intera
         // q.push(updateInteraction).catch((err) => console.error(err)); // 加入队列
         return oldInteractions.concat(updateInteraction)
     };
-
     // q.push(newInteraction).catch((err) => console.error(err)); // 加入队列
     return oldInteractions.concat(updateInteraction);
 }
-
-
-/**
- * @description 允许内存常驻类型
- * */
-export const retentionType = [
-    ActionType.ShowHide,
-]

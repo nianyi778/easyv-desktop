@@ -222,8 +222,8 @@ export interface Events {
     componentConfig: Record<string, unknown>;
     component: (string | number)[];
     animation: {
-        type: 'opacity';
-        timingFunction: 'linear';
+        type: string; // 'opacity'
+        timingFunction: string; //'linear' | "ease"
         duration: number;
         delay: number;
     };

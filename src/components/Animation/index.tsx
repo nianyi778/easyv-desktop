@@ -50,14 +50,9 @@ function Animation({ type = AnimateType.opacity, children, config }: Props) {
     }
 }
 
-function areEqual(props: Props, nextProps: Props) {
 
-    return props.config.visible === nextProps.config.visible
-}
 
-export default memo(
-    Animation, areEqual
-)
+export default memo(Animation)
 
 export const defaultAnimation = { // 默认配置
     show: true,

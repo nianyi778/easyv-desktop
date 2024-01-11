@@ -4,7 +4,7 @@ import { Events, TransformComponentType } from '@/type/screen.type';
 import LoadingSpinner from '@/components/LoadingAnimation';
 import ComponentEmpty from '@/components/ComponentEmpty';
 import ErrorBoundary from './ComErrorBoundary';
-import { getComponentConfig } from '@lidakai/utils';
+import { getComponentConfig, getId } from '@lidakai/utils';
 import { ChildrenConfig } from '@/type/component.type';
 import { getActions } from '@/utils/interaction';
 import { defaultActions } from '@/constants';
@@ -86,20 +86,34 @@ function EasyVComponent(
 
         function dispatchEvent(config: Interaction) {
             if (defaultActions.find((o) => o.value === config.type)) {
+                const { animation, state } = config;
+                const { show, unmount, stateId } = state;
                 const interaction = {
                     ...config,
                     _from: {
                         componentId: id,
                     },
+                    component: getId(config.component),
+                    id: getId(config.component),
+                    animation,
                     controllers: [id],
+                    state: {
+                        show,
+                        unmount,
+                        stateId: stateId ? getId(stateId) : null
+                    }
                 };
                 updateInteraction(interaction);
             } else {
                 const interaction = {
                     ...config,
-                    isDefaultAction: false
+                    _from: {
+                        componentId: id,
+                    },
+                    id: config.component,
+                    controllers: [id],
                 };
-                updateInteraction(interaction);
+                updateInteraction(interaction, false);
                 // const event: any = new Event(`${config.type}_${config.component}`);
                 // event.data = config.data;
                 // event.dynamicData = config.dynamicData;

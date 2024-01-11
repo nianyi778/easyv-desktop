@@ -63,7 +63,7 @@ export default function MoveToggle({ children, config, type }: { children: React
     }>({
         ...springConfig,
         config: {
-            duration: (animationDuration * 1000)
+            duration: (animationDuration)
         },
         onStart() {
             setAnimationState(AnimationState.start);
