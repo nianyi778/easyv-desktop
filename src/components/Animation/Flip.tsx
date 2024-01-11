@@ -26,7 +26,7 @@ export default function Flip({ children, config }: { children: ReactNode, config
         transformOrigin: 'center',
     } : {
         to: async (next: any) => {
-            if (animationState === AnimationState.default || (props?.transform && props?.transform.goal === 'rotateX(180deg)')) {
+            if (animationState === AnimationState.default) {
                 await next({
                     opacity: 0,
                     visibility: 'hidden',
@@ -53,12 +53,12 @@ export default function Flip({ children, config }: { children: ReactNode, config
         onStart() {
             setAnimationState(AnimationState.start);
         },
-        onRest(_, ctrl) {
+        async onRest(_, ctrl) {
             // 状态重置
-            !visible && ctrl.set(async (next: any) => await next({
+            !visible && await ctrl.set({
                 visibility: 'hidden',
                 transform: 'rotateX(0deg)'
-            }));
+            })
             setAnimationState(AnimationState.end);
         },
     });

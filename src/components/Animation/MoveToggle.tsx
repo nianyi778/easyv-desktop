@@ -5,15 +5,8 @@ import { AnimateType } from '@/constants';
 
 export default function MoveToggle({ children, config, type }: { children: ReactNode, config: Required<Config>; type: AnimateType }) {
     const { visible, childrenWidth, unmount, animationDuration } = config;
-    const ref = useRef(false);
+    const prevCountRef = useRef(false);
     const [animationState, setAnimationState] = useState<AnimationState>(AnimationState.default);
-
-    useEffect(() => {
-        if (visible && !ref.current) {
-            ref.current = true;
-            setAnimationState(AnimationState.end);
-        }
-    }, [visible])
 
     const { direction, positive } = useMemo(() => {
         let d;
@@ -34,14 +27,19 @@ export default function MoveToggle({ children, config, type }: { children: React
     }, [type]);
 
     const springConfig = useMemo(() => {
-
+        let state = animationState;
+        if (visible && !prevCountRef.current) {
+            prevCountRef.current = true;
+            state = AnimationState.end;
+            setAnimationState(AnimationState.end);
+        }
         return visible ? {
             opacity: 1,
             visibility: 'visible',
             transform: `translate${direction}(0px)`,
         } : {
             to: async (next: any) => {
-                if (animationState === AnimationState.default || (props?.opacity && props?.opacity.goal === 0)) {
+                if (state == AnimationState.default) {
                     await next({
                         transform: `translate${direction}(0px)`,
                         visibility: 'hidden',
@@ -57,7 +55,7 @@ export default function MoveToggle({ children, config, type }: { children: React
 
             }
         }
-    }, [visible, direction, childrenWidth, positive]);
+    }, [visible]);
 
     const props = useSpring<{
         visibility: "hidden" | "visible",
@@ -70,14 +68,13 @@ export default function MoveToggle({ children, config, type }: { children: React
         onStart() {
             setAnimationState(AnimationState.start);
         },
-        onRest(_, ctrl) {
+        async onRest(_, ctrl) {
             // 状态重置
-            !visible && ctrl.set(async (next: any) => await next(
-                {
-                    transform: `translate${direction}(0px)`,
-                    visibility: 'hidden'
-                }
-            ));
+            !visible && await ctrl.set({
+                transform: `translate${direction}(0px)`,
+                visibility: 'hidden',
+                opacity: 0,
+            })
 
             setAnimationState(AnimationState.end);
         },

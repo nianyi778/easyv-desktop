@@ -1,34 +1,45 @@
-import { interactions } from '@/dataStore';
-import { Interaction } from '@/type/Interactions.type';
-import { isRef, isGroup, isComponent, isPanel } from '@lidakai/utils';
+import { isRef, isGroup, isComponent, isPanel, getId } from '@lidakai/utils';
 import { useMemo } from 'react';
+import { interactions } from '@/dataStore/interactions';
 import { useRecoilValue } from 'recoil';
 
-export function useEvents(type: "group" | "component" | "panel" | "ref") {
+
+export function useEvents(eventType: "group" | "component" | "panel" | "ref", id: string | number) {
+
     const interaction = useRecoilValue(interactions);
-    console.log(interaction, 'interaction');
-
-    const events = useMemo(() => {
-        let eventData: Interaction[] = [];
-        switch (type) {
-            case "group":
-                eventData = interaction.filter(i => isGroup(i.component as string))
-                break;
-            case "component":
-                eventData = interaction.filter(i => isComponent(i.component as string))
-                break;
-            case "panel":
-                eventData = interaction.filter(i => isPanel(i.component as string))
-                break;
-            case "ref":
-                eventData = interaction.filter(i => isRef(i.component as string))
-                break;
-            default:
-                break;
+    const eventData = useMemo(() => {
+        if (Array.isArray(interaction)) {
+            switch (eventType) {
+                case "group":
+                    return interaction.filter(i => isGroup(i.component as string) && getId(i.component) === id)
+                    break;
+                case "component":
+                    return interaction.filter(i => isComponent(i.component as string) && getId(i.component) === id)
+                    break;
+                case "panel":
+                    return interaction.filter(i => isPanel(i.component as string) && getId(i.component) === id)
+                    break;
+                case "ref":
+                    return interaction.filter(i => isRef(i.component as string) && getId(i.component) === id)
+                    break;
+                default:
+                    break;
+            }
         }
-        return eventData;
-    }, [interaction, type]);
+
+        return null;
+
+    }, [eventType, interaction, id]);
+
+    return Array.isArray(eventData) ? eventData : [];
+}
 
 
-    return events;
+export interface MinAnimation {
+    show: boolean;
+    unmount: boolean;
+    delay: number;
+    type: string;
+    timingFunction: string;
+    duration: number;
 }

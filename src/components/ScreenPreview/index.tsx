@@ -5,6 +5,7 @@ import { screens } from "@/dataStore";
 import { ScreenEnumType, TransformScreenType } from "@/type/screen.type";
 import { useGetScreen } from "@/pages/hooks";
 import { useEffect, useState } from "react";
+// import { queueWorker, StartState } from '@/utils/events';
 
 export default function ScreenMain({ screenId, type, width, height }: { screenId: number; type?: ScreenEnumType, width: number; height: number }) {
     const screensById = useRecoilValue(screens);
@@ -26,6 +27,14 @@ export default function ScreenMain({ screenId, type, width, height }: { screenId
         } else {
             setScreen(data);
         }
+
+
+        // setTimeout(() => {
+        //     queueWorker.updateEventStart(StartState.start)
+        // }, 5000);
+
+
+
     }, [screenId, screensById])
 
     if (!screen) {
@@ -66,3 +75,5 @@ export default function ScreenMain({ screenId, type, width, height }: { screenId
         <ScreenPreview layers={layers} />
     </div>
 }
+
+

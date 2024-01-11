@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import { useSpring, animated } from '@react-spring/web';
 import { AnimationState, Config } from './index';
 
@@ -8,14 +8,21 @@ import { AnimationState, Config } from './index';
 export default function HideShowToggle({ children, config }: { children: ReactNode, config: Required<Config> }) {
     const { visible, unmount, animationDuration = 1 } = config;
     const [animationState, setAnimationState] = useState<AnimationState>(AnimationState.default);
+    const ref = useRef(false);
 
+    useEffect(() => {
+        if (visible && !ref.current) {
+            ref.current = true;
+            setAnimationState(AnimationState.end);
+        }
+    }, [visible])
 
     const springConfig = visible ? {
         visibility: 'visible',
         opacity: 1,
     } : {
         to: async (next: any) => {
-            if (animationState === AnimationState.default || (props?.opacity && props?.opacity.goal === 0)) {
+            if (animationState === AnimationState.default) {
                 await next({
                     opacity: 0,
                     visibility: 'hidden'
@@ -39,11 +46,12 @@ export default function HideShowToggle({ children, config }: { children: ReactNo
         onStart() {
             setAnimationState(AnimationState.start);
         },
-        onRest(_, ctrl) {
+        async onRest(_, ctrl) {
             // 状态重置
-            !visible && ctrl.set(async (next: any) => await next({
-                visibility: 'hidden'
-            }));
+            !visible && await ctrl.set({
+                visibility: 'hidden',
+                opacity: 0,
+            })
             setAnimationState(AnimationState.end);
         },
     });

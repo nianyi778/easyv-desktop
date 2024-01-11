@@ -4,8 +4,7 @@ import { useRecoilValue } from 'recoil';
 import { isComponent, isContainer, isPanel, reduceCompute, SizeType } from "@/utils";
 import { getId, getComponentDimension } from "@lidakai/utils";
 import Group from "./Group";
-import { interactions } from '@/dataStore';
-
+import { useEvents } from '@/pages/hooks';
 interface GroupWrapType {
     id: string;
     components: Layer[];
@@ -20,8 +19,7 @@ export default function GroupWrap({ id, components: layers, config }: GroupWrapT
     const panelsById = useRecoilValue(panels);
     const comContainersById = useRecoilValue(comContainers);
 
-    const interaction = useRecoilValue(interactions);
-    console.log(interaction, 'interaction');
+    const [groupEvent] = useEvents('group', id);
 
     const sizeArray = layers.map(layer => {
         if (isComponent(layer.id as number)) {
@@ -63,6 +61,7 @@ export default function GroupWrap({ id, components: layers, config }: GroupWrapT
         return null;
     }).filter(d => d);
     const { width, height, left, top, minLeft, minTop } = reduceCompute(sizeArray as SizeType[]);
+
     return <div id={id} className=" absolute" style={{
         width: width,
         height: height,
@@ -74,7 +73,7 @@ export default function GroupWrap({ id, components: layers, config }: GroupWrapT
             left: -1 * minLeft,
             top: -1 * minTop
         }}>
-            <Group width={width} height={height} layers={layers} />
+            <Group width={width} event={groupEvent} height={height} layers={layers} />
         </div>
     </div>
 }

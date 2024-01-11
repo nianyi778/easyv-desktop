@@ -1,18 +1,49 @@
 import { getComponentConfig, getComponentDimension } from '@lidakai/utils';
 import EasyVComponent from './EasyVComponent';
 import { TransformComponentType } from '@/type/screen.type';
-import { memo, useEffect } from 'react';
+import { memo, useEffect, useMemo, useRef } from 'react';
 import { isEqual } from 'lodash-es';
-
+import { Interaction } from '@/type/Interactions.type';
+import Animation, { defaultAnimation } from '@/components/Animation'
+import { AnimateType } from "@/constants";
 
 interface Props {
-    id: number; component: TransformComponentType; children?: TransformComponentType[]
+    id: number; component: TransformComponentType; children?: TransformComponentType[];
+    event: Interaction | null
 }
 
-function Component({ id, component, children = [] }: Props) {
+function Component({ id, component, children = [], event: groupEvent }: Props) {
 
     const { uniqueTag, config, name, dataConfigs, events, autoUpdate, actions } = component;
     const { width, height, left, top } = getComponentDimension(config);
+
+    const ref = useRef(defaultAnimation);
+    const {
+        show,
+        unmount,
+        delay,
+        type,
+        timingFunction,
+        duration
+    } = useMemo(() => {
+        if (groupEvent) {
+            const { animation, state } = groupEvent;
+            const { show, unmount } = state;
+            const { delay, duration, type, timingFunction } = animation;
+            const newConfig = {
+                ...defaultAnimation,
+                show: show as boolean,
+                unmount,
+                delay,
+                type,
+                timingFunction,
+                duration
+            }
+            ref.current = newConfig;
+            return newConfig;
+        }
+        return ref.current;
+    }, [groupEvent]);
 
     useEffect(() => {
         // console.log('auto', autoUpdate,id);
@@ -112,30 +143,40 @@ function Component({ id, component, children = [] }: Props) {
             style={{
                 left: -1 * left, top: -1 * top,
             }}>
-            <EasyVComponent
-                uniqueTag={uniqueTag}
-                data={data}
-                id={id}
-                base={component.base}
-                name={name}
-                actions={actions}
-                childrenData={[]}
-                childrenConfig={childrenConfig}
-                childrenEvents={childrenEvents}
-                events={events}
-                config={config}
-                left={left}
-                top={top}
-                width={width}
-                height={height}
-            />
+            <Animation type={AnimateType.opacity} config={{
+                visible: show,
+                animationDuration: duration / 1000,
+                unmount: unmount
+            }}>
+                <EasyVComponent
+                    uniqueTag={uniqueTag}
+                    data={data}
+                    id={id}
+                    base={component.base}
+                    name={name}
+                    actions={actions}
+                    childrenData={[]}
+                    childrenConfig={childrenConfig}
+                    childrenEvents={childrenEvents}
+                    events={events}
+                    config={config}
+                    left={left}
+                    top={top}
+                    width={width}
+                    height={height}
+                />
+            </Animation>
+
         </div>
     </div>
 }
 
 function areEqual(props: Props, nextProps: Props) {
 
-    return props.id === nextProps.id && isEqual(props.component, nextProps.component) && isEqual(props.children, nextProps.children);
+    return props.id === nextProps.id
+        && isEqual(props.component, nextProps.component)
+        && isEqual(props.children, nextProps.children)
+        && isEqual(props.event, nextProps.event)
 }
 
 // memo 必须留着

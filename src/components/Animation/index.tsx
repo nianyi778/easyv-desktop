@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, memo } from "react";
 import HideShowToggle from "./HideShowToggle"
 import { AnimateType } from "@/constants";
 import MoveToggle from "./MoveToggle";
@@ -25,7 +25,11 @@ const defaultConfig = {
     animationDuration: 1 // s
 }
 
-export default function Animation({ type = AnimateType.opacity, children, config }: { type: AnimateType; children: ReactNode; config: Config }) {
+interface Props {
+    type: AnimateType; children: ReactNode; config: Config
+}
+
+function Animation({ type = AnimateType.opacity, children, config }: Props) {
 
     const newConfig = { ...defaultConfig, ...config } as Required<Config>
     switch (type) {
@@ -45,3 +49,21 @@ export default function Animation({ type = AnimateType.opacity, children, config
             break;
     }
 }
+
+function areEqual(props: Props, nextProps: Props) {
+
+    return props.config.visible === nextProps.config.visible
+}
+
+export default memo(
+    Animation, areEqual
+)
+
+export const defaultAnimation = { // 默认配置
+    show: true,
+    unmount: true,
+    delay: 0,
+    duration: 0,
+    timingFunction: "linear",
+    type: "opacity"
+};
