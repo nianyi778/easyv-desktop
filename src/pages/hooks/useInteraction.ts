@@ -2,9 +2,7 @@ import { Interaction } from "@/type/Interactions.type";
 import { useCallback } from "react";
 import { useSetRecoilState } from 'recoil';
 import { interactions } from "@/dataStore";
-import { ActionType } from '@/constants/defaultConfig';
 import { isUndefined } from "lodash-es";
-import { defaultActions } from '@/constants/defaultConfig';
 import { q } from '@/utils/events';
 
 /**
@@ -13,7 +11,6 @@ import { q } from '@/utils/events';
 export function useInteraction() {
     const setInteraction = useSetRecoilState(interactions);
     const updateInteraction = useCallback((interaction: Interaction, isDefaultAction: boolean = true) => {
-        console.log(isDefaultAction, interaction, '4671');
         if (isDefaultAction) {
             interaction && setInteraction((inits) => mergeInteraction(inits, interaction));
         } else {
@@ -41,9 +38,8 @@ export function mergeInteraction(oldInteractions: Interaction[], newInteraction:
         return (d.id || d.component) === component;
     });
     const { component, dynamicData, state = defaultState, activeState = {} } = newInteraction;
-    const { unmount = defaultState.unmount } = state as Interaction['state']; // 是否卸载，默认false 未卸载
+    const { unmount = defaultState.unmount, stateId } = state as Interaction['state']; // 是否卸载，默认false 未卸载
     let updateInteraction = { ...newInteraction, id: component };
-
     if (eventState) {
         return oldInteractions.reduce<Interaction[]>((acc, interaction) => {
             const isCurrent =
@@ -79,7 +75,7 @@ export function mergeInteraction(oldInteractions: Interaction[], newInteraction:
             return acc.concat(interaction);
         }, []);
     } else if (state.show === '$not') {
-        updateInteraction = { ...updateInteraction, state: { show: false, unmount } }
+        updateInteraction = { ...updateInteraction, state: { show: false, unmount, stateId } }
         // q.push(updateInteraction).catch((err) => console.error(err)); // 加入队列
         return oldInteractions.concat(updateInteraction)
     };

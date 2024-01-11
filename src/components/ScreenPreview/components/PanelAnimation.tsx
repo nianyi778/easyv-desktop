@@ -15,13 +15,11 @@ function PanelAnimation({ states, config, id, type }: { config: TransformPanelTy
     const { switchPanelState } = useCustomEvent(id);
     const panelEvent = useEvents('panel', id);
 
-    const defaultState = {
-        show: true, stateId: states[0], unmount: false, duration: 600, delay: 0
-    };
+
     const panelState = useMemo(() => {
         if (panelEvent) {
-            const { show, stateId = defaultState.stateId, unmount = defaultState.unmount } = panelEvent.state;
-            const { duration = defaultState.duration, delay = defaultState.delay } = panelEvent.animation;
+            const { show, stateId, unmount } = panelEvent.state;
+            const { duration, delay } = panelEvent.animation;
             return {
                 show,
                 stateId,
@@ -30,7 +28,7 @@ function PanelAnimation({ states, config, id, type }: { config: TransformPanelTy
                 unmount
             }
         }
-        return defaultState;
+        return null;
     }, [panelEvent]);
 
 
@@ -43,18 +41,22 @@ function PanelAnimation({ states, config, id, type }: { config: TransformPanelTy
     }, [clear]);
 
     const {
-        show, stateId, unmount, duration, delay
-    } = panelState;
+        show = true, stateId, unmount = false, duration = 600, delay = 0
+    } = panelState || {};
+
+    const curState = stateId || states[0];
+
+    console.log(panelState, 'panelState');
 
     const animationConfig = useCallback((screen: number) => {
         return {
-            visible: stateId === screen,
+            visible: curState === screen,
             unmount: unmount,
             childrenWidth: width,
             animationDuration: duration,
             animateType
         }
-    }, [unmount, width, duration, animateType, stateId]);
+    }, [unmount, width, duration, animateType, curState]);
 
     return <Animation type={AnimateType.opacity} config={{
         visible: !!show,

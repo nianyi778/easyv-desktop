@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Interaction } from '@/type/Interactions.type';
 import { queueWorker } from '@/utils/events';
 import { getId } from '@lidakai/utils';
@@ -10,20 +10,51 @@ import { mergeInteraction } from './useInteraction';
 import { isNumber } from 'lodash-es';
 
 export function useCustomEvent(id: string | number) {
-    const [event, setEvent] = useState<Interaction>();
     const [interaction, setInteraction] = useRecoilState(interactions);
     const panelsById = useRecoilValue(panels);
+
+    const setIndexEvent = useCallback((event: Interaction) => {
+        function stateSwitchPanel(stateId: number, event: Interaction) {
+            // 切换面板状态
+            const { controllers, _from } = event;
+
+            const panelConfig = getDefaultPanelConfig({
+                stateId: stateId,
+                animateType: AnimateType.opacity,
+                panelId: id as string,
+                type: event.type,
+                config: { controllers, _from, }
+            });
+            setInteraction((init) => {
+                const a = mergeInteraction(init, panelConfig);
+                return a;
+            })
+        }
+
+        const panel = panelsById[getId(id)];
+        if (event && event?.dynamicData && panel) {
+            const { states = [] } = panel;
+            try {
+                const i = +event?.dynamicData;
+                if (isNumber(i) && states[i - 1]) {
+                    stateSwitchPanel(states[i - 1], event)
+                }
+            } catch (e) {
+                console.error(`panel ${id} 自定义事件执行失败`, e);
+            }
+
+        }
+    }, [id]);
 
     useEffect(() => {
         const t = queueWorker.addEventListener((args) => {
             if (args && args.component === id) {
-                setEvent(args);
+                setIndexEvent(args);
             }
         })
 
         return () => {
             queueWorker.removeEventListener(t);
-            setEvent(undefined);
         }
     }, [id]);
 
@@ -70,40 +101,8 @@ export function useCustomEvent(id: string | number) {
     }
 
 
-    useEffect(() => {
-        function stateSwitchPanel(stateId: number, event: Interaction) {
-            // 切换面板状态
-            const { controllers, _from } = event;
-
-            const panelConfig = getDefaultPanelConfig({
-                stateId: stateId,
-                animateType: AnimateType.opacity,
-                panelId: id as string,
-                type: event.type,
-                config: { controllers, _from, }
-            });
-            setInteraction((init) => mergeInteraction(init, panelConfig))
-        }
-        const panel = panelsById[id];
-        if (event && event?.dynamicData && panel) {
-            const { states = [] } = panel;
-            try {
-                const i = +event?.dynamicData;
-                if (isNumber(i) && states[i - 1]) {
-                    stateSwitchPanel(states[i - 1], event)
-                }
-            } catch (e) {
-                console.error(`panel ${id} 自定义事件执行失败`, e);
-            }
-
-        }
-    }, [event, id, panelsById, setInteraction]);
-
-
-
     return {
         switchPanelState,
-        event
     };
 }
 

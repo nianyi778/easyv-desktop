@@ -5,6 +5,7 @@ import ScreenDetail from './components/ScreenDetail';
 import Backspace from '@/components/Backspace';
 import { useEffect, useState } from 'react';
 import { ScreenPreviewType } from '@/type/screen.type';
+
 function ShareScreen() {
     const { screenId } = useParams();
     const screenData = useGetScreen();
