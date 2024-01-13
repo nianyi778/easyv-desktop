@@ -1,5 +1,5 @@
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { Interaction } from '@/type/Interactions.type';
 import { queueWorker } from '@/utils/events';
 import { getId } from '@lidakai/utils';
@@ -44,12 +44,19 @@ export function useCustomEvent(id: string | number) {
             }
 
         }
-    }, [id]);
+    }, [id, setInteraction]);
 
     useEffect(() => {
         const t = queueWorker.addEventListener((args) => {
             if (args && args.component === id) {
-                setIndexEvent(args);
+                switch (args.type) {
+                    case ActionType.SetIndex:
+                        setIndexEvent(args);
+                        break;
+                    default:
+                        console.log(args, '自定义事件');
+                        break;
+                }
             }
         })
 
@@ -59,28 +66,23 @@ export function useCustomEvent(id: string | number) {
     }, [id]);
 
 
-
-
-    function switchPanelState(id: string) {
+    const switchPanelState = useCallback((id: string) => {
         const panelId = getId(id);
         const panel = panelsById[panelId];
-
         if (panel) {
             const { states = [], config } = panel;
             const { animateType, animationDuration } = config;
             if (Array.isArray(states) && states.length > 1) {
-                const panelState = interaction.find((d) => getId(d.component) === id);
+                const panelState = interaction.find((d) => d.component === id);
                 if (panelState && panelState.state.show) {
                     const current = panelState.state.stateId;
                     let currentIndex = states.findIndex((d) => d === current);
                     currentIndex = currentIndex === -1 ? 0 : currentIndex;
                     const nextStateId = states[(currentIndex + 1) % states.length];
-
                     const panelConfig = getDefaultPanelConfig({
                         stateId: nextStateId,
                         animateType,
                         panelId: id,
-                        type: ActionType.AutoSwitchState,
                         duration: animationDuration * 1000
                     });
                     setInteraction((init) => mergeInteraction(init, panelConfig))
@@ -88,18 +90,18 @@ export function useCustomEvent(id: string | number) {
                     const panelConfig = getDefaultPanelConfig({
                         stateId: states[0],
                         animateType,
-                        type: ActionType.AutoSwitchState,
                         panelId: id,
                         duration: animationDuration * 1000
                     });
-                    setInteraction((init) => mergeInteraction(init, panelConfig))
+                    setInteraction((init) => {
+                        const a = mergeInteraction(init, panelConfig);
+                        return a
+                    })
                 }
 
             }
         }
-
-    }
-
+    }, [panelsById, interaction]);
 
     return {
         switchPanelState,
@@ -112,10 +114,10 @@ export function useCustomEvent(id: string | number) {
 export const getDefaultPanelConfig = function ({ stateId, type, panelId, animateType, config = {}, duration = 600 }: {
     stateId: number;
     panelId: string;
-    animateType: string;
+    animateType: AnimateType;
     config?: Record<string, unknown>;
     duration?: number;
-    type: ActionType; // 事件类型
+    type?: ActionType; // 事件类型
 }): Interaction {
     return {
         state: {
@@ -124,7 +126,7 @@ export const getDefaultPanelConfig = function ({ stateId, type, panelId, animate
             unmount: false,
         },
         component: panelId,
-        type: type,
+        type: type || animateType as unknown as ActionType,
         animation: {
             duration: animateType === 'none' ? 0 : duration,
             type: AnimateType.opacity,

@@ -3,6 +3,7 @@ import HideShowToggle from "./HideShowToggle"
 import { AnimateType } from "@/constants";
 import MoveToggle from "./MoveToggle";
 import Flip from "./Flip";
+import Scale from "./Scale";
 
 
 export enum AnimationState {
@@ -16,6 +17,10 @@ export interface Config {
     unmount?: boolean;
     childrenWidth?: number;
     animationDuration?: number;
+    delay?: number;
+    scaleX?: number;
+    scaleY?: number;
+    transformOrigin?: string;
 }
 
 const defaultConfig = {
@@ -25,11 +30,11 @@ const defaultConfig = {
     animationDuration: 1 // s
 }
 
-interface Props {
+interface Props { // AnimateType
     type: AnimateType; children: ReactNode; config: Config
 }
 
-function Animation({ type = AnimateType.opacity, children, config }: Props) {
+function Animation({ type, children, config }: Props) {
 
     const newConfig = { ...defaultConfig, ...config } as Required<Config>
     switch (type) {
@@ -43,9 +48,19 @@ function Animation({ type = AnimateType.opacity, children, config }: Props) {
         case AnimateType.flipVertical:
             return <Flip config={newConfig}>{children}</Flip>
             break;
+        case AnimateType.Show:
+        case AnimateType.Hide:
+        case AnimateType.ShowHide:
         case AnimateType.opacity:
-        default:
+        case AnimateType.SetIndex:
             return <HideShowToggle config={newConfig}>{children}</HideShowToggle>
+            break;
+        case AnimateType.Scale:
+            return <Scale config={newConfig}>{children}</Scale>
+            break;
+        case AnimateType.none:
+        default:
+            return children;
             break;
     }
 }

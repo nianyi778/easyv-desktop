@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, memo } from 'react';
 import { define, modules, moduleDependencies, dependencyModules } from '@/utils/define';
 import { Events, TransformComponentType } from '@/type/screen.type';
 import LoadingSpinner from '@/components/LoadingAnimation';
@@ -10,12 +10,18 @@ import { getActions } from '@/utils/interaction';
 import { defaultActions } from '@/constants';
 import { Interaction } from '@/type/Interactions.type';
 import { useInteraction } from '@/pages/hooks';
+import { isEqual, isUndefined, omitBy } from 'lodash-es';
 
 interface EasyVComponentType {
     config: unknown[];
     name: string;
-    id: number; base: TransformComponentType['base']; spaceId?: number;
-    height: number; width: number; left: number; top: number;
+    id: number;
+    base: TransformComponentType['base'];
+    spaceId?: number;
+    height: number;
+    width: number;
+    left: number;
+    top: number;
     uniqueTag: string;
     data: unknown[];
     events: Events[];
@@ -87,7 +93,13 @@ function EasyVComponent(
         function dispatchEvent(config: Interaction) {
             if (defaultActions.find((o) => o.value === config.type)) {
                 const { animation, state } = config;
-                const { show, unmount, stateId } = state;
+                const { show, unmount, stateId, scaleX, scaleY, transformOrigin } = state;
+                const newState = {
+                    show, unmount, stateId, scaleX, scaleY, transformOrigin
+                };
+                if (stateId) {
+                    newState.stateId = getId(stateId);
+                }
                 const interaction = {
                     ...config,
                     _from: {
@@ -97,11 +109,7 @@ function EasyVComponent(
                     id: getId(config.component),
                     animation,
                     controllers: [id],
-                    state: {
-                        show,
-                        unmount,
-                        stateId: stateId ? getId(stateId) : null
-                    }
+                    state: omitBy(newState, isUndefined)
                 };
                 updateInteraction(interaction);
             } else {
@@ -232,5 +240,23 @@ function EasyVComponent(
 
 }
 
+function arePropsEqual(oldProps: EasyVComponentType, newProps: EasyVComponentType) {
+    return isEqual(oldProps.config, newProps.config)
+        && isEqual(oldProps.name, newProps.name)
+        && isEqual(oldProps.id, newProps.id)
+        && isEqual(oldProps.base, newProps.base)
+        && isEqual(oldProps.spaceId, newProps.spaceId)
+        && isEqual(oldProps.height, newProps.height)
+        && isEqual(oldProps.width, newProps.width)
+        && isEqual(oldProps.left, newProps.left)
+        && isEqual(oldProps.top, newProps.top)
+        && isEqual(oldProps.uniqueTag, newProps.uniqueTag)
+        && isEqual(oldProps.data, newProps.data)
+        && isEqual(oldProps.events, newProps.events)
+        && isEqual(oldProps.childrenData, newProps.childrenData)
+        && isEqual(oldProps.childrenConfig, newProps.childrenConfig)
+        && isEqual(oldProps.childrenEvents, newProps.childrenEvents)
+        && isEqual(oldProps.actions, newProps.actions)
+}
 
-export default EasyVComponent;
+export default memo(EasyVComponent, arePropsEqual);

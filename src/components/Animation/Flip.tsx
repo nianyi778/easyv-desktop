@@ -8,16 +8,6 @@ import { AnimationState, Config } from './index';
 export default function Flip({ children, config }: { children: ReactNode, config: Required<Config> }) {
     const { visible, unmount, animationDuration = 1 } = config;
     const [animationState, setAnimationState] = useState<AnimationState>(AnimationState.default);
-    const ref = useRef(false);
-
-    useEffect(() => {
-        if (visible && !ref.current) {
-            ref.current = true;
-            setAnimationState(AnimationState.end);
-        }
-    }, [visible])
-
-
 
     const springConfig = visible ? {
         visibility: 'visible',
@@ -26,20 +16,11 @@ export default function Flip({ children, config }: { children: ReactNode, config
         transformOrigin: 'center',
     } : {
         to: async (next: any) => {
-            if (animationState === AnimationState.default) {
-                await next({
-                    opacity: 0,
-                    visibility: 'hidden',
-                    transform: 'rotateX(180deg)'
-                });
-            } else {
-                await next({
-                    visibility: 'visible',
-                    opacity: 0,
-                    transform: 'rotateX(180deg)'
-                })
-            }
-
+            await next({
+                visibility: 'visible',
+                opacity: 0,
+                transform: 'rotateX(180deg)'
+            })
         }
     }
     const props = useSpring<{
@@ -50,14 +31,17 @@ export default function Flip({ children, config }: { children: ReactNode, config
         config: {
             duration: (animationDuration)
         },
-        onStart() {
+        async onStart(_, ctrl) {
+            // 状态重置
+            visible && await ctrl.set({
+                transform: 'rotateX(0deg)',
+            })
             setAnimationState(AnimationState.start);
         },
         async onRest(_, ctrl) {
-            // 状态重置
             !visible && await ctrl.set({
                 visibility: 'hidden',
-                transform: 'rotateX(0deg)'
+                opacity: 0,
             })
             setAnimationState(AnimationState.end);
         },

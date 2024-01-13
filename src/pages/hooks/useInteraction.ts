@@ -2,7 +2,7 @@ import { Interaction } from "@/type/Interactions.type";
 import { useCallback } from "react";
 import { useSetRecoilState } from 'recoil';
 import { interactions } from "@/dataStore";
-import { isUndefined } from "lodash-es";
+import { isUndefined, isNull } from "lodash-es";
 import { q } from '@/utils/events';
 
 /**
@@ -31,28 +31,26 @@ const defaultState = {
 
 export function mergeInteraction(oldInteractions: Interaction[], newInteraction: Interaction): Interaction[] {
     const eventState = oldInteractions.find((d: Interaction) => {
-        const { dynamicData, component } = newInteraction;
-        if (dynamicData) {
-            // return (d.id || d.component) === component && dynamicData === d.dynamicData;
-        }
+        const { component } = newInteraction;
         return (d.id || d.component) === component;
     });
-    const { component, dynamicData, state = defaultState, activeState = {} } = newInteraction;
+    const { component, state = {}, activeState = {} } = newInteraction;
     const { unmount = defaultState.unmount, stateId } = state as Interaction['state']; // 是否卸载，默认false 未卸载
     let updateInteraction = { ...newInteraction, id: component };
     if (eventState) {
         return oldInteractions.reduce<Interaction[]>((acc, interaction) => {
             const isCurrent =
                 interaction.component === component // 组件id
-            // && (interaction.dynamicData ? interaction.dynamicData === dynamicData : true); // 兼容自定义代码块
 
             if (isCurrent) {
                 // 同一个被控组件，且类型相同
                 const newState = Object.keys(state).reduce<Record<string, unknown>>((obj, key) => {
-                    if (state[key as StateKeys] === '$not') {
-                        obj[key] = !interaction.state[key as StateKeys];
+                    const k = key as StateKeys;
+                    const c = state[key as StateKeys];
+                    if (c === '$not') {
+                        obj[key] = !interaction.state[k];
                     } else {
-                        obj[key] = !isUndefined(state[key as StateKeys]) ? state[key as StateKeys] : interaction.state[key as StateKeys];
+                        obj[key] = !(isUndefined(c) || isNull(c)) ? c : interaction.state[key as StateKeys];
                     }
                     return obj;
                 }, {});
@@ -75,7 +73,7 @@ export function mergeInteraction(oldInteractions: Interaction[], newInteraction:
             return acc.concat(interaction);
         }, []);
     } else if (state.show === '$not') {
-        updateInteraction = { ...updateInteraction, state: { show: false, unmount, stateId } }
+        updateInteraction = { ...updateInteraction, state: { ...state, show: false, unmount, stateId, } }
         // q.push(updateInteraction).catch((err) => console.error(err)); // 加入队列
         return oldInteractions.concat(updateInteraction)
     };

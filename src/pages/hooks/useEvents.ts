@@ -1,4 +1,4 @@
-import { isRef, isGroup, isComponent, isPanel, getId } from '@lidakai/utils';
+import { isRef, isGroup, isComponent, isPanel } from '@lidakai/utils';
 import { useMemo } from 'react';
 import { interactions } from '@/dataStore/interactions';
 import { useRecoilValue } from 'recoil';
@@ -6,6 +6,7 @@ import { useRecoilValue } from 'recoil';
 export function useEvents(eventType: "group" | "component" | "panel" | "ref", id?: string | number) {
 
     const interaction = useRecoilValue(interactions);
+    // console.log(interaction, 'interaction');
     const eventData = useMemo(() => {
         if (Array.isArray(interaction)) {
             switch (eventType) {
@@ -29,7 +30,6 @@ export function useEvents(eventType: "group" | "component" | "panel" | "ref", id
         return null;
 
     }, [eventType, interaction, id]);
-
     return eventData ? eventData : null;
 }
 

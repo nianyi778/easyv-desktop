@@ -9,9 +9,12 @@ export interface Interaction {
     },
     component: string | number;
     "state": {
-        "unmount": boolean;
-        "show": "$not" | boolean;
+        "unmount"?: boolean;
+        "show"?: "$not" | boolean;
         "stateId"?: number;
+        scaleX?: number;
+        scaleY?: number;
+        transformOrigin?: string;
     };
     data?: unknown;
     activeState: {

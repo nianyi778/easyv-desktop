@@ -1,0 +1,8 @@
+dist
+**/dist
+**/lib
+**/node_modules
+**/dist-electron
+electron-dist
+e2e
+common

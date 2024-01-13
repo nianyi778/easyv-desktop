@@ -1,31 +1,28 @@
 import { PanelType, TransformPanelType } from '@/type/screen.type';
 import Panel from './Panel';
-import { memo, useCallback, useEffect, useMemo } from 'react';
+import { memo, useEffect, useMemo } from 'react';
 import { useRafInterval } from 'ahooks';
-import Animation from '@/components/Animation';
 import { useCustomEvent } from '@/pages/hooks/useCustomEvent';
 import { useEvents } from '@/pages/hooks';
 import { AnimateType } from '@/constants';
-
+import Animation from '@/components/Animation';
 
 const MAX_DELAY = 2147483;
 
 function PanelAnimation({ states, config, id, type }: { config: TransformPanelType['config']; id: string; states: number[]; type: PanelType }) {
-    const { width, height, autoCarousel, interval = 1, animateType = AnimateType.opacity } = config;
+    const { width, height, autoCarousel, interval = 1, animateType = AnimateType.ShowHide } = config;
     const { switchPanelState } = useCustomEvent(id);
     const panelEvent = useEvents('panel', id);
 
-
     const panelState = useMemo(() => {
         if (panelEvent) {
-            const { show, stateId, unmount } = panelEvent.state;
-            const { duration, delay } = panelEvent.animation;
+            const { type, state, animation } = panelEvent;
+            const { duration, delay } = animation;
             return {
-                show,
-                stateId,
                 duration,
                 delay,
-                unmount
+                type,
+                ...state
             }
         }
         return null;
@@ -41,34 +38,29 @@ function PanelAnimation({ states, config, id, type }: { config: TransformPanelTy
     }, [clear]);
 
     const {
-        show = true, stateId, unmount = false, duration = 600, delay = 0
+        scaleX,
+        scaleY,
+        transformOrigin,
+        show = true, stateId, unmount = false, duration = 600, delay = 0, type: animationType
     } = panelState || {};
 
     const curState = stateId || states[0];
 
-    console.log(panelState, 'panelState');
-
-    const animationConfig = useCallback((screen: number) => {
-        return {
-            visible: curState === screen,
-            unmount: unmount,
+    return states.concat().reverse().map(screen => <Animation key={screen}
+        type={(animationType || animateType) as AnimateType}
+        config={{
+            visible: curState === screen && show as boolean,
+            delay,
+            unmount,
+            scaleX,
+            scaleY,
+            transformOrigin,
             childrenWidth: width,
             animationDuration: duration,
-            animateType
-        }
-    }, [unmount, width, duration, animateType, curState]);
-
-    return <Animation type={AnimateType.opacity} config={{
-        visible: !!show,
-        unmount: unmount,
-        animationDuration: duration
-    }}>
-        {
-            states.concat().reverse().map(screen => <Panel key={screen} screenId={screen} width={width} type={type} height={height} config={
-                animationConfig(screen)
-            } />)
-        }
-    </Animation>
+        }} >
+        <Panel screenId={screen} width={width} type={type} height={height} />
+    </Animation >
+    )
 }
 
 export default memo(PanelAnimation);

@@ -72,6 +72,7 @@
   },
   "repository": "https://github.com/electron/electron-quick-start",
   "devDependencies": {
+    "@easyv/linter": "^0.1.5",
     "@playwright/test": "1.37.1",
     "@react-spring/web": "^9.7.3",
     "@types/antd": "^1.0.0",

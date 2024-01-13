@@ -1,4 +1,4 @@
-export const defaultScreenImg = 'https://workspace.easyv.cloud/static/png/default_screen-448d67f6.png'
+export const defaultScreenImg = '../../public/default_screen.png';
 
 
 export enum ActionType {
@@ -39,5 +39,16 @@ export enum AnimateType {
     'boxFlipLF' = 'boxFlipLF',
     'flipVertical' = 'flipVertical',
     'flipLateral' = 'flipLateral',
+    Show = 'show',
+    Hide = 'hide',
+    ShowHide = 'show/hide',
+    Translate = 'translate',
+    Scale = 'scale',
+    Rotate = 'rotate',
+    UpdateData = 'updateData',
+    SwitchState = 'switchState',
+    AutoSwitchState = 'autoSwitchState',
+    UpdateConfig = 'updateConfig',
+    SetIndex = 'setIndex',
 }
 
