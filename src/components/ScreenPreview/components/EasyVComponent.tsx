@@ -111,6 +111,7 @@ function EasyVComponent(
                     controllers: [id],
                     state: omitBy(newState, isUndefined)
                 };
+                console.log(interaction, '平台事件');
                 updateInteraction(interaction);
             } else {
                 const interaction = {
@@ -121,6 +122,7 @@ function EasyVComponent(
                     id: config.component,
                     controllers: [id],
                 };
+                console.log(interaction, '自定义事件');
                 updateInteraction(interaction, false);
                 // const event: any = new Event(`${config.type}_${config.component}`);
                 // event.data = config.data;

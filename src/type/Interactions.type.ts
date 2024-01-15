@@ -1,5 +1,5 @@
 import { Events } from "./screen.type";
-import { ActionType } from '@/constants/defaultConfig';
+import { ActionType, AnimateType } from '@/constants/defaultConfig';
 
 export interface Interaction {
     type: ActionType,
@@ -15,6 +15,8 @@ export interface Interaction {
         scaleX?: number;
         scaleY?: number;
         transformOrigin?: string;
+        toX?: number;
+        toY?: number;
     };
     data?: unknown;
     activeState: {
@@ -22,7 +24,7 @@ export interface Interaction {
             from?: Record<string, unknown>,
             to?: Record<string, unknown>,
             config: Events['animation'];
-            key: ActionType
+            key: AnimateType
         }
     };
     isDefaultAction?: boolean;

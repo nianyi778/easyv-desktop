@@ -67,6 +67,7 @@ export function mergeInteraction(oldInteractions: Interaction[], newInteraction:
                         ...activeState,
                     },
                 };
+                console.log(mergeInteraction, 'mergeInteraction')
                 // q.push(mergeInteraction).catch((err) => console.error(err)); // 加入队列
                 return acc.concat(mergeInteraction);
             }

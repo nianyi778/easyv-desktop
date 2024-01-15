@@ -39,16 +39,6 @@ export enum AnimateType {
     'boxFlipLF' = 'boxFlipLF',
     'flipVertical' = 'flipVertical',
     'flipLateral' = 'flipLateral',
-    Show = 'show',
-    Hide = 'hide',
-    ShowHide = 'show/hide',
-    Translate = 'translate',
-    Scale = 'scale',
-    Rotate = 'rotate',
-    UpdateData = 'updateData',
-    SwitchState = 'switchState',
-    AutoSwitchState = 'autoSwitchState',
-    UpdateConfig = 'updateConfig',
-    SetIndex = 'setIndex',
+    "scale" = "scale",
 }
 

@@ -5,8 +5,8 @@ import { AnimationState, Config } from './index';
 /**
  * @description 绕轴反转
  * */
-export default function Flip({ children, config }: { children: ReactNode, config: Required<Config> }) {
-    const { visible, unmount, animationDuration = 1 } = config;
+export default function Flip({ children, config, visible }: { children: ReactNode, config: Required<Config>; visible: boolean }) {
+    const { unmount, animationDuration = 1 } = config;
     const [animationState, setAnimationState] = useState<AnimationState>(AnimationState.default);
 
     const springConfig = visible ? {

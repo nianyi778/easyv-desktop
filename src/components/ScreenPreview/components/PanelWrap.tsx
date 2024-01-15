@@ -9,22 +9,9 @@ export default function PanelWrap({ id }: { id: string; }) {
     const panel = panelsById[getId(id)];
 
     if (!panel) {
-        return <div>panel</div>
+        return null;
     }
     const { config, states, type } = panel;
-    const { width, height, left, top } = config;
 
-
-    return <div id={id}
-        className=" absolute overflow-hidden"
-        style={{
-            width,
-            height,
-            left,
-            top,
-        }}>
-
-        <PanelAnimation states={states} id={id} config={config} type={type} />
-
-    </div>
+    return <PanelAnimation states={states} id={id} config={config} type={type} />
 }

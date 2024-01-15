@@ -138,11 +138,12 @@ function Component({ id, component, children = [], }: Props) {
             style={{
                 left: -1 * left, top: -1 * top,
             }}>
-            <Animation type={AnimateType.opacity} config={{
-                visible: show,
-                animationDuration: duration,
-                unmount: unmount
-            }}>
+            <Animation type={AnimateType.opacity}
+                visible={show}
+                config={{
+                    animationDuration: duration,
+                    unmount: unmount
+                }}>
                 <EasyVComponent
                     uniqueTag={uniqueTag}
                     data={data}

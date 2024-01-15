@@ -3,8 +3,8 @@ import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimationState, Config } from './index';
 import { AnimateType } from '@/constants';
 
-export default function MoveToggle({ children, config, type }: { children: ReactNode, config: Required<Config>; type: AnimateType }) {
-    const { visible, childrenWidth, unmount, animationDuration } = config;
+export default function MoveToggle({ visible, children, config, type }: { visible: boolean; children: ReactNode, config: Required<Config>; type: AnimateType }) {
+    const { childrenWidth, unmount, animationDuration } = config;
     const prevCountRef = useRef(false);
     const [animationState, setAnimationState] = useState<AnimationState>(AnimationState.default);
 

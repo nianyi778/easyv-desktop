@@ -13,7 +13,6 @@ export enum AnimationState {
 }
 
 export interface Config {
-    visible: boolean;
     unmount?: boolean;
     childrenWidth?: number;
     animationDuration?: number;
@@ -31,10 +30,10 @@ const defaultConfig = {
 }
 
 interface Props { // AnimateType
-    type: AnimateType; children: ReactNode; config: Config
+    type: AnimateType; children: ReactNode; config: Config, visible: boolean;
 }
 
-function Animation({ type, children, config }: Props) {
+function Animation({ type, children, config, visible }: Props) {
 
     const newConfig = { ...defaultConfig, ...config } as Required<Config>
     switch (type) {
@@ -42,32 +41,28 @@ function Animation({ type, children, config }: Props) {
         case AnimateType.moveTop:
         case AnimateType.moveRight:
         case AnimateType.moveBottom:
-            return <MoveToggle type={type} config={newConfig}>{children}</MoveToggle>
+            return <MoveToggle type={type} visible={visible} config={newConfig}>{children}</MoveToggle>
             break;
         case AnimateType.flipLateral:
         case AnimateType.flipVertical:
-            return <Flip config={newConfig}>{children}</Flip>
+            return <Flip config={newConfig} visible={visible}>{children}</Flip>
             break;
-        case AnimateType.Show:
-        case AnimateType.Hide:
-        case AnimateType.ShowHide:
-        case AnimateType.opacity:
-        case AnimateType.SetIndex:
-            return <HideShowToggle config={newConfig}>{children}</HideShowToggle>
-            break;
-        case AnimateType.Scale:
-            return <Scale config={newConfig}>{children}</Scale>
+        case AnimateType.scale:
+            return <Scale config={newConfig} visible={visible}>{children}</Scale>
             break;
         case AnimateType.none:
-        default:
             return children;
+            break;
+        case AnimateType.opacity:
+        default:
+            return <HideShowToggle config={newConfig} visible={visible}>{children}</HideShowToggle>
             break;
     }
 }
 
 
 
-export default memo(Animation)
+export default Animation
 
 export const defaultAnimation = { // 默认配置
     show: true,

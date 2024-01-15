@@ -5,8 +5,8 @@ import { Config } from './index';
 /**
  * @description 缩放
  * */
-export default function Scale({ children, config }: { children: ReactNode, config: Required<Config> }) {
-    const { scaleX, scaleY, transformOrigin, animationDuration = 1000, delay = 0 } = config;
+export default function Scale({ children, config, visible }: { children: ReactNode, config: Required<Config>; visible: boolean }) {
+    const { scaleX = 1, scaleY = 1, transformOrigin, animationDuration = 1000, delay = 0 } = config;
 
 
 
@@ -25,9 +25,9 @@ export default function Scale({ children, config }: { children: ReactNode, confi
     });
 
     return (
-        <animated.div style={props}>
+        <animated.span style={props}>
             {children}
-        </animated.div>
+        </animated.span>
     )
 }
 

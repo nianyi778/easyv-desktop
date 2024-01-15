@@ -34,11 +34,12 @@ function Group({ width, height, layers, event: groupEvent }: Props) {
         return defaultAnimation
     }, [groupEvent]);
 
-    return <Animation type={AnimateType.opacity} config={{
-        visible: show,
-        animationDuration: duration,
-        unmount: unmount
-    }}>
+    return <Animation type={AnimateType.opacity}
+        visible={show}
+        config={{
+            animationDuration: duration,
+            unmount: unmount
+        }}>
         <div style={{
             width,
             height,
