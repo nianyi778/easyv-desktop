@@ -80,6 +80,9 @@ export function useCustomEvent(id: string | number) {
             const { animateType, animationDuration } = config;
             if (Array.isArray(states) && states.length > 1) {
                 const panelState = interaction.find((d) => d.component === id);
+                if (panelId === 13042) {
+                    console.log(panelState, '13042');
+                }
                 if (panelState && panelState.state.show) {
                     const current = panelState.state.stateId;
                     let currentIndex = states.findIndex((d) => d === current);
@@ -96,7 +99,9 @@ export function useCustomEvent(id: string | number) {
 
                     setInteraction((init) => {
                         const a = mergeInteraction(init, panelConfig);
-                        console.log(a, '=====update');
+                        if (panelId === 13042) {
+                            console.log(a, '=====update,13042');
+                        }
                         return a;
                     })
                 } else {
@@ -110,7 +115,9 @@ export function useCustomEvent(id: string | number) {
                     });
                     setInteraction((init) => {
                         const a = mergeInteraction(init, panelConfig);
-                        console.log(a, '=====add');
+                        if (panelId === 13042) {
+                            console.log(a, '=====add,13042');
+                        }
                         return a
                     })
                 }

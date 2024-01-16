@@ -5,7 +5,7 @@ import { useRafInterval } from 'ahooks';
 import { useCustomEvent } from '@/pages/hooks/useCustomEvent';
 import { useEvents } from '@/pages/hooks';
 import { AnimateType } from '@/constants';
-import Animation from '@/components/Animation';
+import Animation from '@/components/Animation/AutoAnimation';
 
 const MAX_DELAY = 2147483;
 
@@ -42,50 +42,37 @@ function PanelAnimation({ states, config, id, type }: { config: TransformPanelTy
         scaleX,
         scaleY,
         transformOrigin,
-        show = true, stateId, unmount = false, duration = 600, delay = 0, type: animationType
+        show = true, stateId, unmount = false, duration = 600, animationType
     } = panelState || {};
 
     const curState = stateId || states[0];
 
-    return <Animation
-        type={animationType as unknown as AnimateType}
-        visible={show as boolean}
-        config={{
-            delay,
-            unmount,
-            scaleX,
-            scaleY,
-            transformOrigin,
-            childrenWidth: width,
-            animationDuration: duration,
-        }}
-    >
-        <div id={id}
-            className=" absolute overflow-hidden"
-            style={{
-                width,
-                height,
-                left,
-                top,
-            }}>
-            {
-                states.concat().reverse().map(screen => <Animation key={screen}
-                    type={AnimateType.opacity}
-                    visible={curState === screen}
-                    config={{
-                        delay,
-                        unmount,
-                        childrenWidth: width,
-                        animationDuration: duration,
-                    }} >
-                    <Panel screenId={screen} width={width} type={type} height={height} />
-                </Animation >)
-            }
+    if (id === 'panel_13042') {
+        console.log(curState, '--=--=13042')
+    }
 
-        </div>
+    return <div id={id}
+        className=" absolute overflow-hidden"
+        style={{
+            width,
+            height,
+            left,
+            top,
+        }}>
+        {
+            states.concat().reverse().map(screen => <Animation key={screen}
+                show={curState === screen && show as boolean}
+                unmount={unmount}
+                childrenWidth={width}
+                type={animationType}
+                duration={duration}
+                flipX={true}
+            >
+                <Panel screenId={screen} width={width} type={type} height={height} />
+            </Animation >)
+        }
 
-    </Animation>
-
+    </div>
 };
 
 export default memo(PanelAnimation);
