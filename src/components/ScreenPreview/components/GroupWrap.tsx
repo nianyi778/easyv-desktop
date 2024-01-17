@@ -73,7 +73,7 @@ export default function GroupWrap({ id, components: layers, config }: GroupWrapT
             left: -1 * minLeft,
             top: -1 * minTop
         }}>
-            <Group width={width} event={groupEvent} height={height} layers={layers} />
+            <Group width={width} height={height} layers={layers} />
         </div>
     </div>
 }
