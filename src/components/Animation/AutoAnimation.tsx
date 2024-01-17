@@ -1,126 +1,130 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { select } from 'd3';
-import { AnimateType } from '@/constants';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { animated, useSpring, useTransition } from "@react-spring/web";
+import { AnimateType, defaultAnimation } from "@/constants";
+import { isNumber } from "lodash-es";
+import { Interaction } from "@/type/Interactions.type";
+
 
 type AnimationProps = {
-    show?: boolean;
-    hide?: boolean;
-    moveX?: number;
-    moveY?: number;
-    scaleX?: number;
-    scaleY?: number;
-    rotate?: number;
-    moveIn?: 'up' | 'down' | 'left' | 'right';
-    moveOut?: 'up' | 'down' | 'left' | 'right';
-    transformOrigin?: string;
-    childrenWidth?: number;
-    flipX?: boolean;
-    unmount?: boolean;
-    delay?: number;
-    duration?: number;
     children: React.ReactNode;
-    type?: AnimateType
+    type?: AnimateType;
+    childrenWidth?: number;
+    iState?: Interaction['state'];
+    duration?: number;
+    id: string | number;
+    iActiveState?: Interaction['activeState'],
+    size: {
+        width: number;
+        height: number;
+        left: number;
+        top: number;
+    }
 };
 
-const Animation: React.FC<AnimationProps> = ({
-    show = true,
-    moveX = 0,
-    moveY = 0,
-    scaleX = 1,
-    scaleY = 1,
-    rotate = 0,
-    moveIn,
-    type,
-    childrenWidth = 0,
-    moveOut,
-    flipX = false,
-    unmount = false,
-    delay = 0,
-    duration = 500,
+const Animation = ({
     children,
-    transformOrigin = "center",
-}) => {
-    const [isVisible, setIsVisible] = useState<boolean>(show);
-    const [isMounted, setIsMounted] = useState<boolean>(true);
+    size,
+    iState = {},
+    iActiveState,
+    id,
+    duration = 1000,
+    childrenWidth = 0,
+    type = AnimateType.opacity,
+}: AnimationProps) => {
+
+    const { animation = defaultAnimation } = iActiveState || {};
+    const {
+        key,
+        from,
+        to,
+        config
+    } = animation;
+    const { timingFunction, duration: transFormDuration } = config;
+
+    const { show = true, unmount = true } = iState;
+    const { width, height, left, top } = size;
+    const flipX = [AnimateType.flipLateral, AnimateType.flipVertical].includes(type);
+    const move = [AnimateType.moveBottom, AnimateType.moveLeft, AnimateType.moveRight, AnimateType.moveTop].includes(type);
+
+    const [visibility, setVisibility] = useState(show);
 
     useEffect(() => {
-        if (unmount && !show && !isVisible) {
-            setIsMounted(false);
-        }
-    }, [unmount, show, isVisible]);
+        show && setVisibility(show);
+    }, [show])
 
-    useEffect(() => {
-        if (isVisible) {
-            setIsMounted(true);
-        }
-    }, [isVisible]);
+    const { transform, transformOrigin } = getNextStatus(iState, {
+        x: left, y: top
+    });
 
-    const translate = useMemo(() => {
-        if (!type) {
-            return null
-        }
-        let d;
-        switch (type) {
-            case AnimateType.moveBottom:
-            case AnimateType.moveTop:
-                d = 'Y'
-                break;
-            default:
-                d = 'X'
-                break;
-        }
+    const display: 'visible' | 'hidden' = visibility ? 'visible' : 'hidden';
 
-        return {
-            direction: d,
-            positive: [AnimateType.moveTop, AnimateType.moveLeft].includes(type) ? -1 : 1
-        }
-    }, [type]);
-
-
-    useEffect(() => {
-        if (isMounted) {
-            const container = select('.animation-container');
-            if (show) {
-                container.style('visibility', 'visible');
+    const spring = useSpring({
+        width: width,
+        height: height,
+        left: left,
+        top: top,
+        transformOrigin: transformOrigin,
+        visibility: display,
+        transform: transform,
+        transition: `transform ${duration}ms ${timingFunction},opacity ${transFormDuration}ms ${timingFunction}`,
+        opacity: show ? 1 : 0,
+        onRest(result) {
+            if (result.value.opacity === 0) {
+                setVisibility(false);
             }
-            const { positive = 0, direction = 'X' } = translate || {};
-            // translate${ direction } (${ positive * childrenWidth }px)
-            container.transition()
-                .duration(duration)
-                .delay(delay)
-                .style('opacity', show ? 1 : 0)
-                .style('transform', `
-                ${!flipX && !show ? 'rotateX(180deg)' : 'rotateX(0deg)'}
-                `)
-                .on('end', () => {
-                    if (!show) {
-                        console.log('end', '13042');
-                        setIsVisible(false);
-                        container.style('visibility', 'hidden');
-                    }
-                });
-            // if (show) {
-            //     container.transition()
-            //         .duration(duration)
-            //         .delay(delay)
-            //         .style('opacity', 1);
-            // } else {
-            //     container.transition()
-            //         .duration(duration)
-            //         .delay(delay)
-            //         .style('opacity', 0)
-            //         .on('end', () => {
-            //             setIsVisible(false);
-            //         });
-            // }
-        }
-    }, [show, isMounted]);
+        },
+    });
 
-    return isMounted ? (
-        <div className="animation-container">
-            {children}
-        </div>
-    ) : null;
+    if (unmount && !visibility) {
+        return null;
+    }
+
+    return (
+        <>
+            <animated.div style={spring} id={`animation_${id}`} className={' absolute'}>{children}</animated.div>
+        </>
+    );
 };
 
 export default Animation;
+
+
+function getNextStatus(iState: Interaction['state'], position: {
+    x: number,
+    y: number
+}) {
+    const { translateToX, translateToY, scaleX = 1, scaleY = 1, transformOrigin, rotate } = iState;
+    const transformValues: string[] = [];
+    let transformOriginValue = '100% 100%';
+
+    if (isNumber(translateToX) && isNumber(translateToY)) {
+        transformValues.push(
+            `translate3d(${translateToX - position.x}px, ${translateToY - position.y}px, 0px)`,
+        );
+    } else {
+        transformValues.push(
+            `translate3d(0px, 0px, 0px)`,
+        );
+    }
+
+    transformValues.push(`scaleX(${scaleX}) scaleY(${scaleY})`);
+    transformOriginValue = transformOrigin as string;
+
+
+    const { rotateX = 0, rotateY = 0, rotateZ = 0, perspective } = rotate || {};
+    transformValues.push(`rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg)`);
+    if (perspective) {
+        transformValues.unshift('perspective(500px)');
+    }
+
+    if (transformValues.length > 0) {
+        return {
+            transform: transformValues.join(' '),
+            transformOrigin: transformOriginValue,
+        };
+    }
+    return {
+        transform: "translate3d(0px,0px,0px)",
+        transformOrigin: transformOriginValue
+    };
+}

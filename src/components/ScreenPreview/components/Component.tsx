@@ -2,44 +2,22 @@ import { getComponentConfig, getComponentDimension } from '@lidakai/utils';
 import EasyVComponent from './EasyVComponent';
 import { TransformComponentType } from '@/type/screen.type';
 import { memo, useEffect, useMemo } from 'react';
-import Animation, { defaultAnimation } from '@/components/Animation'
+import Animation from '@/components/Animation/AutoAnimation'
 import { AnimateType } from "@/constants";
 import { useEvents } from "@/pages/hooks";
 interface Props {
+    hideDefault?: boolean;
     id: number; component: TransformComponentType; children?: TransformComponentType[];
 }
 
-function Component({ id, component, children = [], }: Props) {
+function Component({ id, component, children = [], hideDefault = false }: Props) {
 
     const { uniqueTag, config, name, dataConfigs, events, autoUpdate, actions } = component;
     const { width, height, left, top } = getComponentDimension(config);
     const comEvent = useEvents('component', id);
-    const {
-        show,
-        unmount,
-        delay,
-        type,
-        timingFunction,
-        duration
-    } = useMemo(() => {
-        if (comEvent) {
-            const { animation, state } = comEvent;
-            const { show, unmount } = state;
-            const { delay, duration, type, timingFunction } = animation;
-            const newConfig = {
-                ...defaultAnimation,
-                show: show as boolean,
-                unmount,
-                delay,
-                type,
-                timingFunction,
-                duration
-            }
-            return newConfig;
-        }
-        return defaultAnimation;
-    }, [comEvent]);
-
+    const defaultState = {
+        show: !hideDefault,
+    };
     useEffect(() => {
         // console.log('auto', autoUpdate,id);
     }, [autoUpdate])
@@ -124,26 +102,33 @@ function Component({ id, component, children = [], }: Props) {
     });
 
 
-    return <div
-        id={id + ''}
-        style={{
+    const { iState, iActiveState } = comEvent || {};
+    return <Animation
+        id={id}
+        iState={iState || defaultState}
+        iActiveState={iActiveState}
+        size={{
             width,
-            height,
-            left: left, top: top,
+            left,
+            top,
+            height
         }}
-        className={`absolute pointer-events-none`}
     >
         <div
-            className={`absolute`}
+            id={id + ''}
             style={{
-                left: -1 * left, top: -1 * top,
-            }}>
-            <Animation type={AnimateType.opacity}
-                visible={show}
-                config={{
-                    animationDuration: duration,
-                    unmount: unmount
+                width,
+                height,
+                left: 0, top: 0,
+            }}
+            className={`absolute pointer-events-none`}
+        >
+            <div
+                className={`absolute`}
+                style={{
+                    left: -1 * left, top: -1 * top,
                 }}>
+
                 <EasyVComponent
                     uniqueTag={uniqueTag}
                     data={data}
@@ -161,10 +146,10 @@ function Component({ id, component, children = [], }: Props) {
                     width={width}
                     height={height}
                 />
-            </Animation>
 
+            </div>
         </div>
-    </div>
+    </Animation>
 }
 
 // memo 必须留着

@@ -7,10 +7,11 @@ import ErrorBoundary from './ComErrorBoundary';
 import { getComponentConfig, getId } from '@lidakai/utils';
 import { ChildrenConfig } from '@/type/component.type';
 import { getActions } from '@/utils/interaction';
-import { defaultActions } from '@/constants';
+import { ActionType, AnimateType, defaultActions } from '@/constants';
 import { Interaction } from '@/type/Interactions.type';
 import { useInteraction } from '@/pages/hooks';
 import { isEqual, isUndefined, omitBy } from 'lodash-es';
+import { useUpdateConfig } from '@/pages/hooks/useUpdateConfig';
 
 interface EasyVComponentType {
     config: unknown[];
@@ -38,6 +39,7 @@ function EasyVComponent(
     const refRandom = useRef(0);
     const updateInteraction = useInteraction();
     const ref = useRef<NodeJS.Timeout[]>([]); // 延时器
+    const updateConfig = useUpdateConfig();
 
     useEffect(() => {
         const { version, module_name } = base;
@@ -93,9 +95,9 @@ function EasyVComponent(
         function dispatchEvent(config: Interaction) {
             if (defaultActions.find((o) => o.value === config.type)) {
                 const { animation, state } = config;
-                const { show, unmount, stateId, scaleX, scaleY, transformOrigin } = state;
+                const { show, unmount, stateId, scaleX, scaleY, transformOrigin, translateToX, translateToY, ...rest } = state || {};
                 const newState = {
-                    show, unmount, stateId, scaleX, scaleY, transformOrigin
+                    show, unmount, stateId, scaleX, scaleY, transformOrigin, translateToX, translateToY, ...rest
                 };
                 if (stateId) {
                     newState.stateId = getId(stateId);
@@ -111,8 +113,13 @@ function EasyVComponent(
                     controllers: [id],
                     state: omitBy(newState, isUndefined)
                 };
-                console.log(interaction, '平台事件');
-                updateInteraction(interaction);
+                console.log(interaction, '系统事件');
+                if (config.type === ActionType.UpdateConfig && config.componentConfig) {
+                    updateConfig(config.componentConfig, getId(config.component))
+                } else {
+                    updateInteraction(interaction);
+                }
+
             } else {
                 const interaction = {
                     ...config,

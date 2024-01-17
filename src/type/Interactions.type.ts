@@ -7,8 +7,10 @@ export interface Interaction {
     _from: {
         componentId: string | number
     },
+    componentConfig?: Record<string, unknown>;
     component: string | number;
     "state": {
+        key?: string;
         "unmount"?: boolean;
         "show"?: "$not" | boolean;
         "stateId"?: number;
@@ -17,7 +19,15 @@ export interface Interaction {
         transformOrigin?: string;
         toX?: number;
         toY?: number;
-    };
+        translateToX?: number;
+        translateToY?: number;
+        rotate?: {
+            rotateX: number;
+            rotateY: number;
+            rotateZ: number;
+            perspective: boolean;
+        }
+    } & Record<string, any>;
     data?: unknown;
     activeState: {
         animation: {

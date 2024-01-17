@@ -315,6 +315,7 @@ export interface Layer {
     moduleName: string;
     collapsed?: boolean;
     components?: Layer[];
+    hideDefault?: boolean;
 }
 
 export enum DataType {

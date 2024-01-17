@@ -80,10 +80,7 @@ export function useCustomEvent(id: string | number) {
             const { animateType, animationDuration } = config;
             if (Array.isArray(states) && states.length > 1) {
                 const panelState = interaction.find((d) => d.component === id);
-                if (panelId === 13042) {
-                    console.log(panelState, '13042');
-                }
-                if (panelState && panelState.state.show) {
+                if (panelState && (isBoolean(panelState?.state?.show) || panelState?.state?.show)) {
                     const current = panelState.state.stateId;
                     let currentIndex = states.findIndex((d) => d === current);
                     currentIndex = currentIndex === -1 ? 0 : currentIndex;
@@ -99,9 +96,6 @@ export function useCustomEvent(id: string | number) {
 
                     setInteraction((init) => {
                         const a = mergeInteraction(init, panelConfig);
-                        if (panelId === 13042) {
-                            console.log(a, '=====update,13042');
-                        }
                         return a;
                     })
                 } else {
@@ -115,9 +109,6 @@ export function useCustomEvent(id: string | number) {
                     });
                     setInteraction((init) => {
                         const a = mergeInteraction(init, panelConfig);
-                        if (panelId === 13042) {
-                            console.log(a, '=====add,13042');
-                        }
                         return a
                     })
                 }
@@ -154,7 +145,7 @@ export const getDefaultPanelConfig = function ({ stateId, type, panelId, show, a
         animation: {
             duration: animateType === AnimateType.none ? 0 : duration,
             type: animateType,
-            timingFunction: 'ease',
+            timingFunction: 'linear',
             delay: 0,
         },
         controllers: [panelId],
@@ -173,7 +164,7 @@ export const getDefaultPanelConfig = function ({ stateId, type, panelId, show, a
                 config: {
                     duration: animateType === AnimateType.none ? 0 : duration,
                     type: animateType,
-                    timingFunction: 'ease',
+                    timingFunction: 'linear',
                     delay: 0,
                 },
             },

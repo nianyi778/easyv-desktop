@@ -14,7 +14,7 @@ function ScreenPreview({ layers }: { layers: TransformScreenType['layers']; }) {
     return layers.concat()
         .reverse().filter(l => l.show).map(layer => {
             if (isComponent(layer.id as number)) {
-                return <ComponentWrap key={layer.id} id={layer.id as number} />
+                return <ComponentWrap key={layer.id} hideDefault={layer.hideDefault} id={layer.id as number} />
             }
             if (isContainer(layer.id as string)) {
                 return <ContainerWrap key={layer.id} id={layer.id as string}></ContainerWrap>

@@ -42,3 +42,19 @@ export enum AnimateType {
     "scale" = "scale",
 }
 
+
+
+export const defaultAnimation = {
+    key: 'show',
+    from: {
+        opacity: 0,
+    },
+    to: {
+        opacity: 1,
+    },
+    config: {
+        duration: 600,
+        timingFunction: 'linear',
+        delay: 0,
+    },
+};

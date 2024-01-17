@@ -30,9 +30,24 @@ export function useEvents(eventType: "group" | "component" | "panel" | "ref", id
         return null;
 
     }, [eventType, interaction, id]);
-    return eventData ? eventData : null;
-}
 
+
+    if (eventData) {
+        const iState = eventData && eventData.state;
+        const iActiveState = eventData && eventData.activeState;
+        const bindedInteractionState = interaction
+            .filter((o) => o.controllers && o.controllers.includes(id as string | number))
+            .map((o) => ({ id: o.id, state: o.state, activeState: o.activeState }));
+
+        return {
+            iState,
+            iActiveState,
+            bindedInteractionState,
+        };
+    }
+
+    return null;
+}
 
 export interface MinAnimation {
     show: boolean;

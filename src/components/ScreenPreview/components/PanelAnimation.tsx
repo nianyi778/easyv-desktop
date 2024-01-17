@@ -10,24 +10,13 @@ import Animation from '@/components/Animation/AutoAnimation';
 const MAX_DELAY = 2147483;
 
 function PanelAnimation({ states, config, id, type }: { config: TransformPanelType['config']; id: string; states: number[]; type: PanelType }) {
-    const { width, height, autoCarousel, interval = 1, left, top } = config;
+    const { width, height, autoCarousel, interval = 1, left, top, animationDuration } = config;
     const { switchPanelState } = useCustomEvent(id);
     const panelEvent = useEvents('panel', id);
 
-    const panelState = useMemo(() => {
-        if (panelEvent) {
-            const { type, state, animation } = panelEvent;
-            const { duration, delay, type: animationType } = animation;
-            return {
-                duration,
-                delay,
-                type,
-                animationType,
-                ...state
-            }
-        }
-        return null;
-    }, [panelEvent]);
+    const { iState,
+        iActiveState,
+        bindedInteractionState, } = panelEvent || {};
 
 
     const clear = autoCarousel && useRafInterval(() => {
@@ -38,41 +27,67 @@ function PanelAnimation({ states, config, id, type }: { config: TransformPanelTy
         () => clear && clear();
     }, [clear]);
 
-    const {
-        scaleX,
-        scaleY,
-        transformOrigin,
-        show = true, stateId, unmount = false, duration = 600, animationType
-    } = panelState || {};
-
+    const { stateId } = iState || {};
     const curState = stateId || states[0];
 
-    if (id === 'panel_13042') {
-        console.log(curState, '--=--=13042')
+    function getParams(stateId: number) {
+        const currentState = (iState && iState[stateId]) || {};
+        const { unmount = true, animation } = currentState;
+        return {
+            unmount,
+            animation,
+        };
     }
 
-    return <div id={id}
-        className=" absolute overflow-hidden"
-        style={{
-            width,
-            height,
-            left,
-            top,
-        }}>
-        {
-            states.concat().reverse().map(screen => <Animation key={screen}
-                show={curState === screen && show as boolean}
-                unmount={unmount}
-                childrenWidth={width}
-                type={animationType}
-                duration={duration}
-                flipX={true}
-            >
-                <Panel screenId={screen} width={width} type={type} height={height} />
-            </Animation >)
+    return <Animation
+        id={id}
+        duration={animationDuration}
+        size={
+            {
+                width,
+                height,
+                left,
+                top
+            }
         }
+        iState={iState}
+        iActiveState={iActiveState}
+    >
+        <div id={id}
+            className=" absolute overflow-hidden"
+            style={{
+                width,
+                height,
+                left: 0,
+                top: 0,
+            }}>
+            {
+                states.concat().reverse().map(screen => {
+                    const animationParams = getParams(screen);
+                    return <Animation
+                        key={screen}
+                        id={screen}
+                        iState={{ key: 'show', show: curState === screen, unmount: animationParams.unmount }}
+                        iActiveState={
+                            animationParams.animation ? { animation: animationParams.animation } : undefined
+                        }
+                        size={
+                            {
+                                width,
+                                height,
+                                left: 0,
+                                top: 0
+                            }
+                        }
+                        childrenWidth={width}
+                    >
+                        <Panel screenId={screen} width={width} type={type} height={height} />
+                    </Animation >
+                })
+            }
 
-    </div>
+        </div>
+    </Animation>
 };
 
 export default memo(PanelAnimation);
