@@ -3,6 +3,7 @@ import { components, panels, comContainers } from '@/dataStore'
 import { useRecoilValue } from 'recoil';
 import { isComponent, isContainer, isPanel, reduceCompute, SizeType } from "@/utils";
 import { getId, getComponentDimension } from "@lidakai/utils";
+import Animation from "@/components/Animation/AutoAnimation";
 import Group from "./Group";
 import { useEvents } from '@/pages/hooks';
 interface GroupWrapType {
@@ -62,18 +63,34 @@ export default function GroupWrap({ id, components: layers, config }: GroupWrapT
     }).filter(d => d);
     const { width, height, left, top, minLeft, minTop } = reduceCompute(sizeArray as SizeType[]);
 
-    return <div id={id} className=" absolute" style={{
-        width: width,
-        height: height,
-        left: left,
-        top: top,
-        opacity: opacity
-    }}>
-        <div className=" absolute" style={{
-            left: -1 * minLeft,
-            top: -1 * minTop
+    const { iState,
+        iActiveState,
+        bindedInteractionState, } = groupEvent || {};
+
+    return <Animation id={id}
+        iState={iState}
+        iActiveState={iActiveState}
+        size={{
+            width,
+            left,
+            top,
+            height
         }}>
-            <Group width={width} height={height} layers={layers} />
+        <div id={id} className=" absolute" style={{
+            width: width,
+            height: height,
+            left: left,
+            top: top,
+            opacity: opacity
+        }}>
+            <div className=" absolute" style={{
+                left: -1 * minLeft,
+                top: -1 * minTop
+            }}>
+                <Group width={width} height={height} layers={layers} />
+            </div>
         </div>
-    </div>
+    </Animation>
+
+
 }

@@ -45,7 +45,7 @@ export enum AnimateType {
 
 
 export const defaultAnimation = {
-    key: 'show',
+    key: AnimateType.opacity,
     from: {
         opacity: 0,
     },
@@ -53,7 +53,7 @@ export const defaultAnimation = {
         opacity: 1,
     },
     config: {
-        duration: 600,
+        duration: 1000,
         timingFunction: 'linear',
         delay: 0,
     },
