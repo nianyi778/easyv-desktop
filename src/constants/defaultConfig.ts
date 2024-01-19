@@ -58,3 +58,6 @@ export const defaultAnimation = {
         delay: 0,
     },
 };
+
+
+export const MAX_DELAY = 2147483;

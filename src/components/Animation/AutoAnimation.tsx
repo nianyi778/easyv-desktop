@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { animated, useSpring, useTransition } from "@react-spring/web";
+import React, { useEffect, useRef, useState } from "react";
 import { AnimateType, defaultAnimation } from "@/constants";
 import { isNumber } from "lodash-es";
 import { Interaction } from "@/type/Interactions.type";
+import * as d3 from "d3";
 
 
 type AnimationProps = {
@@ -38,29 +38,35 @@ const Animation = ({
         config
     } = animation;
     const { timingFunction, duration: transFormDuration } = config;
-
+    const ref = useRef<HTMLDivElement>(null)
     const { show = true, unmount = true } = iState;
     const { width, height, left, top } = size;
 
-    const [visibility, setVisibility] = useState(show as boolean);
+    const [visibility, setVisibility] = useState(false);
 
-    useEffect(() => {
-        show && setVisibility(show as boolean);
-    }, [show])
-
-    console.log(
-        key, id
-    )
     const { transform, transformOrigin } = getNextStatus(iState, {
         x: left, y: top
     }, {
         animationType: key,
-        visibility
+        visibility: show as boolean
     });
 
     const display: 'visible' | 'hidden' = visibility ? 'visible' : 'hidden';
 
-    const spring = useSpring({
+    useEffect(() => {
+        show && setVisibility(true);
+        if (ref.current) {
+            d3.select(ref.current).transition()
+                .duration(duration)
+                .style("opacity", show ? 1 : 0)
+                .on("end", function () {
+                    !show && setVisibility(false)
+                });
+        }
+    }, [show]);
+
+
+    const styles = {
         width: width,
         height: height,
         left: left,
@@ -69,23 +75,15 @@ const Animation = ({
         visibility: display,
         transform: transform,
         transition: `transform ${duration}ms ${timingFunction},opacity ${transFormDuration}ms ${timingFunction}`,
-        opacity: show ? 1 : 0,
-        onRest(result) {
-            if (result.value.opacity === 0) {
-                setVisibility(false);
-            }
-        },
-    });
+    }
 
     if (unmount && !visibility) {
         return null;
     }
 
-    return (
-        <>
-            <animated.div style={spring} id={`animation_${id}`} className={' absolute'}>{children}</animated.div>
-        </>
-    );
+    return <div style={styles} ref={ref} id={`animation_${id}`} className={' absolute'}>
+        {children}
+    </div>
 };
 
 export default Animation;

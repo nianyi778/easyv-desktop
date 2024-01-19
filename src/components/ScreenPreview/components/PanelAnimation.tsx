@@ -1,13 +1,12 @@
 import { PanelType, TransformPanelType } from '@/type/screen.type';
 import Panel from './Panel';
-import { memo, useEffect, useMemo } from 'react';
+import { memo, useEffect } from 'react';
 import { useRafInterval } from 'ahooks';
 import { useCustomEvent } from '@/pages/hooks/useCustomEvent';
 import { useEvents } from '@/pages/hooks';
-import { AnimateType } from '@/constants';
 import Animation from '@/components/Animation/AutoAnimation';
+import { MAX_DELAY } from '@/constants';
 
-const MAX_DELAY = 2147483;
 
 function PanelAnimation({ states, config, id, type }: { config: TransformPanelType['config']; id: string; states: number[]; type: PanelType }) {
     const { width, height, autoCarousel, interval = 1, left, top, animationDuration } = config;
@@ -32,10 +31,10 @@ function PanelAnimation({ states, config, id, type }: { config: TransformPanelTy
 
     function getParams(stateId: number) {
         const currentState = (iState && iState[stateId]) || {};
-        const { unmount = true, animation } = currentState;
+        const { unmount = true, animation, activeState } = currentState;
         return {
             unmount,
-            animation,
+            animation: activeState?.animation || animation,
         };
     }
 
@@ -67,7 +66,7 @@ function PanelAnimation({ states, config, id, type }: { config: TransformPanelTy
                     return <Animation
                         key={screen}
                         id={screen}
-                        iState={{ key: 'show', show: curState === screen, unmount: animationParams.unmount }}
+                        iState={{ key: 'show', show: curState === screen, unmount: false }} //  animationParams.unmount
                         iActiveState={
                             animationParams.animation ? { animation: animationParams.animation } : undefined
                         }

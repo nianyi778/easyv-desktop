@@ -40,8 +40,10 @@ export function useCustomEvent(id: string | number) {
                 if (isNumber(i) && states[i - 1]) {
                     const panelState = interaction.find((d) => d.component === id);
                     let show = true;
-                    if (panelState && isBoolean(panelState?.state?.show)) {
-                        show = panelState.state.show
+                    if (panelState) {
+                        if (isBoolean(panelState?.state?.show)) {
+                            show = panelState.state.show
+                        }
                     }
                     stateSwitchPanel(states[i - 1], event, show)
                 }
@@ -102,7 +104,7 @@ export function useCustomEvent(id: string | number) {
                     const panelConfig = getDefaultPanelConfig({
                         stateId: states[0],
                         animateType,
-                        show: false,
+                        show: true,
                         type: ActionType.SwitchState,
                         panelId: id,
                         duration: animationDuration * 1000

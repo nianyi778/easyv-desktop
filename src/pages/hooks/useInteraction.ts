@@ -15,7 +15,7 @@ export function useInteraction() {
             interaction && setInteraction((inits) => mergeInteraction(inits, interaction));
         } else {
             // 自定义组件
-            q.push(interaction).catch((err) => console.error(err)); // 加入队列
+            q.push(interaction).catch((err: any) => console.error(err)); // 加入队列
         }
     }, []);
     return updateInteraction;
