@@ -5,18 +5,21 @@ import { useRafInterval } from 'ahooks';
 import { useCustomEvent } from '@/pages/hooks/useCustomEvent';
 import { useEvents } from '@/pages/hooks';
 import Animation from '@/components/Animation/AutoAnimation';
-import { MAX_DELAY } from '@/constants';
+import { AnimateType, MAX_DELAY } from '@/constants';
 
 
 function PanelAnimation({ states, config, id, type }: { config: TransformPanelType['config']; id: string; states: number[]; type: PanelType }) {
-    const { width, height, autoCarousel, interval = 1, left, top, animationDuration } = config;
+    const { width, height, autoCarousel, interval = 1, left, top, animationDuration = 1 } = config;
+    const duration = animationDuration * 1000;
     const { switchPanelState } = useCustomEvent(id);
     const panelEvent = useEvents('panel', id);
 
     const { iState,
         iActiveState,
         bindedInteractionState, } = panelEvent || {};
-
+    console.log(
+        config, panelEvent, id
+    )
 
     const clear = autoCarousel && useRafInterval(() => {
         switchPanelState(id);
@@ -30,17 +33,25 @@ function PanelAnimation({ states, config, id, type }: { config: TransformPanelTy
     const curState = stateId || states[0];
 
     function getParams(stateId: number) {
-        const currentState = (iState && iState[stateId]) || {};
+        const currentState = (iState && iState[stateId]) ?? {};
         const { unmount = true, animation, activeState } = currentState;
+        const { key = AnimateType.opacity } = iActiveState?.animation ?? {};
+        const newAnimation = (activeState?.animation || animation) || {};
+        const { config } = newAnimation;
+        const newConfig = {
+            ...config,
+            duration
+        }
         return {
             unmount,
-            animation: activeState?.animation || animation,
+            animation: { ...newAnimation, config: newConfig },
+            key,
         };
     }
 
     return <Animation
         id={id}
-        duration={animationDuration}
+        duration={duration}
         size={
             {
                 width,
@@ -62,13 +73,14 @@ function PanelAnimation({ states, config, id, type }: { config: TransformPanelTy
             }}>
             {
                 states.concat().reverse().map(screen => {
-                    const animationParams = getParams(screen);
+                    const { key, animation, unmount } = getParams(screen);
                     return <Animation
                         key={screen}
                         id={screen}
-                        iState={{ key: 'show', show: curState === screen, unmount: false }} //  animationParams.unmount
+                        duration={duration}
+                        iState={{ key: key, show: curState === screen, unmount: false }}
                         iActiveState={
-                            animationParams.animation ? { animation: animationParams.animation } : undefined
+                            animation ? { animation: { ...animation, key } } : undefined
                         }
                         size={
                             {

@@ -80,6 +80,7 @@ export function useCustomEvent(id: string | number) {
         if (panel) {
             const { states = [], config } = panel;
             const { animateType, animationDuration } = config;
+            // console.log(animateType, 'animateType', id);
             if (Array.isArray(states) && states.length > 1) {
                 const panelState = interaction.find((d) => d.component === id);
                 if (panelState && (isBoolean(panelState?.state?.show) || panelState?.state?.show)) {

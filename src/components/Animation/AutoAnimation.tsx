@@ -35,9 +35,9 @@ const Animation = ({
         key,
         from,
         to,
-        config
+        config = defaultAnimation.config
     } = animation;
-    const { timingFunction, duration: transFormDuration } = config;
+    const { timingFunction = 'linear', duration: transFormDuration } = config;
     const ref = useRef<HTMLDivElement>(null)
     const { show = true, unmount = true } = iState;
     const { width, height, left, top } = size;
@@ -45,22 +45,25 @@ const Animation = ({
     const [visibility, setVisibility] = useState(false);
 
     const { transform, transformOrigin } = getNextStatus(iState, {
-        x: left, y: top
-    }, {
+        position: { x: left, y: top },
         animationType: key,
-        visibility: show as boolean
+        show: show as boolean,
+        visibility
     });
 
-    const display: 'visible' | 'hidden' = visibility ? 'visible' : 'hidden';
+    const display: 'block' | 'none' = visibility ? 'block' : 'none';
 
     useEffect(() => {
         show && setVisibility(true);
         if (ref.current) {
-            d3.select(ref.current).transition()
-                .duration(duration)
+            d3.select(ref.current)
+                .transition()
+                .duration(transFormDuration)
                 .style("opacity", show ? 1 : 0)
                 .on("end", function () {
-                    !show && setVisibility(false)
+                    if (!show) {
+                        setVisibility(false)
+                    }
                 });
         }
     }, [show]);
@@ -72,7 +75,7 @@ const Animation = ({
         left: left,
         top: top,
         transformOrigin: transformOrigin,
-        visibility: display,
+        display,
         transform: transform,
         transition: `transform ${duration}ms ${timingFunction},opacity ${transFormDuration}ms ${timingFunction}`,
     }
@@ -90,28 +93,27 @@ export default Animation;
 
 
 function getNextStatus(iState: Interaction['state'],
-    position: {
-        x: number,
-        y: number
-    }, config: {
+    config: {
+        show: boolean;
+        visibility: boolean;
         animationType: AnimateType;
-        visibility: boolean
+        position: {
+            x: number,
+            y: number
+        }
     }) {
-    const {
-        animationType,
-        visibility
-    } = config;
+    const { position, animationType, show, visibility } = config;
 
     const flipX = [AnimateType.flipLateral, AnimateType.flipVertical].includes(animationType);
     const move = [AnimateType.moveBottom, AnimateType.moveLeft, AnimateType.moveRight, AnimateType.moveTop].includes(animationType);
 
-    // console.log(move, flipX);
+    console.log(move, flipX);
+
 
     const { translateToX, translateToY, scaleX = 1, scaleY = 1, transformOrigin, rotate } = iState;
     const transformValues: string[] = [];
     let transformOriginValue = '100% 100%';
 
-    // rotateX(180deg)
     if (isNumber(translateToX) && isNumber(translateToY)) {
         transformValues.push(
             `translate3d(${translateToX - position.x}px, ${translateToY - position.y}px, 0px)`,
@@ -125,12 +127,13 @@ function getNextStatus(iState: Interaction['state'],
     transformValues.push(`scaleX(${scaleX}) scaleY(${scaleY})`);
     transformOriginValue = transformOrigin as string;
 
+
+
+
     if (flipX) {
-        if (visibility) {
-            transformValues.push(`rotateX(0deg) rotateY(0deg) rotateZ(0deg)`);
-        } else {
-            transformValues.push(`rotateX(180deg) rotateY(0deg) rotateZ(0deg)`);
-        }
+        // 动画开始的时候要0度，动画结束后（visibility = false） 也要0度。180翻转，只要动画过程
+        const rotateX = (!show && visibility) ? 180 : 0, rotateY = 0, rotateZ = 0;
+        transformValues.push(`rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg)`);
     } else {
         const { rotateX = 0, rotateY = 0, rotateZ = 0, perspective } = rotate || {};
         transformValues.push(`rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg)`);

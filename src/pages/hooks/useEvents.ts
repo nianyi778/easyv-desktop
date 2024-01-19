@@ -6,6 +6,7 @@ import { useRecoilValue } from 'recoil';
 export function useEvents(eventType: "group" | "component" | "panel" | "ref", id?: string | number) {
 
     const interaction = useRecoilValue(interactions);
+    // console.log(JSON.parse(JSON.stringify(interaction)), 'new-interaction-list');
     const eventData = useMemo(() => {
         if (Array.isArray(interaction)) {
             switch (eventType) {
