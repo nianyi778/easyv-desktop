@@ -17,9 +17,7 @@ function PanelAnimation({ states, config, id, type }: { config: TransformPanelTy
     const { iState,
         iActiveState,
         bindedInteractionState, } = panelEvent || {};
-    console.log(
-        config, panelEvent, id
-    )
+
 
     const clear = autoCarousel && useRafInterval(() => {
         switchPanelState(id);

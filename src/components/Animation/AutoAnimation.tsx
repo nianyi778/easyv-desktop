@@ -3,6 +3,7 @@ import { AnimateType, defaultAnimation } from "@/constants";
 import { isNumber } from "lodash-es";
 import { Interaction } from "@/type/Interactions.type";
 import * as d3 from "d3";
+import { easeMap } from "./easeMap";
 
 
 type AnimationProps = {
@@ -52,13 +53,19 @@ const Animation = ({
     });
 
     const display: 'block' | 'none' = visibility ? 'block' : 'none';
+    const ease = easeMap[timingFunction] || easeMap.linear;
 
     useEffect(() => {
         show && setVisibility(true);
         if (ref.current) {
             d3.select(ref.current)
+                // .transition()
+                // .duration(duration)
+                // .ease(ease)
+                // .style("transform", transform)
                 .transition()
                 .duration(transFormDuration)
+                .ease(ease)
                 .style("opacity", show ? 1 : 0)
                 .on("end", function () {
                     if (!show) {
@@ -66,7 +73,7 @@ const Animation = ({
                     }
                 });
         }
-    }, [show]);
+    }, [show, transFormDuration, ease]);
 
 
     const styles = {
@@ -77,7 +84,7 @@ const Animation = ({
         transformOrigin: transformOrigin,
         display,
         transform: transform,
-        transition: `transform ${duration}ms ${timingFunction},opacity ${transFormDuration}ms ${timingFunction}`,
+        transition: `transform ${duration}ms ${timingFunction}`, // ,opacity ${transFormDuration}ms ${timingFunction}
     }
 
     if (unmount && !visibility) {
@@ -107,7 +114,7 @@ function getNextStatus(iState: Interaction['state'],
     const flipX = [AnimateType.flipLateral, AnimateType.flipVertical].includes(animationType);
     const move = [AnimateType.moveBottom, AnimateType.moveLeft, AnimateType.moveRight, AnimateType.moveTop].includes(animationType);
 
-    console.log(move, flipX);
+    // console.log(move, flipX);
 
 
     const { translateToX, translateToY, scaleX = 1, scaleY = 1, transformOrigin, rotate } = iState;
