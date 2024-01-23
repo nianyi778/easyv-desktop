@@ -1,6 +1,7 @@
 import { AnimateType } from '@/constants';
 import type { ComponentFilter, Filter } from './filter.type';
 import { ActionType } from '@/constants/defaultConfig';
+import { TransformSource } from './source.type';
 
 export enum PanelType {
     panel,
@@ -366,7 +367,7 @@ interface TransformFilterType extends Omit<Filter, 'callbackKeys'> {
 export interface ScreenPreviewType {
     filters: TransformFilterType[];
     screens: TransformScreenType[];
-    source: SourceConfig[];
+    source: TransformSource[];
     panel: TransformPanelType[];
     containers: TransformContainerType[];
     components: TransformComponentType[];

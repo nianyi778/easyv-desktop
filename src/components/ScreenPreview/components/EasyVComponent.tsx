@@ -29,11 +29,12 @@ interface EasyVComponentType {
     childrenData: unknown[];
     childrenConfig: ChildrenConfig[];
     childrenEvents: { id: number; events: Events[] }[];
-    actions?: unknown[]
+    actions?: unknown[];
+    bindedInteractionState?: any
 }
 
 function EasyVComponent(
-    { id, base, spaceId, uniqueTag, height, name, events, config, actions, width, left, top, data, childrenData, childrenConfig, childrenEvents }: EasyVComponentType) {
+    { id, base, spaceId, uniqueTag, height, name, events, config, bindedInteractionState, actions, width, left, top, data, childrenData, childrenConfig, childrenEvents }: EasyVComponentType) {
     const [loadedScript, setLoadedScript] = useState(false);
     const [component, setComponent] = useState<any>(null);
     const refRandom = useRef(0);
@@ -214,7 +215,6 @@ function EasyVComponent(
     const iState = {
         show: true
     };
-    const bindedInteractionState = {};
     const interactionCallbackValues = {}
 
     const Com = component;
@@ -266,6 +266,7 @@ function arePropsEqual(oldProps: EasyVComponentType, newProps: EasyVComponentTyp
         && isEqual(oldProps.childrenConfig, newProps.childrenConfig)
         && isEqual(oldProps.childrenEvents, newProps.childrenEvents)
         && isEqual(oldProps.actions, newProps.actions)
+        && isEqual(oldProps.bindedInteractionState, newProps.bindedInteractionState)
 }
 
 export default memo(EasyVComponent, arePropsEqual);

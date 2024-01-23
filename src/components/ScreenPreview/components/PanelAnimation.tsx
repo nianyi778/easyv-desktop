@@ -16,7 +16,7 @@ function PanelAnimation({ states, config, id, type }: { config: TransformPanelTy
 
     const { iState,
         iActiveState,
-        bindedInteractionState, } = panelEvent || {};
+    } = panelEvent || {};
 
 
     const clear = autoCarousel && useRafInterval(() => {
@@ -76,7 +76,7 @@ function PanelAnimation({ states, config, id, type }: { config: TransformPanelTy
                         key={screen}
                         id={screen}
                         duration={duration}
-                        iState={{ key: key, show: curState === screen, unmount: false }}
+                        iState={{ key: key, show: curState === screen, unmount }}
                         iActiveState={
                             animation ? { animation: { ...animation, key } } : undefined
                         }

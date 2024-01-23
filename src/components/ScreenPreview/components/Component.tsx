@@ -1,23 +1,30 @@
 import { getComponentConfig, getComponentDimension } from '@lidakai/utils';
 import EasyVComponent from './EasyVComponent';
-import { TransformComponentType } from '@/type/screen.type';
+import { DataType, TransformComponentType } from '@/type/screen.type';
 import { memo, useEffect, useMemo } from 'react';
 import Animation from '@/components/Animation/AutoAnimation'
 import { AnimateType } from "@/constants";
 import { useEvents } from "@/pages/hooks";
+import { sources } from '@/dataStore';
+import { useRecoilValue } from 'recoil';
 interface Props {
     hideDefault?: boolean;
     id: number; component: TransformComponentType; children?: TransformComponentType[];
 }
 
 function Component({ id, component, children = [], hideDefault = false }: Props) {
+    const sourcesById = useRecoilValue(sources);
 
-    const { uniqueTag, config, name, dataConfigs, events, autoUpdate, actions } = component;
+    const { uniqueTag, config, name, dataConfigs, events, autoUpdate, actions, dataType } = component;
     const { width, height, left, top } = getComponentDimension(config);
     const comEvent = useEvents('component', id);
     const defaultState = {
         show: !hideDefault,
     };
+
+    const dataConfig = dataConfigs[dataType];
+    // console.log(sourcesById, 'sourcesById', dataConfig);
+
     useEffect(() => {
         // console.log('auto', autoUpdate,id);
     }, [autoUpdate])
@@ -102,7 +109,7 @@ function Component({ id, component, children = [], hideDefault = false }: Props)
     });
 
 
-    const { iState, iActiveState } = comEvent || {};
+    const { iState, iActiveState, bindedInteractionState } = comEvent || {};
     return <Animation
         id={id}
         iState={iState || defaultState}
@@ -133,6 +140,7 @@ function Component({ id, component, children = [], hideDefault = false }: Props)
                     uniqueTag={uniqueTag}
                     data={data}
                     id={id}
+                    bindedInteractionState={bindedInteractionState}
                     base={component.base}
                     name={name}
                     actions={actions}

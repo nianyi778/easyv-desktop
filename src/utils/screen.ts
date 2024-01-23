@@ -2,6 +2,7 @@ import fs from 'fs';
 import { checkFilePath } from './file';
 import path from 'path';
 import { ScreenJsonType, ScreenPreviewType, ComponentConfig, TransformComponentContainerType, SourceConfig, TransformPanelType, TransformScreenType, TransformContainerType, TransformComponentType, ComponentContainerConfig, ContainerConfig, ScreenType, PanelConfig } from '@/type/screen.type';
+import { TransformSource } from '@/type/source.type';
 
 /**
  * @description 获取当前本地存在的所有大屏列表
@@ -152,11 +153,11 @@ function transformComponentContainer(comContainer: ComponentContainerConfig['com
     }
 }
 
-function transformSource(sourceConfig: SourceConfig) {
+function transformSource(sourceConfig: SourceConfig): TransformSource {
     const { name, type, config, dataId } = sourceConfig;
     return {
         name, type, dataId,
-        config: JSON.parse(config),
+        config: config ? JSON.parse(config) : {},
     }
 }
 

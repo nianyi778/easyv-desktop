@@ -37,7 +37,7 @@ export function mergeInteraction(oldInteractions: Interaction[], newInteraction:
     const { component, state = {}, activeState = {} } = newInteraction;
     const { unmount = defaultState.unmount, stateId } = state as Interaction['state']; // 是否卸载，默认false 未卸载
     let updateInteraction = { ...newInteraction, id: component };
-    console.log(newInteraction, 'newInteraction');
+    // console.log(newInteraction, 'newInteraction');
     if (eventState) {
         return oldInteractions.reduce<Interaction[]>((acc, interaction) => {
             const isCurrent =

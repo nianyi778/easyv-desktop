@@ -1,4 +1,4 @@
-import { comContainers, components, containers, filters, panels, screens } from "@/dataStore";
+import { comContainers, components, containers, filters, panels, screens, sources } from "@/dataStore";
 import { ScreenPreviewType } from "@/type/screen.type";
 import { getScreenData, cleanLargeScreenData } from "@/utils";
 import { arrayToObj } from "@lidakai/utils";
@@ -12,6 +12,7 @@ export function useGetScreen(): (id: number | string) => Promise<ScreenPreviewTy
     const setContainersById = useSetRecoilState(containers);
     const setComContainersById = useSetRecoilState(comContainers);
     const setComponentsById = useSetRecoilState(components);
+    const setSourcesById = useSetRecoilState(sources);
 
     const getScreeData = useCallback(async (id: number | string) => {
         if (id) {
@@ -19,8 +20,9 @@ export function useGetScreen(): (id: number | string) => Promise<ScreenPreviewTy
             if (data) {
                 const result = cleanLargeScreenData(data);
                 if (result) {
-                    const { filters = [], screens = [], panel = [], containers = [], componentContainers = [], components } = result;
+                    const { filters = [], screens = [], panel = [], containers = [], componentContainers = [], components, source } = result;
                     await setFilters(f => f.concat(filters));
+                    await setSourcesById(s => ({ ...s, ...arrayToObj(source, 'dataId') }));
                     await setScreensById(s => ({ ...s, ...arrayToObj(screens) }));
                     await setPanelsById((p => ({ ...p, ...arrayToObj(panel) })));
                     await setContainersById(c => ({ ...c, ...arrayToObj(containers) }));
