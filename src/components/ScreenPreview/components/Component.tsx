@@ -1,14 +1,13 @@
 import { getComponentConfig, getComponentDimension } from '@lidakai/utils';
 import EasyVComponent from './EasyVComponent';
-import { DataConfigs, DataType, DataTypeNum, OtherDataType, StaticDataType, TransformComponentType } from '@/type/screen.type';
+import { DataConfigs, DataType, OtherDataType, StaticDataType, TransformComponentType } from '@/type/screen.type';
 import { memo, useEffect, useMemo, useState } from 'react';
 import Animation from '@/components/Animation/AutoAnimation'
 import { AnimateType } from "@/constants";
 import { useEvents } from "@/pages/hooks";
 import { sources } from '@/dataStore';
 import { useRecoilValue } from 'recoil';
-import { getResourceFile } from '@/utils';
-import { ipcRenderer } from 'electron';
+import { getSource } from '@/utils';
 interface Props {
     hideDefault?: boolean;
     id: number; component: TransformComponentType; children?: TransformComponentType[];
@@ -47,27 +46,9 @@ function Component({ id, component, children = [], hideDefault = false }: Props)
     }, [dataType, sourcesById]);
 
     useEffect(() => {
-        const { data } = dataConfig as any;
-        if (data && data?.dataId) {
-            if (
-                data.type === DataTypeNum.CSV
-            ) {
-                const { filepath: filePath, encode } = data.config;
-                (async () => {
-                    const path = getResourceFile(filePath, false)
-                    await ipcRenderer.invoke('source-csv', {
-                        path,
-                        encode
-                    });
-                    ipcRenderer.on('source-csv-send', (_, args) => {
-                        console.log(args);
-                    });
-                })()
-            }
-        } else {
-            // filter(xxx);
-            // setComData(data);
-        }
+        (async () => {
+            const result = await getSource(dataConfig);
+        })()
     }, [autoUpdate, dataConfig])
 
     const childrenConfig = children.map((child) => {
@@ -176,7 +157,7 @@ function Component({ id, component, children = [], hideDefault = false }: Props)
 
                 <EasyVComponent
                     uniqueTag={uniqueTag}
-                    data={[]}
+                    data={dataConfigs['static']?.data as StaticDataType}
                     id={id}
                     bindedInteractionState={bindedInteractionState}
                     base={component.base}

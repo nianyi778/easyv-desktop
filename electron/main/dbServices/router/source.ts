@@ -14,19 +14,19 @@ export const sourceIpc = () => {
         const file = await readFile(path);
 
         if (file) {
+            let charset = 'gbk';
             try {
-                // getCharset(jsCharDet.detect(file).encoding)
-                const charset = ['utf8', 'gbk'].includes(encode) ? encode : 'gbk';
-                const str = iconv.decode(file, charset)
-                // 解析 CSV 数据
-                const records = parse(str, {
-                    columns: true,
-                    skip_empty_lines: true
-                });
-                event.sender.send('source-csv-send', records);
+                charset = ['utf8', 'gbk'].includes(encode) ? encode : getCharset(jsCharDet.detect(file).encoding);
             } catch (err) {
                 console.error(err);
             }
+            const str = iconv.decode(file, charset)
+            // 解析 CSV 数据
+            const records = parse(str, {
+                columns: true,
+                skip_empty_lines: true
+            });
+            event.sender.send('source-csv-send', records);
         } else {
             console.log('csv 文件不存在');
         }
