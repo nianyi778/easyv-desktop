@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { checkFilePath } from './file';
 import path from 'path';
-import { ScreenJsonType, ScreenPreviewType, ComponentConfig, TransformComponentContainerType, SourceConfig, TransformPanelType, TransformScreenType, TransformContainerType, TransformComponentType, ComponentContainerConfig, ContainerConfig, ScreenType, PanelConfig } from '@/type/screen.type';
+import { ScreenJsonType, ScreenPreviewType, ComponentConfig, TransformComponentContainerType, SourceConfig, TransformPanelType, TransformScreenType, TransformContainerType, TransformComponentType, ComponentContainerConfig, ContainerConfig, ScreenType, PanelConfig, DataConfigs } from '@/type/screen.type';
 import { TransformSource } from '@/type/source.type';
 
 /**
@@ -232,14 +232,26 @@ function getDataConfigs({
     dataConfig, staticData
 }: {
     dataConfig: string | null, staticData: string
-}) {
-    let newConfig = null;
+}): DataConfigs {
+    let newConfig: Record<string, any> = {};
 
     if (dataConfig) {
-        newConfig = JSON.parse(dataConfig);
+        newConfig = JSON.parse(dataConfig) as Record<string, any>;
     } else {
-        newConfig = {};
+        newConfig = {} as Record<string, any>;
     }
+    try {
+        Object.keys(newConfig).forEach(value => {
+            const { data } = newConfig[value];
+            newConfig[value].data = {
+                ...data,
+                dataId: data.data_id,
+            }
+        })
+    } catch (err) {
+        console.error(err);
+    }
+
     newConfig['static'] = JSON.parse(staticData)
     return newConfig;
 }

@@ -103,63 +103,35 @@ export interface SourceConfig {
     type: DataTypeNum
 }
 
-// export interface DataConfigs {
-//     [K in DataType]: {
-//         data: unknown[];
-//     }
-// }
+export type StaticDataType = unknown[];
+export type OtherDataType = {
+    dataId: string;
+    name: string;
+    type: DataTypeNum;
+}
+
+export interface DataConfig {
+    data: StaticDataType | OtherDataType;
+    fields: Record<string, unknown>[]
+}
 export interface DataConfigs {
-    static: {
-        data: unknown[];
-    };
-    api: {
-        data: unknown[];
-    };
-    mysql: {
-        data: unknown[];
-    };
-    csv: {
-        data: unknown[];
-    };
-    oracle: {
-        data: unknown[];
-    };
-    mssql: {
-        data: unknown[];
-    };
-    apiGateway: {
-        data: unknown[];
-    };
-    postgresql: {
-        data: unknown[];
-    };
-    clickhouse: {
-        data: unknown[];
-    };
-    dtInsight: {
-        data: unknown[];
-    };
-    dtableapi: {
-        data: unknown[];
-    };
-    damengdb: {
-        data: unknown[];
-    };
-    db2: {
-        data: unknown[];
-    };
-    mqtt: {
-        data: unknown[];
-    };
-    websocket: {
-        data: unknown[];
-    };
-    kingbase: {
-        data: unknown[];
-    };
-    fromContainer: {
-        data: unknown[];
-    };
+    static?: DataConfig;
+    api?: DataConfig;
+    mysql?: DataConfig;
+    csv?: DataConfig;
+    oracle?: DataConfig;
+    mssql?: DataConfig;
+    apiGateway?: DataConfig;
+    postgresql?: DataConfig;
+    clickhouse?: DataConfig;
+    dtInsight?: DataConfig;
+    dtableapi?: DataConfig;
+    damengdb?: DataConfig;
+    db2?: DataConfig;
+    mqtt?: DataConfig;
+    websocket?: DataConfig;
+    kingbase?: DataConfig;
+    fromContainer?: DataConfig;
 }
 
 
@@ -341,9 +313,9 @@ export enum DataType {
 
 export enum DataTypeNum {
     STATIC = 0,
-    API = 1,
-    MYSQL = 2,
-    CSV = 3,
+    CSV = 1,
+    API = 2,
+    MYSQL = 3,
     ORACLE = 4,
     MSSQL = 5,
     APIGATEWAY = 6,
@@ -351,13 +323,14 @@ export enum DataTypeNum {
     CLICKHOUSE = 8,
     DTINSIGHT = 9,
     DTABLEAPI = 10,
-    DAMENG = 11,
-    DB2 = 12,
+    DB2 = 11,
+    DAMENGDB = 12,
     MQTT = 13,
     WEBSOCKET = 14,
     KINGBASE = 15,
     FROM_CONTAINER = 16,
 }
+
 
 
 interface TransformFilterType extends Omit<Filter, 'callbackKeys'> {
