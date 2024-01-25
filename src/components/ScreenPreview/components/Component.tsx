@@ -1,19 +1,19 @@
 import { getComponentConfig, getComponentDimension } from '@lidakai/utils';
 import EasyVComponent from './EasyVComponent';
-import { DataConfigs, DataType, OtherDataType, StaticDataType, TransformComponentType } from '@/type/screen.type';
+import { DataConfigs, DataType, OtherDataType, StaticDataType, TransformComponentType, TransformFilterType } from '@/type/screen.type';
 import { memo, useEffect, useMemo, useState } from 'react';
 import Animation from '@/components/Animation/AutoAnimation'
-import { AnimateType } from "@/constants";
 import { useEvents } from "@/pages/hooks";
 import { sources } from '@/dataStore';
 import { useRecoilValue } from 'recoil';
 import { getSource } from '@/utils';
 interface Props {
     hideDefault?: boolean;
+    filters?: TransformFilterType[];
     id: number; component: TransformComponentType; children?: TransformComponentType[];
 }
 
-function Component({ id, component, children = [], hideDefault = false }: Props) {
+function Component({ id, component, children = [], hideDefault = false, filters = [] }: Props) {
     const sourcesById = useRecoilValue(sources);
     const [comData, setComData] = useState<unknown[]>([]);
     const { uniqueTag, config, name, dataConfigs, events, autoUpdate, actions, dataType } = component;
@@ -49,7 +49,7 @@ function Component({ id, component, children = [], hideDefault = false }: Props)
         (async () => {
             const result = await getSource(dataConfig);
         })()
-    }, [autoUpdate, dataConfig])
+    }, [autoUpdate, dataConfig]);
 
     const childrenConfig = children.map((child) => {
         const {

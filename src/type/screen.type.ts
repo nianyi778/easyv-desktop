@@ -333,7 +333,7 @@ export enum DataTypeNum {
 
 
 
-interface TransformFilterType extends Omit<Filter, 'callbackKeys'> {
+export interface TransformFilterType extends Omit<Filter, 'callbackKeys'> {
     callbackKeys: string[]
 }
 

@@ -23,6 +23,7 @@ export async function getSource(dataConfig: any) {
         } else {
             // filter(xxx);
             // setComData(data);
+            resolve(data.data);
         }
     })
 }

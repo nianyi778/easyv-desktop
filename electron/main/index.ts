@@ -152,6 +152,21 @@ const template: MenuItemConstructorOptions[] = [
     ]
   },
   {
+    label: "工具",
+    submenu: [
+      {
+        label: 'Toggle DevTools',
+        accelerator: isMac ? 'CmdOrCtrl+Alt+I' : 'Ctrl+Shift+I',
+        click: () => {
+          // 处理点击事件
+          if (win) {
+            win.webContents.toggleDevTools();
+          }
+        }
+      }
+    ]
+  },
+  {
     role: 'help',
     label: "帮助",
     submenu: [
