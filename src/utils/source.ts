@@ -36,7 +36,6 @@ export async function getSource(dataConfig: any) {
                     headers: newHeaders, params: paramsParse, body: newBody, baseURL, path
                 });
                 ipcRenderer.on('utils-request-send', (_, result) => {
-                    console.log(result);
                     resolve(result.data);
                 });
             }
