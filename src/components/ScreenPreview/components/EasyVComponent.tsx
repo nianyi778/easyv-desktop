@@ -24,7 +24,7 @@ interface EasyVComponentType {
     left: number;
     top: number;
     uniqueTag: string;
-    data: StaticDataType;
+    data: unknown;
     events: Events[];
     childrenData: unknown[];
     childrenConfig: ChildrenConfig[];

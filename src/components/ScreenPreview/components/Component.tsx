@@ -1,21 +1,25 @@
 import { getComponentConfig, getComponentDimension } from '@lidakai/utils';
 import EasyVComponent from './EasyVComponent';
-import { DataConfigs, DataType, OtherDataType, StaticDataType, TransformComponentType, TransformFilterType } from '@/type/screen.type';
+import { DataConfig, DataConfigs, DataType, OtherDataType, StaticDataType, TransformComponentType, TransformFilterType } from '@/type/screen.type';
 import { memo, useEffect, useMemo, useState } from 'react';
 import Animation from '@/components/Animation/AutoAnimation'
 import { useEvents } from "@/pages/hooks";
 import { sources } from '@/dataStore';
 import { useRecoilValue } from 'recoil';
 import { getSource } from '@/utils';
+import { filterData, mappingData } from '@/utils/filter';
+import { isEqual } from 'lodash-es';
 interface Props {
     hideDefault?: boolean;
     filters?: TransformFilterType[];
-    id: number; component: TransformComponentType; children?: TransformComponentType[];
+    id: number;
+    component: TransformComponentType;
+    children?: TransformComponentType[];
 }
 
 function Component({ id, component, children = [], hideDefault = false, filters = [] }: Props) {
     const sourcesById = useRecoilValue(sources);
-    const [comData, setComData] = useState<unknown[]>([]);
+    const [comData, setComData] = useState<unknown>([]);
     const { uniqueTag, config, name, dataConfigs, events, autoUpdate, actions, dataType } = component;
     const { width, height, left, top } = getComponentDimension(config);
     const comEvent = useEvents('component', id);
@@ -28,14 +32,19 @@ function Component({ id, component, children = [], hideDefault = false, filters 
         if (dataType === DataType.STATIC) {
             return data as DataConfigs['static']
         }
-        const newData = data?.data as OtherDataType;
+        const { data: newData } = data as { data: OtherDataType };
         const dataId = newData?.dataId;
         if (dataId) {
             const current = sourcesById[dataId];
             if (current) {
                 return {
                     ...data,
-                    data: current
+                    data: {
+                        ...current, config: {
+                            ...newData,
+                            ...current.config,
+                        }
+                    }
                 }
             }
         }
@@ -43,13 +52,21 @@ function Component({ id, component, children = [], hideDefault = false, filters 
             ...data,
             data: [],
         };
-    }, [dataType, sourcesById]);
+    }, [dataType, sourcesById, dataConfigs]);
 
     useEffect(() => {
         (async () => {
             const result = await getSource(dataConfig);
+            const { fields } = dataConfig as DataConfig;
+            let newData = filterData({
+                data: result,
+                filters,
+                callbackValues: {}
+            });
+            const data = mappingData(newData, fields);
+            setComData((x: unknown) => isEqual(x, data) ? x : data)
         })()
-    }, [autoUpdate, dataConfig]);
+    }, [dataConfig, autoUpdate, dataConfig, filters,]);
 
     const childrenConfig = children.map((child) => {
         const {
@@ -141,7 +158,7 @@ function Component({ id, component, children = [], hideDefault = false, filters 
         }}
     >
         <div
-            id={id + ''}
+            id={`component_${id}`}
             style={{
                 width,
                 height,
@@ -157,7 +174,7 @@ function Component({ id, component, children = [], hideDefault = false, filters 
 
                 <EasyVComponent
                     uniqueTag={uniqueTag}
-                    data={dataConfigs['static']?.data as StaticDataType}
+                    data={comData}
                     id={id}
                     bindedInteractionState={bindedInteractionState}
                     base={component.base}

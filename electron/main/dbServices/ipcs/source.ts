@@ -31,6 +31,30 @@ export const sourceIpc = () => {
             console.log('csv 文件不存在');
         }
     });
+
+    ipcMain.handle("source-api", async (event, { path,
+        encode }) => {
+        // const file = await readFile(path);
+
+        // if (file) {
+        //     let charset = 'gbk';
+        //     try {
+        //         charset = ['utf8', 'gbk'].includes(encode) ? encode : getCharset(jsCharDet.detect(file).encoding);
+        //     } catch (err) {
+        //         console.error(err);
+        //     }
+        //     const str = iconv.decode(file, charset)
+        //     // 解析 CSV 数据
+        //     const records = parse(str, {
+        //         columns: true,
+        //         skip_empty_lines: true
+        //     });
+        //     event.sender.send('source-api-send', records);
+        // } else {
+        //     console.log('csv 文件不存在');
+        // }
+    });
+
 };
 
 function getCharset(charset: string): string {

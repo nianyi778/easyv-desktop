@@ -1,5 +1,5 @@
 import { dbConnectionHand } from "./db/dbInit";
-import initIpc from "./router";
+import initIpc from "./ipcs";
 
 export const mainInitHand = async () => {
   await dbConnectionHand();

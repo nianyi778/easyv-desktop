@@ -17,8 +17,6 @@ export default function ComponentWrap({ id, hideDefault }: { id: number; hideDef
         return undefined;
     }, [component, filtersStore]);
 
-    console.log(comFilters, 'comFilters');
-
     const children = useMemo(() => {
         return Array.isArray(component.children) ? component.children.map(c => componentsById[c]) : undefined;
     }, [component, componentsById]);
