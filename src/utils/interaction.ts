@@ -139,7 +139,8 @@ function isOnCondition({ condition, data, getCallbackValue, index }: {
     let result = false;
     try {
         // eslint-disable-next-line no-eval
-        result = eval(`(function(data,getCallbackValue,index){${code}})(data,getCallbackValue,index)`);
+        const func = new Function('data', 'getCallbackValue', 'index', code as string);
+        result = func(data, getCallbackValue, index);
     } catch (error) {
         console.error(`自定义事件自定义条件执行时出错code:\n${code}`);
     }
