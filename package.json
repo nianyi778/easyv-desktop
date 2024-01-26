@@ -18,7 +18,11 @@
     "preview": "vite preview",
     "pree2e": "vite build --mode=test",
     "e2e": "playwright test",
-    "postinstall": "node node_modules/electron/install.js"
+    "postinstall": "node node_modules/electron/install.js",
+    "build:win": "npm run build && electron-builder --win --config",
+    "build:mac": "npm run build && electron-builder --mac --config",
+    "build:linux": "npm run build && electron-builder --linux --config",
+    "electron:generate-icons": "electron-icon-builder --input=./public/1024logo.png --output=build --flatten"
   },
   "dependencies": {
     "@ant-design/icons": "5.2.6",
@@ -88,6 +92,7 @@
     "csv-parse": "^5.5.3",
     "electron": "26.0.0",
     "electron-builder": "24.6.3",
+    "electron-icon-builder": "^2.0.1",
     "electron-rebuild": "3.2.9",
     "eslint": "8.56.0",
     "eslint-plugin-react-hooks": "4.6.0",

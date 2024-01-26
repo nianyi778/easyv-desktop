@@ -10,8 +10,6 @@ import { routers } from '@/router/index';
 import {
   RecoilRoot,
 } from 'recoil';
-import * as _ from 'lodash-es';
-window._ = _;
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>

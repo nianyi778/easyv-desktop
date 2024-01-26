@@ -37,7 +37,7 @@ export default function ContainerWrap({ id }: { id: string }) {
         }
     })
 
-    const containerData = container.dataConfigs[container.dataType]?.data;
+    const containerData = container.dataConfigs[container.dataType]?.data as unknown[];
 
     const { width, height, left, top } = getComponentDimension(container.config);
     const config = reduceConfig(container.config) as ComContainerReduceConfig;

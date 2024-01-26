@@ -171,7 +171,7 @@ const template: MenuItemConstructorOptions[] = [
     label: "帮助",
     submenu: [
       {
-        label: '文档',
+        label: '帮助与客服',
         click: async () => {
           const { shell } = require('electron')
           await shell.openExternal('https://easyv.cloud/help')
