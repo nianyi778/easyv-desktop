@@ -6,8 +6,14 @@ import jsCharDet from 'jschardet'
 import retry from 'async-retry'
 import { promisify } from 'util';
 import { Readable } from 'stream';
+import { join } from 'path';
+import customAxios from '../../utils/dataGet/request';
+import customMysql from '../../utils/dataGet/mysql';
+import { AxiosRequestConfig } from 'axios';
 
 export const sourceIpc = () => {
+
+
     ipcMain.handle("source-csv", async (event, { path,
         encode }) => {
         // 读取本地 CSV 文件
@@ -32,28 +38,56 @@ export const sourceIpc = () => {
         }
     });
 
-    ipcMain.handle("source-api", async (event, { path,
-        encode }) => {
-        // const file = await readFile(path);
 
-        // if (file) {
-        //     let charset = 'gbk';
-        //     try {
-        //         charset = ['utf8', 'gbk'].includes(encode) ? encode : getCharset(jsCharDet.detect(file).encoding);
-        //     } catch (err) {
-        //         console.error(err);
-        //     }
-        //     const str = iconv.decode(file, charset)
-        //     // 解析 CSV 数据
-        //     const records = parse(str, {
-        //         columns: true,
-        //         skip_empty_lines: true
-        //     });
-        //     event.sender.send('source-api-send', records);
-        // } else {
-        //     console.log('csv 文件不存在');
-        // }
+    ipcMain.handle("utils-request", async (event, {
+        baseURL,
+        headers,
+        method = 'GET',
+        params,
+        path,
+        body
+    }) => {
+        const url = join(baseURL, path);
+        const config: AxiosRequestConfig = {
+            url: url,
+            headers,
+            method,
+            params,
+            data: body
+        }
+        customAxios(config)
+            .then(res => {
+                if (res.status === 200) {
+                    const { data } = res;
+                    event.sender.send('utils-request-send', {
+                        success: true,
+                        data: Array.isArray(data) ? data : [data]
+                    });
+                } else {
+                    event.sender.send('utils-request-send', {
+                        success: false,
+                        data: []
+                    })
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                event.sender.send('utils-request-send', {
+                    success: false,
+                    data: []
+                })
+            });
     });
+
+
+    ipcMain.handle('source-mysql', async (event, config) => {
+        const result = await customMysql(config);
+        event.sender.send('source-mysql-send', {
+            success: !!result,
+            data: Array.isArray(result) ? result : []
+        })
+    })
+
 
 };
 

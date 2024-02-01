@@ -7,7 +7,7 @@ import ErrorBoundary from './ComErrorBoundary';
 import { getComponentConfig, getId } from '@lidakai/utils';
 import { ChildrenConfig } from '@/type/component.type';
 import { getActions } from '@/utils/interaction';
-import { ActionType, AnimateType, defaultActions } from '@/constants';
+import { ActionType, defaultActions } from '@/constants';
 import { Interaction } from '@/type/Interactions.type';
 import { useInteraction } from '@/pages/hooks';
 import { isEqual, isUndefined, omitBy } from 'lodash-es';

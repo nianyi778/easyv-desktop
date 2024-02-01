@@ -1,7 +1,6 @@
 import { getResourceFile } from './index';
 import { ipcRenderer } from 'electron';
 import { DataTypeNum } from '../type/screen.type';
-import path from 'path';
 
 export async function getSource(dataConfig: any) {
     return new Promise(async (resolve, reject) => {
@@ -39,6 +38,17 @@ export async function getSource(dataConfig: any) {
                     resolve(result.data);
                 });
             }
+
+
+            if (data.type === DataTypeNum.MYSQL) {
+                const password = 'b9cb73d145d9e088';
+                const { config } = dataConfig.data;
+                ipcRenderer.invoke('source-mysql', { ...config, password: password });
+                ipcRenderer.on('source-mysql-send', (_, result) => {
+                    resolve(result.data);
+                });
+            }
+
         } else {
             // filter(xxx);
             // setComData(data);

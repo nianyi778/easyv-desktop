@@ -3,6 +3,7 @@ import { release } from 'node:os'
 import { join } from 'node:path'
 import { update } from './update'
 import { mainInitHand } from './dbServices/dbServicesInit'
+
 // The built directory structure
 //
 // ├─┬ dist-electron
@@ -62,11 +63,11 @@ async function createWindow() {
     win.webContents.openDevTools()
   } else {
     // prod
+    win.webContents.openDevTools()
+    console.log(indexHtml, 'indexHtml');
     win.loadFile(
       indexHtml
     )
-    // Open devTool if the app is not packaged
-    win.webContents.openDevTools()
   }
 
   // Test actively push message to the Electron-Renderer

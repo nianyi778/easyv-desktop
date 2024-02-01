@@ -243,10 +243,15 @@ function getDataConfigs({
     try {
         Object.keys(newConfig).forEach(value => {
             const { data } = newConfig[value];
-            newConfig[value].data = {
-                ...data,
-                dataId: data.data_id,
+            if (data && data?.data_id) {
+                // 处理数据结构
+                const { data_id, ...rest } = data;
+                newConfig[value].data = {
+                    ...rest,
+                    dataId: data.data_id,
+                }
             }
+
         })
     } catch (err) {
         console.error(err);
