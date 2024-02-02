@@ -2,8 +2,7 @@ import { rmSync } from 'node:fs'
 import path from 'node:path'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import electron from 'vite-plugin-electron'
-import renderer from 'vite-plugin-electron-renderer'
+import electron from 'vite-plugin-electron/simple'
 import vitePluginImp from 'vite-plugin-imp'
 import pkg from './package.json'
 
@@ -57,15 +56,15 @@ export default defineConfig(({ command }) => {
           },
         ],
       }),
-      electron([
-        {
-          // Main-Process entry file of the Electron App.
+      electron({
+        main: {
+          // Shortcut of `build.lib.entry`
           entry: 'electron/main/index.ts',
-          onstart(options) {
+          onstart({ startup }) {
             if (process.env.VSCODE_DEBUG) {
               console.log(/* For `.vscode/.debug.script.mjs` */'[startup] Electron App')
             } else {
-              options.startup()
+              startup()
             }
           },
           vite: {
@@ -74,18 +73,19 @@ export default defineConfig(({ command }) => {
               minify: isBuild,
               outDir: 'dist-electron/main',
               rollupOptions: {
-                external: Object.keys('dependencies' in pkg ? pkg.dependencies : {}).concat('lodash-es/default'),
+                // Some third-party Node.js libraries may not be built correctly by Vite, especially `C/C++` addons, 
+                // we can use `external` to exclude them to ensure they work correctly.
+                // Others need to put them in `dependencies` to ensure they are collected into `app.asar` after the app is built.
+                // Of course, this is not absolute, just this way is relatively simple. :)
+                external: Object.keys('dependencies' in pkg ? pkg.dependencies : {}),
               },
             },
           },
         },
-        {
-          entry: 'electron/preload/index.ts',
-          onstart(options) {
-            // Notify the Renderer-Process to reload the page when the Preload-Scripts build is complete, 
-            // instead of restarting the entire Electron App.
-            options.reload()
-          },
+        preload: {
+          // Shortcut of `build.rollupOptions.input`.
+          // Preload scripts may contain Web assets, so use the `build.rollupOptions.input` instead `build.lib.entry`.
+          input: 'electron/preload/index.ts',
           vite: {
             build: {
               sourcemap: sourcemap ? 'inline' : undefined, // #332
@@ -96,27 +96,13 @@ export default defineConfig(({ command }) => {
               },
             },
           },
-        }
-      ]),
-      // Use Node.js API in the Renderer-process
-      renderer(),
+        },
+        // Ployfill the Electron and Node.js API for Renderer process.
+        // If you want use Node.js in Renderer process, the `nodeIntegration` needs to be enabled in the Main process.
+        // See 👉 https://github.com/electron-vite/vite-plugin-electron-renderer
+        renderer: {},
+      }),
     ],
-
-    // proxy: {
-    //   '/api': {
-    //     target: 'http://localhost:3000', // 实际接口的地址
-    //     changeOrigin: true,
-    //     rewrite: (path) => path.replace(/^\/api/, ''), // 去除 '/api' 前缀
-    //     onProxyReq: (proxyReq, req, res) => {
-    //       // 自定义处理请求的逻辑
-    //       // 例如，将请求转发到本地文件夹下的文件
-    //       if (req.url.startsWith('/api/static')) {
-    //         const filePath = req.url.replace('/api/static', '/path/to/local/folder');
-    //         proxyReq.path = filePath;
-    //       }
-    //     },
-    //   },
-    // },
     server: process.env.VSCODE_DEBUG && (() => {
       const url = new URL(pkg.debug.env.VITE_DEV_SERVER_URL)
       return {

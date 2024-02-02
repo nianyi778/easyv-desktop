@@ -4,7 +4,7 @@ import { CSSProperties, memo, useMemo, useEffect, useRef, useState } from "react
 import ScreenPreview from '../index';
 import { ScreenEnumType } from "@/type/screen.type";
 import * as d3 from 'd3';
-import isNumber from "lodash/isNumber";
+import isNumber from "lodash-es/isNumber";
 import { setIntervalRAF } from "@/utils";
 
 /**

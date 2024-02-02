@@ -1,10 +1,12 @@
 import { app, BrowserWindow, shell, ipcMain, Menu, MenuItemConstructorOptions } from 'electron'
 import { release } from 'node:os'
-import path, { join } from 'node:path'
 import { update } from './update'
-import { format as formatUrl } from 'url'
-import { mainInitHand } from './dbServices/dbServicesInit'
+// import { mainInitHand } from './dbServices/dbServicesInit'
+import { join, dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 // The built directory structure
 //
 // ├─┬ dist-electron
@@ -15,9 +17,8 @@ import { mainInitHand } from './dbServices/dbServicesInit'
 // ├─┬ dist
 // │ └── index.html    > Electron-Renderer
 //
-process.env.DIST_ELECTRON = join(__dirname, '../')
+process.env.DIST_ELECTRON = join(__dirname, '..')
 process.env.DIST = join(process.env.DIST_ELECTRON, '../dist')
-
 process.env.VITE_PUBLIC = process.env.VITE_DEV_SERVER_URL
   ? join(process.env.DIST_ELECTRON, '../public')
   : process.env.DIST
@@ -65,16 +66,7 @@ async function createWindow() {
     win.webContents.openDevTools()
   } else {
     // prod
-    win.webContents.openDevTools()
-    console.log(indexHtml, 'indexHtml');
-    win.loadURL(formatUrl({
-      pathname: path.join(__dirname, 'index.html'),
-      protocol: 'file',
-      slashes: true
-    }))
-    // win.loadFile(
-    //   indexHtml
-    // )
+    win.loadFile(indexHtml)
   }
 
   // Test actively push message to the Electron-Renderer
@@ -95,7 +87,7 @@ async function createWindow() {
 
 app.whenReady().then(() => {
   createWindow();
-  mainInitHand()
+  // mainInitHand()
 })
 
 app.on('window-all-closed', () => {
