@@ -1,7 +1,8 @@
 import { app, BrowserWindow, shell, ipcMain, Menu, MenuItemConstructorOptions } from 'electron'
 import { release } from 'node:os'
-import { join } from 'node:path'
+import path, { join } from 'node:path'
 import { update } from './update'
+import { format as formatUrl } from 'url'
 import { mainInitHand } from './dbServices/dbServicesInit'
 
 // The built directory structure
@@ -16,6 +17,7 @@ import { mainInitHand } from './dbServices/dbServicesInit'
 //
 process.env.DIST_ELECTRON = join(__dirname, '../')
 process.env.DIST = join(process.env.DIST_ELECTRON, '../dist')
+
 process.env.VITE_PUBLIC = process.env.VITE_DEV_SERVER_URL
   ? join(process.env.DIST_ELECTRON, '../public')
   : process.env.DIST
@@ -65,9 +67,14 @@ async function createWindow() {
     // prod
     win.webContents.openDevTools()
     console.log(indexHtml, 'indexHtml');
-    win.loadFile(
-      indexHtml
-    )
+    win.loadURL(formatUrl({
+      pathname: path.join(__dirname, 'index.html'),
+      protocol: 'file',
+      slashes: true
+    }))
+    // win.loadFile(
+    //   indexHtml
+    // )
   }
 
   // Test actively push message to the Electron-Renderer
