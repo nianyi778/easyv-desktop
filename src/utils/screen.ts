@@ -1,6 +1,4 @@
-import fs from 'fs';
-import { checkFilePath } from './file';
-import path from 'path';
+
 import { ScreenJsonType, ScreenPreviewType, ComponentConfig, TransformComponentContainerType, SourceConfig, TransformPanelType, TransformScreenType, TransformContainerType, TransformComponentType, ComponentContainerConfig, ContainerConfig, ScreenType, PanelConfig, DataConfigs } from '@/type/screen.type';
 import { TransformSource } from '@/type/source.type';
 
@@ -8,19 +6,15 @@ import { TransformSource } from '@/type/source.type';
  * @description 获取当前本地存在的所有大屏列表
  * @returns 大屏列表json
 */
-export function getScreens() {
-    const filePath = checkFilePath('/screenConfig/', false);
-    const files = fs.readdirSync(filePath);
-    const screens: any[] = [];
-    files.filter(d => d).forEach(file => {
-        try {
-            const result = fs.readFileSync(path.join(filePath, file), 'utf-8');
-            screens.push(JSON.parse(result))
-        } catch (e) {
-            console.log(e, file);
-        }
+export async function getScreens(): Promise<any[]> {
+    return new Promise((resolve) => {
+        const { ipcRenderer } = window;
+        ipcRenderer.invoke('get-screen');
+        ipcRenderer.on('get-screen-send', (_: any, args: any[]) => {
+            console.log(args);
+            resolve(args);
+        });
     })
-    return screens;
 }
 
 
@@ -29,18 +23,14 @@ export function getScreens() {
  * @param id  The id of the screen
  * @returns 返回单个大屏json文件
  * */
-export function getScreenData(id: string | number) {
-    const filePath = checkFilePath('/screenConfig/' + id + '.json');
-    let data;
-    if (filePath && id) {
-        try {
-            const result = fs.readFileSync(path.join(filePath), 'utf-8');
-            data = JSON.parse(result);
-        } catch (e) {
-            console.log(e);
-        }
-    }
-    return data;
+export function getScreenData(id: string | number): Promise<ScreenJsonType> {
+    return new Promise((resolve) => {
+        const { ipcRenderer } = window;
+        ipcRenderer.invoke('get-screen-data', id);
+        ipcRenderer.on('get-screen-data-send', (_: any, args: ScreenJsonType) => {
+            resolve(args);
+        });
+    })
 }
 
 /**

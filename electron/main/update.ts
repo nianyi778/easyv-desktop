@@ -1,29 +1,25 @@
 import { app, ipcMain } from 'electron'
-import {
-  type ProgressInfo,
-  type UpdateDownloadedEvent,
-  autoUpdater
-} from 'electron-updater'
+import pkg, { UpdateDownloadedEvent, ProgressInfo } from 'electron-updater'
+const { autoUpdater } = pkg
 
 export function update(win: Electron.BrowserWindow) {
-
-  // When set to false, the update download will be triggered through the API
+  // 当设置为 false 时，更新下载将通过 API 触发
   autoUpdater.autoDownload = false
   autoUpdater.disableWebInstaller = false
   autoUpdater.allowDowngrade = false
 
-  // start check
+  // 开始检查更新
   autoUpdater.on('checking-for-update', function () { })
-  // update available
+  // 更新可用
   autoUpdater.on('update-available', (arg) => {
     win.webContents.send('update-can-available', { update: true, version: app.getVersion(), newVersion: arg?.version })
   })
-  // update not available
+  // 更新不可用
   autoUpdater.on('update-not-available', (arg) => {
     win.webContents.send('update-can-available', { update: false, version: app.getVersion(), newVersion: arg?.version })
   })
 
-  // Checking for updates
+  // 检查更新
   ipcMain.handle('check-update', async () => {
     if (!app.isPackaged) {
       const error = new Error('The update feature is only available after the package.')
@@ -37,26 +33,26 @@ export function update(win: Electron.BrowserWindow) {
     }
   })
 
-  // Start downloading and feedback on progress
+  // 开始下载并反馈进度
   ipcMain.handle('start-download', (event) => {
     startDownload(
       (error, progressInfo) => {
         if (error) {
-          // feedback download error message
+          // 反馈下载错误消息
           event.sender.send('update-error', { message: error.message, error })
         } else {
-          // feedback update progress message
+          // 反馈更新进度消息
           event.sender.send('download-progress', progressInfo)
         }
       },
       () => {
-        // feedback update downloaded message
+        // 反馈更新下载完成消息
         event.sender.send('update-downloaded')
       }
     )
   })
 
-  // Install now
+  // 立即安装
   ipcMain.handle('quit-and-install', () => {
     autoUpdater.quitAndInstall(false, true)
   })

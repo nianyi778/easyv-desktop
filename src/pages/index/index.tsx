@@ -14,8 +14,8 @@ function Index() {
         onHide();
     }, [])
 
-    const onHide = function () {
-        const screen = getScreens();
+    const onHide = async function () {
+        const screen = await getScreens();
         setScreens(screen);
     }
 

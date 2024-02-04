@@ -1,7 +1,7 @@
 import { app, BrowserWindow, shell, ipcMain, Menu, MenuItemConstructorOptions } from 'electron'
 import { release } from 'node:os'
 import { update } from './update'
-// import { mainInitHand } from './dbServices/dbServicesInit'
+import { mainInitHand } from './dbServices/dbServicesInit'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -41,23 +41,22 @@ if (!app.requestSingleInstanceLock()) {
 
 let win: BrowserWindow | null = null
 // Here, you can also use other preload
-const preload = join(__dirname, '../preload/index.js')
+const preload = join(__dirname, '../preload/index.mjs')
 const url = process.env.VITE_DEV_SERVER_URL
 const indexHtml = join(process.env.DIST, 'index.html')
+
+const webPreferencesConfig = {
+  preload,
+  nodeIntegration: true,
+  // contextIsolation: false, // 禁用安全策略
+  webSecurity: false, // 禁用同源策略
+}
 
 async function createWindow() {
   win = new BrowserWindow({
     title: 'EasyV',
     icon: join(process.env.VITE_PUBLIC, 'favicon.ico'),
-    webPreferences: {
-      preload,
-      // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
-      // Consider using contextBridge.exposeInMainWorld
-      // Read more on https://www.electronjs.org/docs/latest/tutorial/context-isolation
-      nodeIntegration: true,
-      contextIsolation: false,
-      webSecurity: false, // 禁用同源策略
-    },
+    webPreferences: webPreferencesConfig,
   })
 
   if (url) { // electron-vite-vue#298
@@ -87,7 +86,7 @@ async function createWindow() {
 
 app.whenReady().then(() => {
   createWindow();
-  // mainInitHand()
+  mainInitHand()
 })
 
 app.on('window-all-closed', () => {
@@ -114,11 +113,7 @@ app.on('activate', () => {
 // New window example arg: new windows url
 ipcMain.handle('open-win', (_, arg) => {
   const childWindow = new BrowserWindow({
-    webPreferences: {
-      preload,
-      nodeIntegration: true,
-      contextIsolation: false,
-    },
+    webPreferences: webPreferencesConfig,
   })
 
   if (process.env.VITE_DEV_SERVER_URL) {
@@ -127,6 +122,7 @@ ipcMain.handle('open-win', (_, arg) => {
     childWindow.loadFile(indexHtml, { hash: arg })
   }
 })
+
 
 
 const isMac = process.platform === 'darwin'

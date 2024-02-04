@@ -1,8 +1,9 @@
 import { getResourceFile } from './index';
-import { ipcRenderer } from 'electron';
+// import { ipcRenderer } from 'electron';
 import { DataTypeNum } from '../type/screen.type';
 
 export async function getSource(dataConfig: any) {
+    const { ipcRenderer } = window;
     return new Promise(async (resolve, reject) => {
         const { data } = dataConfig;
         if (data && data?.dataId) {
@@ -15,7 +16,7 @@ export async function getSource(dataConfig: any) {
                     path,
                     encode
                 });
-                ipcRenderer.on('source-csv-send', (_, args) => {
+                ipcRenderer.on('source-csv-send', (_: any, args: unknown) => {
                     resolve(args);
                 });
             }
@@ -34,7 +35,7 @@ export async function getSource(dataConfig: any) {
                 ipcRenderer.invoke('utils-request', {
                     headers: newHeaders, params: paramsParse, body: newBody, baseURL, path
                 });
-                ipcRenderer.on('utils-request-send', (_, result) => {
+                ipcRenderer.on('utils-request-send', (_: any, result: { data: unknown; }) => {
                     resolve(result.data);
                 });
             }
@@ -44,7 +45,7 @@ export async function getSource(dataConfig: any) {
                 const password = 'b9cb73d145d9e088';
                 const { config } = dataConfig.data;
                 ipcRenderer.invoke('source-mysql', { ...config, password: password });
-                ipcRenderer.on('source-mysql-send', (_, result) => {
+                ipcRenderer.on('source-mysql-send', (_: any, result: { data: unknown; }) => {
                     resolve(result.data);
                 });
             }

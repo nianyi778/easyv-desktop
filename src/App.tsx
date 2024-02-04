@@ -1,10 +1,10 @@
 import { Outlet } from 'react-router-dom'
 import './App.css'
 // import Header from './components/header';
-import { ipcRenderer } from 'electron'
 import { useEffect, useState } from 'react';
 
 function App() {
+  const { ipcRenderer } = window;
   const [isRender, setRender] = useState(false);
   useEffect(() => {
     (async () => {

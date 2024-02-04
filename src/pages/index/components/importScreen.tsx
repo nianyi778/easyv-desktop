@@ -38,7 +38,7 @@ export default function ImportScreen({ children, onHide }: { children: ReactNode
             const { file, fileList } = info;
             const cur = fileList.find((d: { uid: any; }) => d.uid === file.uid);
             if (cur) {
-                const result = extractJsonFromZip(
+                const result = await extractJsonFromZip(
                     cur?.originFileObj?.path as string,
                 )
                 createJson(result);

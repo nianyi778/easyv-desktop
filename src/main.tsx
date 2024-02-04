@@ -1,6 +1,5 @@
 import React, { Suspense } from 'react'
 import ReactDOM from 'react-dom/client'
-import './samples/node-api'
 import './index.css'
 import { RouterProvider } from 'react-router-dom';
 import { ConfigProvider, theme } from 'antd';

@@ -1,4 +1,4 @@
-import { ipcRenderer } from 'electron'
+// import { ipcRenderer } from 'electron'
 import type { ProgressInfo } from 'electron-updater'
 import { useCallback, useEffect, useState } from 'react'
 import Modal from '@/components/update/Modal'
@@ -6,6 +6,7 @@ import Progress from '@/components/update/Progress'
 import './update.css'
 
 const Update = () => {
+  const { ipcRenderer } = window;
   const [checking, setChecking] = useState(false)
   const [updateAvailable, setUpdateAvailable] = useState(false)
   const [versionInfo, setVersionInfo] = useState<VersionInfo>()

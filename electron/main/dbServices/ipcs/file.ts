@@ -1,5 +1,7 @@
 import { ipcMain } from "electron";
 import fs from 'fs';
+import path from "path";
+import { checkFilePath } from "../../utils";
 
 export const getFile = () => {
     ipcMain.handle('convertFileToBase64', (_, filePath: string) => {
@@ -15,5 +17,24 @@ export const getFile = () => {
             console.error('Error converting file to Base64:', error);
             return null;
         }
+    })
+
+
+    ipcMain.handle('createJson', (_, data: Record<string, unknown>) => {
+        const filePath = checkFilePath('/screenConfig/', true);
+        filePath && Object.keys(data).forEach(value => {
+            // 将 JavaScript 对象转换为 JSON 字符串
+            const jsonData = JSON.stringify(data[value]);
+            // 写入文件，覆盖已存在的文件
+            fs.writeFileSync(path.join(filePath, `${value}.json`), jsonData);
+            console.log(value, 'JSON 文件写入成功！');
+        })
+    })
+
+    ipcMain.handle('checkFilePath', (event, {
+        src = '', isReadOnly = true
+    }) => {
+        const filePath = checkFilePath(src, isReadOnly);
+        event.sender.send('checkFilePath-send', filePath)
     })
 };

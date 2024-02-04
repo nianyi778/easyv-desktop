@@ -3,6 +3,7 @@ import { getPath } from './appPath';
 import { getFile } from './file';
 import { sourceIpc } from './source';
 import { initUtilsIpc } from './utils';
+import { Screen } from './screen';
 
 export default function initIpc() {
     initUserIpc();
@@ -10,4 +11,5 @@ export default function initIpc() {
     getFile();
     sourceIpc();
     initUtilsIpc();
+    Screen();
 }

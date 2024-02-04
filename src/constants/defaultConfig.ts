@@ -1,5 +1,7 @@
-export const defaultScreenImg = '../../public/default_screen.png';
+import default_screen from '@/assets/default_screen.png';
 
+
+export const defaultScreenImg = default_screen;
 
 export enum ActionType {
     Show = 'show',

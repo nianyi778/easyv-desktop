@@ -16,7 +16,7 @@ export function useGetScreen(): (id: number | string) => Promise<ScreenPreviewTy
 
     const getScreeData = useCallback(async (id: number | string) => {
         if (id) {
-            const data = getScreenData(id);
+            const data = await getScreenData(id);
             if (data) {
                 const result = cleanLargeScreenData(data);
                 if (result) {
