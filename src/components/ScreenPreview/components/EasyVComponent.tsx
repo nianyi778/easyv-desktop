@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState, memo } from 'react';
 import { define, modules, moduleDependencies, dependencyModules } from '@/utils/define';
-import { Events, StaticDataType, TransformComponentType } from '@/type/screen.type';
+import { Events, TransformComponentType } from '@/type/screen.type';
 import LoadingSpinner from '@/components/LoadingAnimation';
 import ComponentEmpty from '@/components/ComponentEmpty';
 import ErrorBoundary from './ComErrorBoundary';

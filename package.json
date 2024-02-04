@@ -14,8 +14,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build:icon": "npm run electron:generate-icons",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build && npm run electron:generate-icons",
     "preview": "vite preview",
     "pree2e": "vite build --mode=test",
     "rebuild": "electron-rebuild -f -w better-sqlite3",
@@ -24,7 +23,7 @@
     "build:win": "npm run build && electron-builder --win --config",
     "build:mac": "npm run build && electron-builder --mac --config",
     "build:linux": "npm run build && electron-builder --linux --config",
-    "electron:generate-icons": "electron-icon-builder --input=./resources/1024logo.png --output=build --flatten"
+    "electron:generate-icons": "electron-icon-builder --input=./resources/1024logo.png --output=public --flatten"
   },
   "dependencies": {
     "@ant-design/icons": "5.2.6",

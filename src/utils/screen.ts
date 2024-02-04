@@ -11,7 +11,6 @@ export async function getScreens(): Promise<any[]> {
         const { ipcRenderer } = window;
         ipcRenderer.invoke('get-screen');
         ipcRenderer.on('get-screen-send', (_: any, args: any[]) => {
-            console.log(args);
             resolve(args);
         });
     })
