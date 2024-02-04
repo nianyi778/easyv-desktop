@@ -3,7 +3,7 @@
 
 interface Window {
     define: any;
-    join: (...args) => string;
+    _: any;
     ipcRenderer: any;
     component: Record<string, unknown>;
     appConfig: {
