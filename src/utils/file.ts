@@ -1,7 +1,8 @@
 
 function join(...paths: string[]) {
-    const normalizedPaths = paths.map((path) => path.replace(/\/$/, ''));
-    return normalizedPaths.join('/');
+    const separator = '/';
+    const normalizedPaths = paths.map((path) => path.replace(new RegExp(`^${separator}|${separator}$`, 'g'), ''));
+    return normalizedPaths.join(separator);
 }
 
 
