@@ -24,9 +24,12 @@ function ScreenPreview({ layers }: { layers: TransformScreenType['layers']; }) {
 
             }
             if (isGroup(layer.id as string)) {
-                return <GroupWrap key={layer.id} config={{
-                    opacity: layer.opacity || 1
-                }} id={layer.id as string} components={layer.components as Layer[]} />
+                const { hideDefault } = layer;
+                return <GroupWrap key={layer.id}
+                    hideDefault={hideDefault}
+                    config={{
+                        opacity: layer.opacity || 1
+                    }} id={layer.id as string} components={layer.components as Layer[]} />
             }
             return null;
         }).filter(d => d)

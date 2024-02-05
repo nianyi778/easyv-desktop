@@ -1,6 +1,6 @@
 import { getComponentConfig, getComponentDimension } from '@lidakai/utils';
 import EasyVComponent from './EasyVComponent';
-import { DataConfig, DataConfigs, DataType, OtherDataType, StaticDataType, TransformComponentType, TransformFilterType } from '@/type/screen.type';
+import { DataConfig, DataConfigs, DataType, OtherDataType, TransformComponentType, TransformFilterType } from '@/type/screen.type';
 import { memo, useEffect, useMemo, useState } from 'react';
 import Animation from '@/components/Animation/AutoAnimation'
 import { useEvents } from "@/pages/hooks";

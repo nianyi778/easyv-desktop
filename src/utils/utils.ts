@@ -3,6 +3,10 @@ export function isPanel(id: string): boolean {
     return /^panel_/.test(id) || /^\$panel\((panel_[0-9]+)\)/.test(id);
 }
 
+export function isGeneralPanel(id: string) {
+    return isPanel(id) || isRefScreen(id);
+}
+
 // 组件容器
 export function isContainerChildren(id: string): boolean {
     return /^\$container_[0-9]+\([container|component|group].+\)/.test(id);

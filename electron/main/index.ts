@@ -48,7 +48,7 @@ const indexHtml = join(process.env.DIST, 'index.html')
 const webPreferencesConfig = {
   preload,
   nodeIntegration: true,
-  // contextIsolation: false, // 禁用安全策略
+  contextIsolation: true, // 禁用安全策略
   webSecurity: false, // 禁用同源策略
 }
 

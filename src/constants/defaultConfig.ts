@@ -15,6 +15,7 @@ export enum ActionType {
     AutoSwitchState = 'autoSwitchState',
     UpdateConfig = 'updateConfig',
     SetIndex = 'setIndex',
+    switchView = 'switchView',
 }
 
 export const defaultActions = [

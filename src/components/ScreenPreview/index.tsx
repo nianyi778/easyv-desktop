@@ -18,6 +18,7 @@ export default function ScreenMain({ screenId, type, width, height }: { screenId
             if (screenId && !data) {
                 (async () => {
                     const result = await getScreeData(screenId);
+
                     if (result) {
                         const screen = result?.screens.find(d => d.id === screenId);
                         screen && setScreen(screen);
@@ -36,6 +37,7 @@ export default function ScreenMain({ screenId, type, width, height }: { screenId
 
 
     }, [screenId, screensById])
+
 
     if (!screen) {
         return null;

@@ -54,6 +54,14 @@ export function useCustomEvent(id: string | number) {
         }
     }, [id, setInteraction, interaction]);
 
+
+    const eventDispatch = useCallback((config: Interaction) => {
+        const event: any = new Event(`${config.type}_${config.component}`);
+        event.data = config.data;
+        event.dynamicData = config.dynamicData;
+        document.dispatchEvent(event);
+    }, []);
+
     useEffect(() => {
         const t = queueWorker.addEventListener((args) => {
             if (args && args.component === id) {
@@ -62,6 +70,7 @@ export function useCustomEvent(id: string | number) {
                         setIndexEvent(args);
                         break;
                     default:
+                        eventDispatch(args);
                         console.log(args, '自定义事件');
                         break;
                 }

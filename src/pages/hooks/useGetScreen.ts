@@ -1,9 +1,10 @@
 import { comContainers, components, containers, filters, panels, screens, sources } from "@/dataStore";
 import { ScreenPreviewType } from "@/type/screen.type";
-import { getScreenData, cleanLargeScreenData } from "@/utils";
-import { arrayToObj } from "@lidakai/utils";
+import { getScreenData, cleanLargeScreenData, } from "@/utils";
+import { arrayToObj, } from "@lidakai/utils";
 import { useCallback, } from "react";
 import { useSetRecoilState } from "recoil";
+import { useInitEvent } from "./useInteraction";
 
 export function useGetScreen(): (id: number | string) => Promise<ScreenPreviewType | null> {
     const setScreensById = useSetRecoilState(screens);
@@ -13,6 +14,7 @@ export function useGetScreen(): (id: number | string) => Promise<ScreenPreviewTy
     const setComContainersById = useSetRecoilState(comContainers);
     const setComponentsById = useSetRecoilState(components);
     const setSourcesById = useSetRecoilState(sources);
+    const handleEventInit = useInitEvent();
 
     const getScreeData = useCallback(async (id: number | string) => {
         if (id) {
@@ -27,6 +29,17 @@ export function useGetScreen(): (id: number | string) => Promise<ScreenPreviewTy
                     await setPanelsById((p => ({ ...p, ...arrayToObj(panel) })));
                     await setContainersById(c => ({ ...c, ...arrayToObj(containers) }));
                     await setComContainersById(c => ({ ...c, ...arrayToObj(componentContainers) }));
+
+                    const screen = result.screens.find(s => s.id === id);
+                    if (screen) {
+                        const { layers, componentContainerId } = screen;
+                        handleEventInit({
+                            components,
+                            isContainerSubScreen: !!componentContainerId,
+                            layers: layers,
+                        })
+                    }
+
                     await setComponentsById(c => ({ ...c, ...arrayToObj(components) }));
                     // 统计事件
                     return result;
@@ -38,3 +51,4 @@ export function useGetScreen(): (id: number | string) => Promise<ScreenPreviewTy
 
     return getScreeData;
 }
+

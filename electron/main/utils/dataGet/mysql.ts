@@ -1,4 +1,3 @@
-import { isEmpty } from 'lodash-es';
 import mysql from 'mysql2/promise';
 
 export default async function customMysql(config: {

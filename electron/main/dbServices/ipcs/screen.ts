@@ -6,7 +6,6 @@ import { checkFilePath, extractJsonFromZip } from "../../utils";
 export const Screen = () => {
     ipcMain.handle('get-screen', (event) => {
         const filePath = checkFilePath('/screenConfig/', false);
-        console.log(filePath, 'file')
         const files = fs.readdirSync(filePath);
         const screens: any[] = [];
         files.filter((d: any) => d).forEach((file: any) => {

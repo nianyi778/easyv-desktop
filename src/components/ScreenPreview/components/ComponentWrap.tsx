@@ -7,6 +7,7 @@ import { useRecoilValue } from 'recoil';
 export default function ComponentWrap({ id, hideDefault }: { id: number; hideDefault?: boolean }) {
     const componentsById = useRecoilValue(components);
     const filtersStore = useRecoilValue(filters);
+
     const component = componentsById[id];
     const comFilters = useMemo(() => {
         const { useFilter, filters } = component;

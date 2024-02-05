@@ -1,8 +1,27 @@
 
 function join(...paths: string[]) {
     const separator = '/';
-    const normalizedPaths = paths.map((path) => path.replace(new RegExp(`^${separator}|${separator}$`, 'g'), ''));
-    return normalizedPaths.join(separator);
+    let joinedPath = paths.join(separator);
+
+    // Check if the path starts with a protocol (e.g., file://, http://, https://)
+    const hasProtocol = /^(file|http|https):\/\//.test(joinedPath);
+
+    if (hasProtocol) {
+        // Extract the protocol and the path
+        const protocolIndex = joinedPath.indexOf(':///');
+        const protocol = joinedPath.slice(0, protocolIndex + 3);
+        const path = joinedPath.slice(protocolIndex + 3);
+
+        // Remove redundant slashes from the path
+        const normalizedPath = path.replace(/\/+/g, '/');
+
+        return protocol + normalizedPath;
+    }
+
+    // Remove redundant slashes from the path
+    const normalizedPath = joinedPath.replace(/\/+/g, '/');
+
+    return normalizedPath;
 }
 
 

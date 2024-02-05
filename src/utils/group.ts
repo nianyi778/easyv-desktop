@@ -7,36 +7,26 @@ export interface SizeType {
     height: number;
 }
 
-export interface ComputeSizeType extends SizeType {
-    minLeft: number;
-    minTop: number;
-}
-
-
-export function reduceCompute(data: SizeType[]): ComputeSizeType {
+export function reduceCompute(data: SizeType[]): SizeType {
 
     const defaultSize = {
         width: 0,
         height: 0,
         left: 0,
         top: 0,
-        minLeft: 0,
-        minTop: 0
     }
 
     if (Array.isArray(data) && data.length) {
         const minTop = calculateSize(data, 'top', 'min');
         const minLeft = calculateSize(data, 'left', 'min');
-        const { width: maxWidth, left: maxLeft } = calculateSize(data, 'left.width.left', 'max');
+        const maxWidth = calculateSize(data, 'width', 'max');
         const { height: maxHeight, top: maxTop } = calculateSize(data, 'top.height.top', 'max');
 
         return {
-            width: maxWidth + (maxLeft - minLeft),
+            width: maxWidth,
             height: maxHeight + (maxTop - minTop),
             left: minLeft,
-            top: minTop,
-            minLeft: minLeft,
-            minTop: minTop
+            top: minTop
         }
     }
 

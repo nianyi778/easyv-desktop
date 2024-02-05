@@ -56,6 +56,7 @@ export interface PanelConfig {
 export interface TransformScreenType {
     id: ScreenType['id'];
     name: ScreenType['name'];
+    componentContainerId?: number;
     config: unknown[];
     layers: Layer[];
     components: number[];
