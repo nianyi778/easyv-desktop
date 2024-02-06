@@ -30,15 +30,15 @@ export function useGetScreen(): (id: number | string) => Promise<ScreenPreviewTy
                     await setContainersById(c => ({ ...c, ...arrayToObj(containers) }));
                     await setComContainersById(c => ({ ...c, ...arrayToObj(componentContainers) }));
 
-                    const screen = result.screens.find(s => s.id === id);
-                    if (screen) {
-                        const { layers, componentContainerId } = screen;
-                        handleEventInit({
-                            components,
-                            isContainerSubScreen: !!componentContainerId,
-                            layers: layers,
-                        })
-                    }
+                    // 事件初始化
+                    // await Promise.all(result.screens.map(screen => {
+                    //     const { layers, componentContainerId } = screen;
+                    //     return handleEventInit({
+                    //         components,
+                    //         isContainerSubScreen: !!componentContainerId,
+                    //         layers: layers,
+                    //     })
+                    // }))
 
                     await setComponentsById(c => ({ ...c, ...arrayToObj(components) }));
                     // 统计事件

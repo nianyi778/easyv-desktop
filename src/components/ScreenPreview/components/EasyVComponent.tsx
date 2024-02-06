@@ -148,9 +148,9 @@ function EasyVComponent(
             if (value?.animation?.delay > 0) {
                 let t = setTimeout(() => {
                     dispatchEvent(otherInfo);
-                    ref.current = ref.current.filter(r => r !== t);
+                    // ref.current = ref.current.filter(r => r !== t);
                 }, value.animation.delay);
-                ref.current.push(t);
+                // ref.current.push(t);
             } else {
                 dispatchEvent(otherInfo);
             }
@@ -178,7 +178,7 @@ function EasyVComponent(
                 );
             }
         }
-    }, [id]);
+    }, [id, events, childrenEvents]);
     const postMessage = useCallback(() => { }, []);
     const handleEmitEvent = useCallback((payload: unknown) => {
         console.log(payload, 'handleEmitEvent')

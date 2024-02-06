@@ -81,9 +81,6 @@ export default function GroupWrap({ id, components: layers, config, hideDefault 
         show: !hideDefault,
     };
 
-    console.log(iActiveState, groupEvent, iState, defaultState, id);
-
-
     return <Animation id={id}
         iState={iState || defaultState}
         iActiveState={iActiveState}

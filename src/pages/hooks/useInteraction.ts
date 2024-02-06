@@ -97,7 +97,9 @@ export function useInitEvent() {
     const setInteraction = useSetRecoilState(interactions);
 
     const handleEventInit = useCallback((payload: { components: any; layers: any; isContainerSubScreen: any; }) => {
-        setInteraction((inits) => eventInit(payload, inits))
+        setInteraction((inits = []) => {
+            return eventInit(payload, inits);
+        })
     }, [setInteraction]);
 
     return handleEventInit;
@@ -107,7 +109,7 @@ export function useInitEvent() {
 function eventInit(payload: { components: any; layers: any; isContainerSubScreen: any; }, states: Interaction[]) {
     const { components, layers, isContainerSubScreen } = payload;
     const interactions = getInteractions(components, layers, isContainerSubScreen);
-    const result = interactions.reduce((all: any[], item: { id: any; state: any; controllers: any; }) => {
+    return interactions.reduce((all: any[], item: { id: any; state: any; controllers: any; }) => {
         const exist = all.find((o) => o.id === item.id);
 
         if (exist) {
@@ -118,9 +120,7 @@ function eventInit(payload: { components: any; layers: any; isContainerSubScreen
             return all;
         }
         return all.concat(item);
-    }, [states]);
-
-    return result;
+    }, states);
 }
 
 export const getInteractions = (components: any[], layers: any[], isContainerSubScreen: any) => {
@@ -134,6 +134,7 @@ export const getInteractions = (components: any[], layers: any[], isContainerSub
                 // 动态面板特殊处理，将所有的动态面板都存进interactions中
                 all.push({
                     id: item.id,
+                    component: item.id,
                     state: {
                         show: !item.hideDefault,
                         unmount: true,
@@ -144,6 +145,7 @@ export const getInteractions = (components: any[], layers: any[], isContainerSub
             } else if (isContainer(item.id)) {
                 all.push({
                     id: item.id,
+                    component: item.id,
                     state: {
                         show: !item.hideDefault,
                         unmount: true,
@@ -153,6 +155,7 @@ export const getInteractions = (components: any[], layers: any[], isContainerSub
                 });
             } else if (item.hideDefault) {
                 all.push({
+                    component: item.id,
                     id: item.id,
                     state: {
                         show: false,
@@ -177,6 +180,7 @@ export const getInteractions = (components: any[], layers: any[], isContainerSub
                         all.push(
                             ...defaultHideChildren.map((d: { id: any; }) => ({
                                 id: d.id,
+                                component: item.id,
                                 state: {
                                     show: false,
                                     unmount: true,
@@ -213,6 +217,7 @@ export const getInteractions = (components: any[], layers: any[], isContainerSub
                             if (index < 0) {
                                 result = result.concat([
                                     {
+                                        component: id,
                                         id,
                                         state: {
                                             show: true,
