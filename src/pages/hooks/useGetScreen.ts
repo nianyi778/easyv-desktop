@@ -14,7 +14,7 @@ export function useGetScreen(): (id: number | string) => Promise<ScreenPreviewTy
     const setComContainersById = useSetRecoilState(comContainers);
     const setComponentsById = useSetRecoilState(components);
     const setSourcesById = useSetRecoilState(sources);
-    const handleEventInit = useInitEvent();
+    // const handleEventInit = useInitEvent();
 
     const getScreeData = useCallback(async (id: number | string) => {
         if (id) {

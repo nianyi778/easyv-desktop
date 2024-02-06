@@ -1,6 +1,6 @@
 import { ipcMain } from "electron";
 import fs from 'fs';
-import path from "path";
+import path, { join } from "path";
 import { checkFilePath, extractJsonFromZip } from "../../utils";
 
 export const Screen = () => {
@@ -18,6 +18,31 @@ export const Screen = () => {
         })
         event.sender.send('get-screen-send', screens)
     })
+
+
+    ipcMain.handle('screen-del', async (event, screenIds: number[]) => {
+        const ids = Array.isArray(screenIds) ? screenIds : [].concat(screenIds);
+
+        const filePath = checkFilePath('/screenConfig/', false);
+
+        const result = await Promise.all(ids.map(id => {
+            return new Promise((resolve) => {
+                const url = join(filePath, id + '.json');
+                fs.unlink(url, (err) => {
+                    if (err) {
+                        console.error('删除文件时出错:', err);
+                        resolve(false);
+                        return;
+                    }
+                    resolve(true);
+                    console.log('文件删除成功:', filePath);
+                });
+            })
+
+        }));
+        event.sender.send('screen-del-send', result)
+    })
+
 
     ipcMain.handle('get-screen-data', (event,
         id: string | number
