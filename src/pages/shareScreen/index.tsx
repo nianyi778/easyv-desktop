@@ -29,11 +29,11 @@ function ShareScreen() {
     }
 
     return <>
+        <ScreenDetail screenId={+screenId} />
         <Backspace onBack={() => {
             // 返回
             navigate('/')
         }} />
-        <ScreenDetail screenId={+screenId} />
     </>
 }
 

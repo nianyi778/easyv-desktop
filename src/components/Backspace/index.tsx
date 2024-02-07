@@ -30,7 +30,9 @@ export default function Backspace({ onBack }: { onBack: () => void }) {
         }
     }, [visible])
 
-    return <div className={`fixed transition-all w-full h-[25px] text-center ${visible ? 'top-[10px]' : 'top-[-25px]'}`}>
-        <CloseCircleOutlined className=' cursor-pointer text-[25px] hover:text-blue-600' onClick={onBack} />
+    return <div className={`fixed   transition-all w-full h-[25px] text-center ${visible ? 'top-[10px]' : 'top-[-25px]'}`}>
+        <span className=' pointer-events-auto z-auto inline-block bg-slate-300 rounded-full w-[25px] h-[25px]'>
+            <CloseCircleOutlined className=' cursor-pointer text-[25px] hover:text-blue-600' onClick={onBack} />
+        </span>
     </div>
 }
