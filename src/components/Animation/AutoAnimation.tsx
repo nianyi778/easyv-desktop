@@ -172,9 +172,17 @@ function getNextStatus(iState: Interaction['state'],
         );
     } else if (box) {
         if ((!show && visibility)) {
-            transformValues.push(
-                `translate3d(0px, -${childrenWidth}px, 0px)`,
-            );
+            if (animationType === AnimateType.boxFlipLF) {
+                // 左右
+                transformValues.push(
+                    `translate3d(-${childrenWidth}px, 0px, 0px)`,
+                );
+            } else {
+                transformValues.push(
+                    `translate3d(0px, -${childrenWidth}px, 0px)`,
+                );
+            }
+
         } else {
             transformValues.push(
                 `translate3d(0px, 0px, 0px)`,
@@ -206,16 +214,30 @@ function getNextStatus(iState: Interaction['state'],
     } if (box) {
         // 方盒翻转
         transformValues.push(`perspective(500px)`);
-        let rotateX = 0; const rotateY = 0;
+        let rotateX = 0; let rotateY = 0;
         const rotateZ = 0;
-        if ((!show && visibility)) {
-            rotateX = 90
+
+        if (animationType === AnimateType.boxFlipLF) {
+            // 左右
+            if ((!show && visibility)) {
+                rotateY = 90
+            }
+            if (!show && !visibility) {
+                // 动画结束了
+                rotateY = -90
+            }
+            transformOriginValue = `left center`;
+        } else {
+            if ((!show && visibility)) {
+                rotateX = 90
+            }
+            if (!show && !visibility) {
+                // 动画结束了
+                rotateX = -90
+            }
+            transformOriginValue = `bottom center`;
         }
-        if (!show && !visibility) {
-            // 动画结束了
-            rotateX = -90
-        }
-        transformOriginValue = `bottom center`;
+
         transformValues.push(`rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg)`);
 
     } else {
