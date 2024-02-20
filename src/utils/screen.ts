@@ -78,7 +78,7 @@ export function cleanLargeScreenData(data: ScreenJsonType): ScreenPreviewType {
     let panel = panelConfig.map(p => transformPanel(p));
     let source = sourceConfig.map(p => transformSource(p));
 
-    components = maintainComponentChildren(components);
+    components = maintainComponentChildren(components); // children
 
     let screens = Array.isArray(screenConfig) ? screenConfig : [screenConfig];
 

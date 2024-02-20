@@ -169,7 +169,6 @@ function ContainerAnimation({
         }
     }, [beyondScroll, enableScrolling, vertical])
 
-
     return <div style={{ ...overflow, ...(backgroundFixed ? bgStyle : {}) }} className=" w-full h-full">
         <div style={styles} className=" grid transition-transform ease-linear" ref={containerRef} >
             {

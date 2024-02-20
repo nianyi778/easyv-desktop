@@ -1,4 +1,4 @@
-import { Layer } from "@/type/screen.type";
+import { ComponentRels, Layer } from "@/type/screen.type";
 import { components, panels, comContainers } from '@/dataStore'
 import { useRecoilValue } from 'recoil';
 import { isComponent, isContainer, isPanel, reduceCompute, SizeType } from "@/utils";
@@ -13,13 +13,15 @@ interface GroupWrapType {
     id: string;
     hideDefault?: boolean;
     components: Layer[];
+    componentRels?: ComponentRels[];
+    containerItemData?: unknown;
     config: {
         opacity: number
     };
     containerIndex?: number;
 }
 
-export default function GroupWrap({ id, components: layers, config, hideDefault, containerIndex }: GroupWrapType) {
+export default function GroupWrap({ id, components: layers, config, hideDefault, containerIndex, containerItemData, componentRels }: GroupWrapType) {
     const { opacity } = config;
     const componentsById = useRecoilValue(components);
     const panelsById = useRecoilValue(panels);
@@ -102,7 +104,10 @@ export default function GroupWrap({ id, components: layers, config, hideDefault,
                 left: -1 * minLeft,
                 top: -1 * minTop
             }}> */}
-            <Group width={width} height={height} layers={layers} />
+            <Group width={width} height={height} layers={layers}
+                containerIndex={containerIndex}
+                componentRels={componentRels}
+                containerItemData={containerItemData} />
             {/* </div> */}
         </div>
     </Animation>

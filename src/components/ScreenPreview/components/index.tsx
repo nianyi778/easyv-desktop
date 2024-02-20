@@ -29,6 +29,8 @@ function ScreenPreview({ layers, containerIndex, containerItemData, componentRel
                 return <GroupWrap key={layer.id}
                     hideDefault={hideDefault}
                     containerIndex={containerIndex}
+                    componentRels={componentRels}
+                    containerItemData={containerItemData}
                     config={{
                         opacity: layer.opacity || 1
                     }} id={layer.id as string} components={layer.components as Layer[]} />

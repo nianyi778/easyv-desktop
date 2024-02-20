@@ -9,7 +9,7 @@ import { ChildrenConfig } from '@/type/component.type';
 import { getActions } from '@/utils/interaction';
 import { ActionType, defaultActions } from '@/constants';
 import { Interaction } from '@/type/Interactions.type';
-import { useInteraction } from '@/pages/hooks';
+import { useInteraction, useCallbackUpdate } from '@/pages/hooks';
 import { isEqual, isUndefined, omitBy } from 'lodash-es';
 import { useUpdateConfig } from '@/pages/hooks/useUpdateConfig';
 
@@ -39,6 +39,7 @@ function EasyVComponent(
     const [loadedScript, setLoadedScript] = useState(false);
     const [component, setComponent] = useState<any>(null);
     const refRandom = useRef(0);
+    const { updateCallbackValue } = useCallbackUpdate();
     const updateInteraction = useInteraction();
     const ref = useRef<NodeJS.Timeout[]>([]); // 延时器
     const updateConfig = useUpdateConfig();
@@ -185,6 +186,7 @@ function EasyVComponent(
     }, []);
     const onRelative = useCallback((id: number, callbackValue: Record<string, any>) => {
         console.log(id, callbackValue);
+        updateCallbackValue(callbackValue);
     }, []);
 
     if (!loadedScript) {

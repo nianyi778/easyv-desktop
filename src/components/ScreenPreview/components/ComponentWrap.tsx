@@ -29,7 +29,6 @@ export default function ComponentWrap({ id, hideDefault, containerIndex, compone
         return undefined;
     }, [component, componentsById]);
 
-
     const newContainerItemData = useMemo(() => {
         if (component.dataType === DataType.FROM_CONTAINER && componentRel && isObject(containerItemData)) {
             return get(containerItemData as Record<string, unknown>, componentRel.tag);

@@ -6,3 +6,4 @@ export * from './componentContainer';
 export * from './component'
 export * from './interactions';
 export * from './source'
+export * from './callback'
