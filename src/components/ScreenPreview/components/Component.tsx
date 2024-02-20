@@ -1,25 +1,25 @@
 import { getComponentConfig, getComponentDimension } from '@lidakai/utils';
 import EasyVComponent from './EasyVComponent';
-import { DataConfig, DataConfigs, DataType, OtherDataType, TransformComponentType, TransformFilterType } from '@/type/screen.type';
-import { memo, useEffect, useMemo, useState } from 'react';
+import { ComponentRels, DataConfigs, DataType, OtherDataType, TransformComponentType, TransformFilterType } from '@/type/screen.type';
+import { memo, useMemo } from 'react';
 import Animation from '@/components/Animation/AutoAnimation'
 import { useEvents } from "@/pages/hooks";
 import { sources } from '@/dataStore';
 import { useRecoilValue } from 'recoil';
-import { getSource } from '@/utils';
-import { filterData, mappingData } from '@/utils/filter';
-import { isEqual } from 'lodash-es';
+import useDataGet from '@/pages/hooks/useDataGet';
+import { getDataConfig } from '@/utils/source';
 interface Props {
     hideDefault?: boolean;
     filters?: TransformFilterType[];
     id: number;
     component: TransformComponentType;
     children?: TransformComponentType[];
+    containerIndex?: number;
+    containerItemData?: unknown
 }
 
-function Component({ id, component, children = [], hideDefault = false, filters = [] }: Props) {
+function Component({ id, component, children = [], hideDefault = false, filters = [], containerIndex, containerItemData }: Props) {
     const sourcesById = useRecoilValue(sources);
-    const [comData, setComData] = useState<unknown>([]);
     const { uniqueTag, config, name, dataConfigs, events, autoUpdate, actions, dataType } = component;
     const { width, height, left, top } = getComponentDimension(config);
     const comEvent = useEvents('component', id);
@@ -27,46 +27,17 @@ function Component({ id, component, children = [], hideDefault = false, filters 
         show: !hideDefault,
     };
 
-    const dataConfig = useMemo(() => {
-        const data = dataConfigs[dataType];
-        if (dataType === DataType.STATIC) {
-            return data as DataConfigs['static']
-        }
-        const { data: newData } = data as { data: OtherDataType };
-        const dataId = newData?.dataId;
-        if (dataId) {
-            const current = sourcesById[dataId];
-            if (current) {
-                return {
-                    ...data,
-                    data: {
-                        ...current, config: {
-                            ...newData,
-                            ...current.config,
-                        }
-                    }
-                }
-            }
-        }
-        return {
-            ...data,
-            data: [],
-        };
-    }, [dataType, sourcesById, dataConfigs]);
+    const dataConfig = getDataConfig({
+        dataConfigs,
+        dataType,
+        sourcesById,
+        containerItemData
+    });
 
-    useEffect(() => {
-        (async () => {
-            const result = await getSource(dataConfig);
-            const { fields } = dataConfig as DataConfig;
-            let newData = filterData({
-                data: result,
-                filters,
-                callbackValues: {}
-            });
-            const data = mappingData(newData, fields);
-            setComData((x: unknown) => isEqual(x, data) ? x : data)
-        })()
-    }, [dataConfig, autoUpdate, dataConfig, filters,]);
+    const comData = useDataGet({
+        filters,
+        dataConfig
+    });
 
     const childrenConfig = children.map((child) => {
         const {
@@ -179,6 +150,7 @@ function Component({ id, component, children = [], hideDefault = false, filters 
                     bindedInteractionState={bindedInteractionState}
                     base={component.base}
                     name={name}
+                    iState={iState}
                     actions={actions}
                     childrenData={[]}
                     childrenConfig={childrenConfig}

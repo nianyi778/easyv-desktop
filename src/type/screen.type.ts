@@ -170,6 +170,8 @@ export interface ContainerConfig {
     useFilter: boolean;
     config: string;
     subScreenId: number;
+    componentRels: ComponentRels[];
+    dataContainerRels: DataContainerRels[]
 }
 
 export interface Events {
@@ -258,6 +260,17 @@ export interface ComponentConfig {
     useFilter: boolean
 }
 
+export interface DataContainerRels {
+    id: number;
+}
+
+export interface ComponentRels {
+    tag: string;
+    id: number;
+    componentId: number;
+    componentContainerId: number;
+}
+
 export interface TransformComponentContainerType {
     id: number;
     name: string;
@@ -268,15 +281,18 @@ export interface TransformComponentContainerType {
     useFilter: boolean;
     subScreenId: number;
     dataType: DataType;
-    // filters: ComponentFilter[];
+    filters: ComponentFilter[];
+    componentRels: ComponentRels[];
+    dataContainerRels: DataContainerRels[]
 }
 
 export interface ComponentContainerConfig {
     subScreenConfig: Omit<ScreenJsonType, 'info'>;
     filterRels: unknown[];
-    dataContainerRels: unknown[];
-    componentRels: unknown[];
-    componentContainer: ContainerConfig
+    componentRels: ComponentRels[];
+    componentContainer: ContainerConfig;
+    dataContainerRels: DataContainerRels[]
+
 }
 
 export interface Layer {

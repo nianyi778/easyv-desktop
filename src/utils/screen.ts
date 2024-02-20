@@ -67,7 +67,12 @@ export function cleanLargeScreenData(data: ScreenJsonType): ScreenPreviewType {
         ...f,
         callbackKeys: JSON.parse(f.callbackKeys)
     }));
-    let componentContainers = componentContainerConfig.map(c => transformComponentContainer(c.componentContainer));
+    let componentContainers = componentContainerConfig.map(c => transformComponentContainer({
+        ...c.componentContainer,
+        filters: JSON.stringify(c.filterRels),
+        componentRels: c.componentRels,
+        dataContainerRels: c.dataContainerRels,
+    }));
     let components = componentsConfig.map(c => transformComponent(c));
     let containers = containersConfig.map(c => transformContainer(c));
     let panel = panelConfig.map(p => transformPanel(p));
@@ -127,9 +132,8 @@ function reduceScreens(data: Omit<ScreenJsonType, 'info'>[]) {
 
 
 function transformComponentContainer(comContainer: ComponentContainerConfig['componentContainer']): TransformComponentContainerType {
-    const { id, name, config, autoUpdate, dataFrom, staticData, dataConfig, subScreenId, useFilter, dataType } = comContainer;
+    const { id, name, config, autoUpdate, dataFrom, staticData, dataConfig, dataContainerRels, componentRels, filters, subScreenId, useFilter, dataType } = comContainer;
     const dataConfigs = getDataConfigs({ dataConfig, staticData })
-
     return {
         id, name,
         config: JSON.parse(config),
@@ -138,7 +142,10 @@ function transformComponentContainer(comContainer: ComponentContainerConfig['com
         dataConfigs,
         subScreenId,
         dataType,
-        useFilter
+        useFilter,
+        filters: JSON.parse(filters),
+        componentRels,
+        dataContainerRels
     }
 }
 

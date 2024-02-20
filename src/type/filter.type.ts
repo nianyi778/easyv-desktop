@@ -17,5 +17,6 @@ export interface Filter {
 
 export interface ComponentFilter {
     id: number;
+    filterId?: number;
     enable: boolean;
 }

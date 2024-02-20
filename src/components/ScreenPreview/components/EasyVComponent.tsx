@@ -30,11 +30,12 @@ interface EasyVComponentType {
     childrenConfig: ChildrenConfig[];
     childrenEvents: { id: number; events: Events[] }[];
     actions?: unknown[];
+    iState: any;
     bindedInteractionState?: any
 }
 
 function EasyVComponent(
-    { id, base, spaceId, uniqueTag, height, name, events, config, bindedInteractionState, actions, width, left, top, data, childrenData, childrenConfig, childrenEvents }: EasyVComponentType) {
+    { id, base, spaceId, uniqueTag, height, iState, name, events, config, bindedInteractionState, actions, width, left, top, data, childrenData, childrenConfig, childrenEvents }: EasyVComponentType) {
     const [loadedScript, setLoadedScript] = useState(false);
     const [component, setComponent] = useState<any>(null);
     const refRandom = useRef(0);
@@ -132,10 +133,6 @@ function EasyVComponent(
                 };
                 console.log(interaction, '自定义事件');
                 updateInteraction(interaction, false);
-                // const event: any = new Event(`${config.type}_${config.component}`);
-                // event.data = config.data;
-                // event.dynamicData = config.dynamicData;
-                // document.dispatchEvent(event);
             }
         }
 
@@ -157,7 +154,9 @@ function EasyVComponent(
         });
     }, [id])
 
-    const getCallbackValue = useCallback(() => { }, []);
+    const getCallbackValue = useCallback(() => {
+
+    }, []);
     const handleEmit = useCallback((eventName: string, data: unknown, componentId: number = id) => {
 
         // todo:蓝图编辑器的逻辑
@@ -184,7 +183,9 @@ function EasyVComponent(
         console.log(payload, 'handleEmitEvent')
 
     }, []);
-    const onRelative = useCallback(() => { }, []);
+    const onRelative = useCallback((id: number, callbackValue: Record<string, any>) => {
+        console.log(id, callbackValue);
+    }, []);
 
     if (!loadedScript) {
         return (
@@ -211,10 +212,6 @@ function EasyVComponent(
             }} />
     }
 
-
-    const iState = {
-        show: true
-    };
     const interactionCallbackValues = {}
 
     const Com = component;
@@ -253,6 +250,7 @@ function arePropsEqual(oldProps: EasyVComponentType, newProps: EasyVComponentTyp
     return isEqual(oldProps.config, newProps.config)
         && isEqual(oldProps.name, newProps.name)
         && isEqual(oldProps.id, newProps.id)
+        && isEqual(oldProps.iState, newProps.iState)
         && isEqual(oldProps.base, newProps.base)
         && isEqual(oldProps.spaceId, newProps.spaceId)
         && isEqual(oldProps.height, newProps.height)

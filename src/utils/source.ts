@@ -1,6 +1,6 @@
 import { getResourceFile } from './index';
-// import { ipcRenderer } from 'electron';
-import { DataTypeNum } from '../type/screen.type';
+import { DataConfigs, DataType, DataTypeNum, OtherDataType } from '../type/screen.type';
+import { TransformSource } from '@/type/source.type';
 
 export async function getSource(dataConfig: any) {
     const { ipcRenderer } = window;
@@ -68,4 +68,47 @@ function parseQueryString(queryString: string) {
     }
 
     return params;
+}
+
+
+export function getDataConfig({ dataConfigs, dataType, sourcesById, containerItemData = [] }: {
+    dataConfigs: DataConfigs;
+    dataType: DataType;
+    containerItemData?: unknown;
+    sourcesById: Record<string, TransformSource>
+}) {
+    const data = dataConfigs[dataType];
+    if (dataType === DataType.STATIC) {
+        return data as DataConfigs['static']
+    }
+    if (dataType === DataType.FROM_CONTAINER) {
+        // 来自上级
+        return {
+            ...data,
+            data: containerItemData
+        };
+    }
+    if (data) {
+        const { data: newData } = data as { data: OtherDataType };
+        const dataId = newData?.dataId;
+        if (dataId) {
+            const current = sourcesById[dataId];
+            if (current) {
+                return {
+                    ...data,
+                    data: {
+                        ...current, config: {
+                            ...newData,
+                            ...current.config,
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return {
+        ...data,
+        data: [],
+    };
 }

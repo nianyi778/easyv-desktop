@@ -38,5 +38,6 @@ export interface ScrollSettingsConfigProps {
     enableScrolling: boolean;
     interval: number;
     backgroundFixed: boolean;
+    transitionDuration?: number;
     runningModel: 'continuous' | 'startAnew';
 }

@@ -1,9 +1,13 @@
 import ContainerAnimation from "./ContainerAnimation"
 import { useRecoilValue } from 'recoil';
-import { comContainers, screens, components } from '@/dataStore'
+import { comContainers, screens, components, sources, filters } from '@/dataStore'
 import { getId, getComponentDimension, reduceConfig } from "@lidakai/utils";
 import { ComContainerReduceConfig } from "@/type/com-container.type";
 import { getTemplateSize } from "@/utils/comContainer";
+import { useMemo } from "react";
+import { getDataConfig } from "@/utils/source";
+import useDataGet from "@/pages/hooks/useDataGet";
+import { TransformFilterType } from "@/type/screen.type";
 // import ContainerSize from './ContainerSize';
 
 export default function ContainerWrap({ id }: { id: string }) {
@@ -11,6 +15,9 @@ export default function ContainerWrap({ id }: { id: string }) {
     const screensById = useRecoilValue(screens);
     const componentsById = useRecoilValue(components);
     const container = containerById[getId(id)];
+    const sourcesById = useRecoilValue(sources);
+    const filterList = useRecoilValue(filters);
+
     if (!container) {
         return null;
     }
@@ -36,8 +43,21 @@ export default function ContainerWrap({ id }: { id: string }) {
             top,
         }
     })
+    const { dataConfigs, dataType, filters: conFilters, componentRels } = container;
 
-    const containerData = container.dataConfigs[container.dataType]?.data as unknown[];
+    const dataConfig = getDataConfig({
+        dataConfigs,
+        dataType,
+        sourcesById
+    });
+    const filterContents = conFilters.filter(c => c.enable).map(d => filterList.find(f => f.id === d.filterId)).filter(f => f) as TransformFilterType[];
+    const comData = useDataGet({
+        filters: filterContents,
+        dataConfig
+    });
+    const containerData = useMemo(() => {
+        return Array.isArray(comData) ? comData : [];
+    }, [comData]);
 
     const { width, height, left, top } = getComponentDimension(container.config);
     const config = reduceConfig(container.config) as ComContainerReduceConfig;
@@ -49,7 +69,7 @@ export default function ContainerWrap({ id }: { id: string }) {
         backgroundColor
     } = style;
     const styles = useBackground ? {
-        'backgroundImage': `url(${background})`,
+        'backgroundImage': `url('${window.appConfig.ASSETS_URL}${background}')`,
         "backgroundPosition": "center center",
         "backgroundRepeat": 'no-repeat',
         "backgroundSize": "cover"
@@ -72,7 +92,7 @@ export default function ContainerWrap({ id }: { id: string }) {
             left,
             top,
         }}>
-        <ContainerAnimation boxEffectiveSize={size} width={width} height={height} subScreenId={container.subScreenId} bgStyle={styles} containerData={containerData} containerId={id} autoLayoutConfig={autoLayout} scrollSettingsConfig={scrollSettings} />
+        <ContainerAnimation boxEffectiveSize={size} width={width} componentRels={componentRels} height={height} subScreenId={container.subScreenId} bgStyle={styles} containerData={containerData} containerId={id} autoLayoutConfig={autoLayout} scrollSettingsConfig={scrollSettings} />
     </div >
 }
 

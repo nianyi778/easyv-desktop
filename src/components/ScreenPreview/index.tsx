@@ -2,12 +2,19 @@ import { getScreenDimension, reduceConfig } from "@lidakai/utils";
 import ScreenPreview from "./components";
 import { useRecoilValue } from "recoil";
 import { screens } from "@/dataStore";
-import { ScreenEnumType, TransformScreenType } from "@/type/screen.type";
+import { ComponentRels, ScreenEnumType, TransformScreenType } from "@/type/screen.type";
 import { useGetScreen } from "@/pages/hooks";
 import { useEffect, useState } from "react";
+import { isNumber } from "lodash-es";
 // import { queueWorker, StartState } from '@/utils/events';
 
-export default function ScreenMain({ screenId, type, width, height }: { screenId: number; type?: ScreenEnumType, width: number; height: number }) {
+export default function ScreenMain(
+    { screenId, type, componentRels, width, height, index, containerItemData }:
+        {
+            containerItemData?: unknown;
+            screenId: number; type?: ScreenEnumType, width: number; height: number; index?: number; componentRels?: ComponentRels[]
+        }
+) {
     const screensById = useRecoilValue(screens);
     const getScreeData = useGetScreen();
     const [screen, setScreen] = useState<TransformScreenType | null>(null);
@@ -68,13 +75,14 @@ export default function ScreenMain({ screenId, type, width, height }: { screenId
         // 不处理
     }
 
+    const id = isNumber(index) ? `${type}_${screenId}_${index}` : `${type}_${screenId}`;
 
-    return <div id={`screen_${screenId}`} className="pointer-events-none" style={{
+    return <div id={id} className="pointer-events-none" style={{
         ...styles,
         width,
         height
     }}>
-        <ScreenPreview layers={layers} />
+        <ScreenPreview layers={layers} componentRels={componentRels} containerItemData={containerItemData} containerIndex={index} />
     </div>
 }
 

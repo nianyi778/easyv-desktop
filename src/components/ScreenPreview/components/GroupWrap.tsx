@@ -15,10 +15,11 @@ interface GroupWrapType {
     components: Layer[];
     config: {
         opacity: number
-    }
+    };
+    containerIndex?: number;
 }
 
-export default function GroupWrap({ id, components: layers, config, hideDefault }: GroupWrapType) {
+export default function GroupWrap({ id, components: layers, config, hideDefault, containerIndex }: GroupWrapType) {
     const { opacity } = config;
     const componentsById = useRecoilValue(components);
     const panelsById = useRecoilValue(panels);

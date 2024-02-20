@@ -2,7 +2,7 @@ import { AutoLayoutConfigProps, ScrollSettingsConfigProps } from "@/type/com-con
 import { chunk } from "lodash-es";
 import { CSSProperties, memo, useMemo, useEffect, useRef, useState } from "react";
 import ScreenPreview from '../index';
-import { ScreenEnumType } from "@/type/screen.type";
+import { ComponentRels, ScreenEnumType } from "@/type/screen.type";
 import * as d3 from 'd3';
 import isNumber from "lodash-es/isNumber";
 import { setIntervalRAF } from "@/utils";
@@ -19,7 +19,8 @@ function ContainerAnimation({
     autoLayoutConfig,
     scrollSettingsConfig,
     containerData = [],
-    boxEffectiveSize
+    boxEffectiveSize,
+    componentRels
 }: {
     width: number;
     height: number;
@@ -31,6 +32,7 @@ function ContainerAnimation({
         left: number;
         top: number;
     },
+    componentRels: ComponentRels[];
     bgStyle?: CSSProperties;
     containerId: string;
     autoLayoutConfig: AutoLayoutConfigProps;
@@ -43,7 +45,7 @@ function ContainerAnimation({
     const vertical = layoutType === 'column';
     const num = !vertical ? lineNumber : columnNumber; // 行数或者列数
     const chunkData = chunk(containerData, num);
-    const { enableScrolling, interval, animationTypes, beyondScroll, backgroundFixed } = scrollSettingsConfig;
+    const { enableScrolling, interval, animationTypes, beyondScroll, backgroundFixed, transitionDuration = 1 } = scrollSettingsConfig;
     const offsetWidth = lineWidth + left;
     const offsetHeight = lineHeight + top;
 
@@ -72,9 +74,9 @@ function ContainerAnimation({
     useEffect(() => {
         if (!enableScrolling && containerRef.current) {
             // reset
-            d3.select<d3.BaseType, HTMLDivElement>(containerRef.current).style('transform', `translate3d(0px, 0px, 0px)`);
+            d3.select<d3.BaseType, HTMLDivElement>(containerRef.current).transition().duration(transitionDuration * 1000).style('transform', `translate3d(0px, 0px, 0px)`);
         }
-    }, [enableScrolling]);
+    }, [enableScrolling, transitionDuration]);
 
     const isInterval = useMemo(() => {
         if (translateAnimation.length && enableScrolling && beyondScroll === 'auto' && animationState === 'play') {
@@ -121,7 +123,7 @@ function ContainerAnimation({
                     countRef.current += 1;
                     const value = vertical ? `translate3d(0px, ${-cur}px, 0px)` : `translate3d(${-cur}px, 0px, 0px)`;
 
-                    d3.select<d3.BaseType, HTMLDivElement>(containerRef.current).style('transform', value);
+                    d3.select<d3.BaseType, HTMLDivElement>(containerRef.current).transition().duration(transitionDuration * 1000).style('transform', value);
                 }
             }, interval * 1000);
 
@@ -129,7 +131,7 @@ function ContainerAnimation({
         return () => {
             clearIntervalRAF?.();
         }
-    }, [translateAnimation, vertical, interval, isInterval])
+    }, [translateAnimation, vertical, interval, isInterval, transitionDuration])
 
 
     const styles = useMemo(() => {
@@ -169,7 +171,7 @@ function ContainerAnimation({
 
 
     return <div style={{ ...overflow, ...(backgroundFixed ? bgStyle : {}) }} className=" w-full h-full">
-        <div style={styles} className=" grid transition-['translate3d']" ref={containerRef} >
+        <div style={styles} className=" grid transition-transform ease-linear" ref={containerRef} >
             {
                 containerData.map((c, index) => <span key={index} style={{
                     width: lineWidth,
@@ -183,7 +185,7 @@ function ContainerAnimation({
                         height: offsetHeight,
                         transform: `translate3d(${-1 * left}px, ${-1 * top}px, 0px)`,
                     }}>
-                        <ScreenPreview screenId={subScreenId} type={ScreenEnumType.container} width={lineWidth} height={lineHeight} />
+                        <ScreenPreview screenId={subScreenId} containerItemData={c} componentRels={componentRels} index={index} type={ScreenEnumType.container} width={lineWidth} height={lineHeight} />
                     </div>
                 </span>)
             }
