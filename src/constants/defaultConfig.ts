@@ -64,3 +64,22 @@ export const defaultAnimation = {
 
 
 export const MAX_DELAY = 2147483;
+
+
+export const sourceOptions = [
+    { name: 'CSV文件', value: 'csv' },
+    { name: 'DTable API', value: 'dtableapi' },
+    { name: 'API接口', value: 'api' },
+    { name: 'MySQL数据库', value: 'mysql' },
+    { name: 'Oracle数据库', value: 'oracle' },
+    { name: 'SQL Server数据库', value: 'mssql' },
+    { name: '达梦数据库', value: 'damengdb' },
+    { name: 'PostgreSQL数据库', value: 'postgresql' },
+    { name: 'DB2数据库', value: 'db2' },
+    { name: 'WebSocket', value: 'websocket' },
+    { name: 'MQTT', value: 'mqtt' },
+    { name: '阿里云API网关', value: 'apiGateway' },
+    { name: '数栈 API', value: 'dtInsight' },
+    { name: 'ClickHouse数据库', value: 'clickhouse' },
+    { name: '金仓数据库', value: 'kingbase' },
+];

@@ -186,7 +186,7 @@ function EasyVComponent(
     }, []);
     const onRelative = useCallback((id: number, callbackValue: Record<string, any>) => {
         console.log(id, callbackValue);
-        updateCallbackValue(callbackValue);
+        updateCallbackValue(callbackValue, id);
     }, []);
 
     if (!loadedScript) {

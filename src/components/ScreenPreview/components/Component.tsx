@@ -1,6 +1,6 @@
 import { getComponentConfig, getComponentDimension } from '@lidakai/utils';
 import EasyVComponent from './EasyVComponent';
-import { ComponentRels, DataConfigs, DataType, OtherDataType, TransformComponentType, TransformFilterType } from '@/type/screen.type';
+import { ComponentRels, DataConfig, DataConfigs, DataType, OtherDataType, TransformComponentType, TransformFilterType } from '@/type/screen.type';
 import { memo, useMemo } from 'react';
 import Animation from '@/components/Animation/AutoAnimation'
 import { useEvents } from "@/pages/hooks";
@@ -27,12 +27,15 @@ function Component({ id, component, children = [], hideDefault = false, filters 
         show: !hideDefault,
     };
 
-    const dataConfig = getDataConfig({
-        dataConfigs,
-        dataType,
-        sourcesById,
-        containerItemData
-    });
+    const dataConfig = useMemo(() => {
+        // 缓存一下，否则每次 dataGet hook
+        return getDataConfig({
+            dataConfigs,
+            dataType,
+            sourcesById,
+            containerItemData
+        }) as DataConfig;
+    }, [containerItemData, sourcesById, dataType, dataConfigs]);
 
     const comData = useDataGet({
         filters,

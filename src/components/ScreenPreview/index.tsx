@@ -9,7 +9,7 @@ import { isNumber } from "lodash-es";
 // import { queueWorker, StartState } from '@/utils/events';
 
 export default function ScreenMain(
-    { screenId, type, componentRels, width, height, index, containerItemData }:
+    { screenId, type = ScreenEnumType.screen, componentRels, width, height, index, containerItemData }:
         {
             containerItemData?: unknown;
             screenId: number; type?: ScreenEnumType, width: number; height: number; index?: number; componentRels?: ComponentRels[]

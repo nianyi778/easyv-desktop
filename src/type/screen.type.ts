@@ -112,8 +112,9 @@ export type OtherDataType = {
 }
 
 export interface DataConfig {
-    data: StaticDataType | OtherDataType;
-    fields: Record<string, unknown>[]
+    data: StaticDataType;
+    fields: Record<string, unknown>[];
+    config: OtherDataType;
 }
 export interface DataConfigs {
     static?: DataConfig;

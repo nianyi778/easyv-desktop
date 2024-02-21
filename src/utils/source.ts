@@ -5,12 +5,12 @@ import { TransformSource } from '@/type/source.type';
 export async function getSource(dataConfig: any) {
     const { ipcRenderer } = window;
     return new Promise(async (resolve, reject) => {
-        const { data } = dataConfig;
-        if (data && data?.dataId) {
+        const { config, data } = dataConfig;
+        if (config && config?.dataId) {
             if (
-                data.type === DataTypeNum.CSV
+                config.type === DataTypeNum.CSV
             ) {
-                const { filepath: filePath, encode } = data.config;
+                const { filepath: filePath, encode } = config.config;
                 const path = getResourceFile(filePath, false)
                 await ipcRenderer.invoke('source-csv', {
                     path,
@@ -22,8 +22,8 @@ export async function getSource(dataConfig: any) {
             }
 
 
-            if (data.type === DataTypeNum.API) {
-                const { headers, params, body, baseURL, path } = data.config;
+            if (config.type === DataTypeNum.API) {
+                const { headers, params, body, baseURL, path } = config.config;
                 const paramsParse = parseQueryString(params);
                 let newHeaders = {}, newBody = {};
                 try {
@@ -41,9 +41,9 @@ export async function getSource(dataConfig: any) {
             }
 
 
-            if (data.type === DataTypeNum.MYSQL) {
+            if (config.type === DataTypeNum.MYSQL) {
                 const password = 'b9cb73d145d9e088';
-                const { config } = dataConfig.data;
+                const { config } = data;
                 ipcRenderer.invoke('source-mysql', { ...config, password: password });
                 ipcRenderer.on('source-mysql-send', (_: any, result: { data: unknown; }) => {
                     resolve(result.data);
@@ -89,18 +89,16 @@ export function getDataConfig({ dataConfigs, dataType, sourcesById, containerIte
         };
     }
     if (data) {
-        const { data: newData } = data as { data: OtherDataType };
+        const { config: newData } = data as { config: OtherDataType };
         const dataId = newData?.dataId;
         if (dataId) {
             const current = sourcesById[dataId];
             if (current) {
                 return {
                     ...data,
-                    data: {
-                        ...current, config: {
-                            ...newData,
-                            ...current.config,
-                        }
+                    config: {
+                        ...current,
+                        ...newData,
                     }
                 }
             }

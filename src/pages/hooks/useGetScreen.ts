@@ -6,6 +6,7 @@ import { useCallback, } from "react";
 import { useSetRecoilState } from "recoil";
 import { useInitEvent } from "./useInteraction";
 import { useCallbackUpdate } from '@/pages/hooks/useCallback';
+import { getAllCallbackKeys } from "@/utils/callback";
 
 export function useGetScreen(): (id: number | string) => Promise<ScreenPreviewType | null> {
     const setScreensById = useSetRecoilState(screens);
@@ -15,7 +16,7 @@ export function useGetScreen(): (id: number | string) => Promise<ScreenPreviewTy
     const setComContainersById = useSetRecoilState(comContainers);
     const setComponentsById = useSetRecoilState(components);
     const setSourcesById = useSetRecoilState(sources);
-    const { updateCallbackKeys } = useCallbackUpdate();
+    const { initCallbackKeys } = useCallbackUpdate();
     // const handleEventInit = useInitEvent();
 
     const getScreeData = useCallback(async (id: number | string) => {
@@ -46,15 +47,8 @@ export function useGetScreen(): (id: number | string) => Promise<ScreenPreviewTy
                     await setComponentsById(c => ({ ...c, ...arrayToObj(components) }));
 
 
-                    console.log(
-                        components, componentContainers, filters
-                    );
-
-                    const keys = statisticsCallbackKeys({
-                        filters,
-                        components,
-                        componentContainers
-                    })
+                    const callbackKeys = getAllCallbackKeys(components.concat(componentContainers as unknown as TransformComponentType), filters);
+                    initCallbackKeys(callbackKeys);
 
                     return result;
                 }
@@ -65,35 +59,3 @@ export function useGetScreen(): (id: number | string) => Promise<ScreenPreviewTy
 
     return getScreeData;
 }
-
-
-
-function statisticsCallbackKeys({
-    filters,
-    components,
-    componentContainers
-}: {
-    filters: TransformFilterType[];
-    components: TransformComponentType[];
-    componentContainers: TransformComponentContainerType[];
-}) {
-    const filterKeys = filters.reduce<Record<number, unknown[]>>((all, cur) => {
-        if (Array.isArray(cur.callbackKeys) && cur.callbackKeys.length) {
-            // 存在
-            if (Object.keys(all).includes(cur.parentId + '')) {
-                // 之前存在
-                all[cur.parentId] = all[cur.parentId].concat(cur.callbackKeys)
-            } else {
-                // 不存在
-                all[cur.parentId] = cur.callbackKeys;
-            }
-        }
-        return all;
-    }, {});
-
-    const dataKeys = components.reduce<Record<number, unknown[]>>((all, cur) => {
-
-        return all;
-    }, {});
-}
-

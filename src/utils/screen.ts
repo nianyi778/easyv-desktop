@@ -1,5 +1,6 @@
 
-import { ScreenJsonType, ScreenPreviewType, ComponentConfig, TransformComponentContainerType, SourceConfig, TransformPanelType, TransformScreenType, TransformContainerType, TransformComponentType, ComponentContainerConfig, ContainerConfig, ScreenType, PanelConfig, DataConfigs } from '@/type/screen.type';
+import { sourceOptions } from '@/constants';
+import { ScreenJsonType, ScreenPreviewType, ComponentConfig, TransformComponentContainerType, SourceConfig, TransformPanelType, TransformScreenType, TransformContainerType, TransformComponentType, ComponentContainerConfig, ContainerConfig, ScreenType, PanelConfig, DataConfigs, DataType } from '@/type/screen.type';
 import { TransformSource } from '@/type/source.type';
 
 /**
@@ -133,7 +134,7 @@ function reduceScreens(data: Omit<ScreenJsonType, 'info'>[]) {
 
 function transformComponentContainer(comContainer: ComponentContainerConfig['componentContainer']): TransformComponentContainerType {
     const { id, name, config, autoUpdate, dataFrom, staticData, dataConfig, dataContainerRels, componentRels, filters, subScreenId, useFilter, dataType } = comContainer;
-    const dataConfigs = getDataConfigs({ dataConfig, staticData })
+    const dataConfigs = getDataConfigs({ dataConfig, staticData, dataType })
     return {
         id, name,
         config: JSON.parse(config),
@@ -183,8 +184,8 @@ function transformScreen(screenConfig: ScreenType): TransformScreenType {
 }
 
 function transformContainer(containerConfig: ContainerConfig): TransformContainerType {
-    const { id, name, subScreenId, autoUpdate, staticData, events, filters, screenId, useFilter, enable, dataConfig } = containerConfig;
-    const dataConfigs = getDataConfigs({ dataConfig, staticData })
+    const { id, name, subScreenId, autoUpdate, staticData, events, filters, dataType, screenId, useFilter, enable, dataConfig } = containerConfig;
+    const dataConfigs = getDataConfigs({ dataConfig, staticData, dataType })
     return {
         id, name,
         autoUpdate: JSON.parse(autoUpdate),
@@ -200,7 +201,7 @@ function transformContainer(containerConfig: ContainerConfig): TransformContaine
 
 function transformComponent(componentConfig: ComponentConfig): TransformComponentType {
     const { id, name, config, autoUpdate, dataFrom, useFilter, actions, type, base, staticData, uniqueTag, parent, dataConfig, dataType, events, filters, from, isDataConfig, screenId, triggers } = componentConfig;
-    const dataConfigs = getDataConfigs({ dataConfig, staticData })
+    const dataConfigs = getDataConfigs({ dataConfig, staticData, dataType })
     return {
         id, name,
         config: JSON.parse(config),
@@ -225,35 +226,63 @@ function transformComponent(componentConfig: ComponentConfig): TransformComponen
 
 
 function getDataConfigs({
-    dataConfig, staticData
+    dataConfig,
+    staticData,
+    dataType
 }: {
-    dataConfig: string | null, staticData: string
+    dataType: DataType;
+    dataConfig: string | null,
+    staticData: string
 }): DataConfigs {
-    let newConfig: Record<string, any> = {};
+    const staticDataConfig = JSON.parse(staticData);
+    let newConfig = dataConfig ? JSON.parse(dataConfig) as Record<string, any> : {};
+    const { type, callbackKeys = [], ...sources } = newConfig;
 
     if (dataConfig) {
-        newConfig = JSON.parse(dataConfig) as Record<string, any>;
-    } else {
-        newConfig = {} as Record<string, any>;
-    }
-    try {
-        Object.keys(newConfig).forEach(value => {
-            const { data } = newConfig[value];
-            if (data && data?.data_id) {
-                // 处理数据结构
-                const { data_id, ...rest } = data;
-                newConfig[value].data = {
-                    ...rest,
-                    dataId: data.data_id,
+        const sourcesValue = sourceOptions.map((d) => d.value).concat('fromContainer');
+        Object.keys(sources).forEach((d) => {
+            if (sourcesValue.includes(d)) {
+                let config;
+                if (sources[d]?.data) {
+                    const { data_id, ...rest } = sources[d]?.data || {};
+                    config = {
+                        ...rest,
+                        dataId: data_id,
+                    }
                 }
+                newConfig[d] = {
+                    data: [],
+                    fields: sources[d]?.fields || staticDataConfig.fields,
+                    config,
+                    callbackKeys,
+                };
             }
-
-        })
-    } catch (err) {
-        console.error(err);
+        });
     }
+    newConfig['static'] = staticDataConfig
 
-    newConfig['static'] = JSON.parse(staticData)
+
+    if (!newConfig[dataType]) {
+        const newCallbackKeys = [
+            'mysql',
+            'mssql',
+            'oracle',
+            'postgresql',
+            'clickhouse',
+            'kingbase',
+        ].includes(dataType)
+            ? callbackKeys
+            : [];
+
+        newConfig = {
+            ...newConfig,
+            [dataType]: {
+                fields: staticDataConfig.fields,
+                data: [],
+                callbackKeys: newCallbackKeys,
+            },
+        };
+    }
     return newConfig;
 }
 
