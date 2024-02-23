@@ -152,7 +152,7 @@ function getNextStatus(iState: Interaction['state'],
     const flipX = [AnimateType.flipLateral, AnimateType.flipVertical].includes(animationType);
     const move = [AnimateType.moveBottom, AnimateType.moveLeft, AnimateType.moveRight, AnimateType.moveTop].includes(animationType);
 
-    const { translateToX, translateToY, scaleX = 1, scaleY = 1, transformOrigin, rotate } = iState;
+    const { translateToX, translateToY, scaleX, scaleY, transformOrigin, rotate } = iState;
     const transformValues: string[] = [];
     let transformOriginValue = '100% 100%';
 
@@ -182,19 +182,20 @@ function getNextStatus(iState: Interaction['state'],
                     `translate3d(0px, -${childrenWidth}px, 0px)`,
                 );
             }
-
         } else {
             transformValues.push(
                 `translate3d(0px, 0px, 0px)`,
             );
         }
     } else {
-        transformValues.push(
-            `translate3d(0px, 0px, 0px)`,
-        );
+        // transformValues.push(
+        //   `translate3d(0px, 0px, 0px)`,
+        // );
     }
 
-    transformValues.push(`scaleX(${scaleX}) scaleY(${scaleY})`);
+    if (isNumber(scaleX) || isNumber(scaleY)) {
+        transformValues.push(`scaleX(${scaleX}) scaleY(${scaleY})`);
+    }
     transformOriginValue = transformOrigin as string;
 
     if (flipX) {
@@ -216,7 +217,6 @@ function getNextStatus(iState: Interaction['state'],
         transformValues.push(`perspective(500px)`);
         let rotateX = 0; let rotateY = 0;
         const rotateZ = 0;
-
         if (animationType === AnimateType.boxFlipLF) {
             // 左右
             if ((!show && visibility)) {
@@ -235,13 +235,13 @@ function getNextStatus(iState: Interaction['state'],
                 // 动画结束了
                 rotateX = -90
             }
-            transformOriginValue = `bottom center`;
         }
 
+        transformOriginValue = `bottom center`;
         transformValues.push(`rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg)`);
 
-    } else {
-        const { rotateX = 0, rotateY = 0, rotateZ = 0, perspective } = rotate || {};
+    } else if (rotate && (rotate.rotateX != null || rotate.rotateY != null || rotate.rotateZ != null)) {
+        const { rotateX = 0, rotateY = 0, rotateZ = 0, perspective } = rotate;
         transformValues.push(`rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg)`);
         if (perspective) {
             transformValues.unshift('perspective(500px)');
@@ -252,10 +252,11 @@ function getNextStatus(iState: Interaction['state'],
         return {
             transform: transformValues.join(' '),
             transformOrigin: transformOriginValue,
+            transformStyle: 'preserve-3d',
         };
     }
     return {
-        transform: "translate3d(0px,0px,0px)",
-        transformOrigin: transformOriginValue
+        // transform: "translate3d(0px,0px,0px)",
+        // transformOrigin: transformOriginValue
     };
 }

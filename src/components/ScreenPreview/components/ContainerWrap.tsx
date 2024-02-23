@@ -1,7 +1,7 @@
 import ContainerAnimation from "./ContainerAnimation"
 import { useRecoilValue } from 'recoil';
 import { comContainers, screens, components, sources, filters } from '@/dataStore'
-import { getId, getComponentDimension, reduceConfig } from "@lidakai/utils";
+import { getId, getComponentDimension, reduceConfig } from "@easyv/admin-utils";
 import { ComContainerReduceConfig } from "@/type/com-container.type";
 import { getTemplateSize } from "@/utils/comContainer";
 import { useMemo } from "react";

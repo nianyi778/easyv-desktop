@@ -1,4 +1,4 @@
-import { calculateSize } from "@lidakai/utils";
+import { calculateSize } from "@easyv/admin-utils";
 
 export interface SizeType {
     left: number;

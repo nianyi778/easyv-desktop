@@ -1,4 +1,4 @@
-import { getScreenDimension } from '@lidakai/utils';
+import { getScreenDimension } from '@easyv/admin-utils';
 import ScreenPreview from '@/components/ScreenPreview';
 import { useRecoilValue } from 'recoil';
 import { screens } from '@/dataStore/screen';

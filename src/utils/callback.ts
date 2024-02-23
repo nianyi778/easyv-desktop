@@ -1,6 +1,6 @@
 import { CallbackState } from "@/type/callback.type";
 import { TransformComponentContainerType, TransformComponentType, TransformFilterType } from "@/type/screen.type";
-import { deepFind, transformConfig } from "@lidakai/utils";
+import { deepFind, transformConfig } from "@easyv/admin-utils";
 
 export const reserveCallbackKeys = ['mm', 'ss'];
 

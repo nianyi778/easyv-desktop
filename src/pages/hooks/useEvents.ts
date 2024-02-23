@@ -1,4 +1,4 @@
-import { isRef, isGroup, isComponent, isPanel } from '@lidakai/utils';
+import { isRef, isGroup, isComponent, isPanel } from '@easyv/admin-utils';
 import { useMemo } from 'react';
 import { interactions } from '@/dataStore/interactions';
 import { useRecoilValue } from 'recoil';

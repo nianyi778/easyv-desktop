@@ -4,7 +4,7 @@ import { Events, TransformComponentType } from '@/type/screen.type';
 import LoadingSpinner from '@/components/LoadingAnimation';
 import ComponentEmpty from '@/components/ComponentEmpty';
 import ErrorBoundary from './ComErrorBoundary';
-import { getComponentConfig, getId } from '@lidakai/utils';
+import { getComponentConfig, getId } from '@easyv/admin-utils';
 import { ChildrenConfig } from '@/type/component.type';
 import { getActions } from '@/utils/interaction';
 import { ActionType, defaultActions } from '@/constants';

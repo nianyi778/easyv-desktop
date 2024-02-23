@@ -1,6 +1,6 @@
 import { useRecoilValue } from 'recoil';
 import { panels } from '@/dataStore'
-import { getId } from '@lidakai/utils';
+import { getId } from '@easyv/admin-utils';
 import PanelAnimation from './PanelAnimation';
 
 export default function PanelWrap({ id }: { id: string; }) {

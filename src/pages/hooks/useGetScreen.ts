@@ -1,7 +1,7 @@
 import { comContainers, components, containers, filters, panels, screens, sources } from "@/dataStore";
 import { ScreenPreviewType, TransformComponentContainerType, TransformComponentType, TransformFilterType } from "@/type/screen.type";
 import { getScreenData, cleanLargeScreenData, } from "@/utils";
-import { arrayToObj, } from "@lidakai/utils";
+import { arrayToObj, } from "@easyv/admin-utils";
 import { useCallback, } from "react";
 import { useSetRecoilState } from "recoil";
 import { useInitEvent } from "./useInteraction";

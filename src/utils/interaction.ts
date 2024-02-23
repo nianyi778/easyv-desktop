@@ -1,4 +1,4 @@
-import { getId } from "@lidakai/utils";
+import { getId } from "@easyv/admin-utils";
 import { toNumber } from "lodash-es";
 import { isContainerChildren, isJsonString } from "./utils";
 import qs from 'qs';

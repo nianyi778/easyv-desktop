@@ -1,7 +1,7 @@
 import { components } from '@/dataStore/component';
 import { useCallback } from 'react';
 import { useRecoilState } from 'recoil';
-import { updateArrayWithObject } from '@lidakai/utils';
+import { updateArrayWithObject } from '@easyv/admin-utils';
 
 export function useUpdateConfig() {
     const [componentById, setComponentById] = useRecoilState(components);

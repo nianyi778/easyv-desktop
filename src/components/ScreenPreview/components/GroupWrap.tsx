@@ -2,7 +2,7 @@ import { ComponentRels, Layer } from "@/type/screen.type";
 import { components, panels, comContainers } from '@/dataStore'
 import { useRecoilValue } from 'recoil';
 import { isComponent, isContainer, isPanel, reduceCompute, SizeType } from "@/utils";
-import { getId, getComponentDimension } from "@lidakai/utils";
+import { getId, getComponentDimension } from "@easyv/admin-utils";
 import Animation from "@/components/Animation/AutoAnimation";
 import Group from "./Group";
 import { useEvents } from '@/pages/hooks';

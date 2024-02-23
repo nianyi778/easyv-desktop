@@ -1,4 +1,4 @@
-import { getComponentConfig, getComponentDimension } from '@lidakai/utils';
+import { getComponentConfig, getComponentDimension } from '@easyv/admin-utils';
 import EasyVComponent from './EasyVComponent';
 import { ComponentRels, DataConfig, DataConfigs, DataType, OtherDataType, TransformComponentType, TransformFilterType } from '@/type/screen.type';
 import { memo, useMemo } from 'react';

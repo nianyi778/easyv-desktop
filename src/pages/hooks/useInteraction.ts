@@ -6,7 +6,7 @@ import { isUndefined, isNull } from "lodash-es";
 import { q } from '@/utils/events';
 import { isGeneralPanel } from "@/utils";
 import { getAnimation } from "@/utils/interaction";
-import { isContainer, isGroup, isComponent, getValueFromConfig, reduceConfig, getId } from "@lidakai/utils";
+import { isContainer, isGroup, isComponent, getValueFromConfig, reduceConfig, getId } from "@easyv/admin-utils";
 
 
 

@@ -2,7 +2,7 @@
 import { useCallback, useEffect } from 'react';
 import { Interaction } from '@/type/Interactions.type';
 import { queueWorker } from '@/utils/events';
-import { getId } from '@lidakai/utils';
+import { getId } from '@easyv/admin-utils';
 import { panels, interactions } from '@/dataStore';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { ActionType, AnimateType } from '@/constants';
