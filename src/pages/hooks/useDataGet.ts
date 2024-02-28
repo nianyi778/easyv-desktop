@@ -5,7 +5,7 @@ import { isEqual } from "lodash-es";
 import { useEffect, useState } from "react";
 
 
-export default function useDataGet({ dataConfig, filters }: { dataConfig?: { data: unknown; fields?: Record<string, unknown>[] | undefined; config?: OtherDataType; }; filters: TransformFilterType[] }) {
+export default function useDataGet({ dataConfig, filters, callbackValue }: { callbackValue: Record<string, unknown>; dataConfig?: { data: unknown; fields?: Record<string, unknown>[] | undefined; config?: OtherDataType; }; filters: TransformFilterType[] }) {
     const [data, setData] = useState<unknown>([]);
 
     useEffect(() => {
@@ -18,7 +18,7 @@ export default function useDataGet({ dataConfig, filters }: { dataConfig?: { dat
                     result = filterData({
                         data: result,
                         filters,
-                        callbackValues: {}
+                        callbackValues: callbackValue
                     })
                 }
                 if (fields) {
@@ -28,7 +28,7 @@ export default function useDataGet({ dataConfig, filters }: { dataConfig?: { dat
             })()
         }
 
-    }, [dataConfig])
+    }, [dataConfig, callbackValue])
 
     return data;
 }

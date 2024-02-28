@@ -4,7 +4,6 @@ const customAxios = async (config: AxiosRequestConfig) => {
     // 默认配置选项
     const defaultConfig = {
         method: 'get',
-        // baseURL: 'https://api.example.com',
         headers: {
             'Content-Type': 'application/json'
         }

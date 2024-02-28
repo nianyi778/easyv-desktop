@@ -12,13 +12,14 @@ interface Props {
     hideDefault?: boolean;
     filters?: TransformFilterType[];
     id: number;
+    callbackValue: Record<string, unknown>;
     component: TransformComponentType;
     children?: TransformComponentType[];
     containerIndex?: number;
     containerItemData?: unknown
 }
 
-function Component({ id, component, children = [], hideDefault = false, filters = [], containerIndex, containerItemData }: Props) {
+function Component({ id, component, children = [], callbackValue, hideDefault = false, filters = [], containerIndex, containerItemData }: Props) {
     const sourcesById = useRecoilValue(sources);
     const { uniqueTag, config, name, dataConfigs, events, autoUpdate, actions, dataType } = component;
     const { width, height, left, top } = getComponentDimension(config);
@@ -39,7 +40,8 @@ function Component({ id, component, children = [], hideDefault = false, filters 
 
     const comData = useDataGet({
         filters,
-        dataConfig
+        dataConfig,
+        callbackValue
     });
 
     const childrenConfig = children.map((child) => {
@@ -129,43 +131,25 @@ function Component({ id, component, children = [], hideDefault = false, filters 
         top={top}
         height={height}
     >
-        <div
-            id={`component_${id}`}
-            style={{
-                width,
-                height,
-                left, top,
-            }}
-            className={`absolute pointer-events-none`}
-        >
-            <div
-                className={`absolute`}
-                style={{
-                    left: -1 * left, top: -1 * top,
-                }}>
-
-                <EasyVComponent
-                    uniqueTag={uniqueTag}
-                    data={comData}
-                    id={id}
-                    bindedInteractionState={bindedInteractionState}
-                    base={component.base}
-                    name={name}
-                    iState={iState}
-                    actions={actions}
-                    childrenData={[]}
-                    childrenConfig={childrenConfig}
-                    childrenEvents={childrenEvents}
-                    events={events}
-                    config={config}
-                    left={left}
-                    top={top}
-                    width={width}
-                    height={height}
-                />
-
-            </div>
-        </div>
+        <EasyVComponent
+            uniqueTag={uniqueTag}
+            data={comData}
+            id={id}
+            bindedInteractionState={bindedInteractionState}
+            base={component.base}
+            name={name}
+            iState={iState}
+            actions={actions}
+            childrenData={[]}
+            childrenConfig={childrenConfig}
+            childrenEvents={childrenEvents}
+            events={events}
+            config={config}
+            left={left}
+            top={top}
+            width={width}
+            height={height}
+        />
     </Animation>
 }
 

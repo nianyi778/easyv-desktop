@@ -2,7 +2,7 @@
 import { get, isObject } from "lodash-es";
 import { useMemo } from "react";
 import Component from "./Component";
-import { filters, components } from '@/dataStore'
+import { filters, components, callbackState } from '@/dataStore'
 import { ComponentRels, DataType, TransformFilterType } from "@/type/screen.type";
 import { useRecoilValue } from "recoil";
 
@@ -10,12 +10,23 @@ export default function ComponentSize(
     { id, hideDefault, containerIndex, componentRel, containerItemData }: { id: number; hideDefault?: boolean; containerIndex?: number; componentRel?: ComponentRels; containerItemData?: unknown }
 ) {
     const componentsById = useRecoilValue(components);
+    const callback = useRecoilValue(callbackState);
 
     const component = componentsById[id];
 
-
     const filtersStore = useRecoilValue(filters);
 
+    const comCallback = useMemo(() => {
+        const { callbackKeys, callbackValues } = callback;
+        const { data, filter } = callbackKeys;
+        const dataKeys = data[id] ?? [];
+        const filterKeys = filter[id] ?? [];
+        const keys = Array.from(new Set(dataKeys.concat(filterKeys))) as string[];
+        return keys.reduce<Record<string, unknown>>((all, cur) => {
+            all[cur] = callbackValues[cur];
+            return all;
+        }, {})
+    }, [callback, id])
 
     const comFilters = useMemo(() => {
         if (component) {
@@ -44,5 +55,5 @@ export default function ComponentSize(
     }, []);
 
 
-    return <Component id={id} hideDefault={hideDefault} containerItemData={newContainerItemData} containerIndex={containerIndex} filters={comFilters} component={component} children={children} />
+    return <Component id={id} hideDefault={hideDefault} callbackValue={comCallback} containerItemData={newContainerItemData} containerIndex={containerIndex} filters={comFilters} component={component} children={children} />
 }

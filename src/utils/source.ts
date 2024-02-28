@@ -4,7 +4,7 @@ import { TransformSource } from '@/type/source.type';
 
 export async function getSource(dataConfig: any) {
     const { ipcRenderer } = window;
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve) => {
         const { config, data } = dataConfig;
         if (config && config?.dataId) {
             if (
