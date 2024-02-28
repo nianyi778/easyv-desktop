@@ -109,12 +109,18 @@ export type OtherDataType = {
     dataId: string;
     name: string;
     type: DataTypeNum;
+    sql?: string;
+    body?: string;
+    params?: string;
+    path?: string;
+    headers?: string;
 }
 
 export interface DataConfig {
     data: StaticDataType;
     fields: Record<string, unknown>[];
     config: OtherDataType;
+    callbackKeys?: string[];
 }
 export interface DataConfigs {
     static?: DataConfig;

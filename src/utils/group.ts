@@ -1,6 +1,6 @@
 import { calculateSize } from "@easyv/admin-utils";
 
-export interface SizeType {
+export interface SizeType extends Record<string, unknown> {
     left: number;
     top: number;
     width: number;
@@ -17,10 +17,10 @@ export function reduceCompute(data: SizeType[]): SizeType {
     }
 
     if (Array.isArray(data) && data.length) {
-        const minTop = calculateSize(data, 'top', 'min');
-        const minLeft = calculateSize(data, 'left', 'min');
-        const maxWidth = calculateSize(data, 'width', 'max');
-        const { height: maxHeight, top: maxTop } = calculateSize(data, 'top.height.top', 'max');
+        const minTop = calculateSize(data, 'top', 'min') as number;
+        const minLeft = calculateSize(data, 'left', 'min') as number;
+        const maxWidth = calculateSize(data, 'width', 'max') as number;
+        const { height: maxHeight, top: maxTop } = calculateSize(data, 'top.height.top', 'max') as SizeType;
 
         return {
             width: maxWidth,
