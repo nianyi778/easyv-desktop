@@ -50,14 +50,10 @@ function PanelAnimation({ states, config, id, type }: { config: TransformPanelTy
     return <Animation
         id={id}
         duration={duration}
-        size={
-            {
-                width,
-                height,
-                left,
-                top
-            }
-        }
+        width={width}
+        height={height}
+        left={left}
+        top={top}
         iState={iState}
         iActiveState={iActiveState}
     >
@@ -66,8 +62,8 @@ function PanelAnimation({ states, config, id, type }: { config: TransformPanelTy
             style={{
                 width,
                 height,
-                left: 0,
-                top: 0,
+                left,
+                top,
             }}>
             {
                 states.concat().reverse().map(screen => {
@@ -80,15 +76,8 @@ function PanelAnimation({ states, config, id, type }: { config: TransformPanelTy
                         iActiveState={
                             animation ? { animation: { ...animation, key } } : undefined
                         }
-                        size={
-                            {
-                                width,
-                                height,
-                                left: 0,
-                                top: 0
-                            }
-                        }
-                        childrenWidth={width}
+                        width={width}
+                        height={height}
                     >
                         <Panel screenId={screen} width={width} type={type} height={height} />
                     </Animation >

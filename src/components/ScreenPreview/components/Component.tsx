@@ -124,19 +124,17 @@ function Component({ id, component, children = [], hideDefault = false, filters 
         id={id}
         iState={iState || defaultState}
         iActiveState={iActiveState}
-        size={{
-            width,
-            left,
-            top,
-            height
-        }}
+        width={width}
+        left={left}
+        top={top}
+        height={height}
     >
         <div
             id={`component_${id}`}
             style={{
                 width,
                 height,
-                left: 0, top: 0,
+                left, top,
             }}
             className={`absolute pointer-events-none`}
         >

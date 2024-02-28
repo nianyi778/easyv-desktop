@@ -87,29 +87,26 @@ export default function GroupWrap({ id, components: layers, config, hideDefault,
     return <Animation id={id}
         iState={iState || defaultState}
         iActiveState={iActiveState}
-        size={{
-            width,
-            left,
-            top,
-            height
-        }}>
-        <div id={id} className=" absolute" style={{
+        width={width}
+        left={left}
+        top={top}
+        height={height}
+    >
+        {/* <div id={id} className=" absolute" style={{
             width: width,
             height: height,
             left: -1 * left,
             top: -1 * top,
             opacity: opacity
-        }}>
-            {/* <div className=" absolute" style={{
-                left: -1 * minLeft,
-                top: -1 * minTop
-            }}> */}
-            <Group width={width} height={height} layers={layers}
-                containerIndex={containerIndex}
-                componentRels={componentRels}
-                containerItemData={containerItemData} />
-            {/* </div> */}
-        </div>
+        }}> */}
+
+        <Group width={width} height={height}
+            left={left} top={top}
+            layers={layers}
+            containerIndex={containerIndex}
+            componentRels={componentRels}
+            containerItemData={containerItemData} />
+        {/* </div> */}
     </Animation>
 
 

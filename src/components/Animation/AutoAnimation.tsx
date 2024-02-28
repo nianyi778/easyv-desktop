@@ -9,27 +9,26 @@ import { easeMap } from "./easeMap";
 
 type AnimationProps = {
     children: React.ReactNode;
-    childrenWidth?: number;
     iState?: Interaction['state'];
     duration?: number;
     id: string | number;
     iActiveState?: Interaction['activeState'],
-    size: {
-        width: number;
-        height: number;
-        left: number;
-        top: number;
-    }
+    width: number;
+    height: number;
+    left?: number;
+    top?: number;
 };
 
 function Animation({
     children,
-    size,
+    width,
+    height,
+    left = 0,
+    top = 0,
     iState = {},
     iActiveState,
     id,
-    duration = 1000,
-    childrenWidth = 0,
+    duration = 600,
 }: AnimationProps) {
     const { animation = defaultAnimation } = iActiveState || {};
     const {
@@ -41,7 +40,6 @@ function Animation({
     const { timingFunction = 'linear', duration: transFormDuration } = config;
     const ref = useRef<HTMLDivElement>(null)
     const { show = true, unmount = true } = iState;
-    const { width, height, left, top } = size;
 
     const [visibility, setVisibility] = useState(false);
 
@@ -50,10 +48,10 @@ function Animation({
     const ease = easeMap[timingFunction] || easeMap.linear;
     const box = [AnimateType.boxFlipTB, AnimateType.boxFlipLF].includes(key);
 
-    const { transform, transformOrigin } = getNextStatus(iState, {
+    const nextStatus = getNextStatus(iState, {
         position: { x: left, y: top },
         animationType: key,
-        childrenWidth,
+        childrenWidth: width,
         show: show as boolean,
         visibility
     });
@@ -86,27 +84,29 @@ function Animation({
         }
 
 
-        return `transform ${duration}ms ${timingFunction}`;
-    }, [visibility, duration, timingFunction, box]);
+        return `transform ${transFormDuration || duration}ms ${timingFunction}`;
+    }, [visibility, box, transFormDuration, duration, timingFunction]);
+
 
     const styles = {
+        ...nextStatus,
         width,
         height,
         left,
         top,
         position: 'absolute',
-        transformOrigin,
         visibility: !visibility ? 'hidden' : 'visible',
-        transform,
-        transformStyle: 'preserve-3d',
-        transition: transition,
+        transition,
+        pointerEvents: 'none',
         // ,opacity ${transFormDuration}ms ${timingFunction}
     } as React.CSSProperties;
 
 
     return <div ref={ref} style={styles} id={`animation_${id}`}>
         <span style={{
-            pointerEvents: 'none',
+            top: -top,
+            left: -left,
+            position: 'absolute',
             display
         }}>
             {unmount && !visibility ? null : children}
@@ -130,9 +130,11 @@ function getMoveParam(type: AnimateType) {
 
     return {
         direction: d,
-        positive: [AnimateType.moveTop, AnimateType.moveLeft].includes(type) ? -1 : 1
+        positive: [AnimateType.moveTop, AnimateType.moveLeft].includes(type) ? 1 : -1
     }
 }
+
+
 
 function getNextStatus(iState: Interaction['state'],
     config: {
@@ -155,15 +157,17 @@ function getNextStatus(iState: Interaction['state'],
     const { translateToX, translateToY, scaleX, scaleY, transformOrigin, rotate } = iState;
     const transformValues: string[] = [];
     let transformOriginValue = '100% 100%';
+    const start = show && visibility; // 但是还没开始跑动画
 
     if (move) {
         const { direction, positive } = getMoveParam(animationType);
-        const start = (!show && visibility);
+        // (!show && visibility); // 离场，但是还没开始跑动画
+        const size = positive * childrenWidth;
         let x = 0; let y = 0; const z = 0;
-        if (direction === 'X' && start) {
-            x = positive * childrenWidth;
-        } else if (direction === 'Y' && start) {
-            y = positive * childrenWidth;
+        if (direction === 'X' && !start) {
+            x = size
+        } else if (direction === 'Y' && !start) {
+            y = size
         }
         transformValues.push(`translate3d(${x}px ,${y}px ,${z}px)`);
     } else if (isNumber(translateToX) && isNumber(translateToY)) {
@@ -171,7 +175,7 @@ function getNextStatus(iState: Interaction['state'],
             `translate3d(${translateToX - position.x}px, ${translateToY - position.y}px, 0px)`,
         );
     } else if (box) {
-        if ((!show && visibility)) {
+        if (!start) {
             if (animationType === AnimateType.boxFlipLF) {
                 // 左右
                 transformValues.push(
@@ -203,7 +207,7 @@ function getNextStatus(iState: Interaction['state'],
         // 动画开始的时候要0度，动画结束后（visibility = false） 也要0度。180翻转，只要动画过程
         let rotateX = 0; let rotateY = 0;
         const rotateZ = 0;
-        const size = (!show && visibility) ? 180 : 0;
+        const size = start ? 0 : 180;
         if (animationType === AnimateType.flipLateral) {
             // 横向翻转
             rotateY = size;
@@ -219,7 +223,7 @@ function getNextStatus(iState: Interaction['state'],
         const rotateZ = 0;
         if (animationType === AnimateType.boxFlipLF) {
             // 左右
-            if ((!show && visibility)) {
+            if (!start) {
                 rotateY = 90
             }
             if (!show && !visibility) {
@@ -228,7 +232,7 @@ function getNextStatus(iState: Interaction['state'],
             }
             transformOriginValue = `left center`;
         } else {
-            if ((!show && visibility)) {
+            if (!start) {
                 rotateX = 90
             }
             if (!show && !visibility) {
@@ -246,6 +250,10 @@ function getNextStatus(iState: Interaction['state'],
         if (perspective) {
             transformValues.unshift('perspective(500px)');
         }
+    }
+
+    if (!show && visibility && !box) {
+        return {};
     }
 
     if (transformValues.length > 0) {
