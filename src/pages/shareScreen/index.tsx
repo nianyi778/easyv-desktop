@@ -32,7 +32,8 @@ function ShareScreen() {
         <ScreenDetail screenId={+screenId} />
         <Backspace onBack={() => {
             // 返回
-            navigate('/')
+            window.location.href = '/';
+            // navigate('/')
         }} />
     </>
 }

@@ -60,6 +60,9 @@ export async function getSource(dataConfig: any) {
 
 function parseQueryString(queryString: string) {
     const params: Record<string, unknown> = {};
+    if (!queryString) {
+        return {};
+    }
     const keyValuePairs = queryString.split('&');
 
     for (let pair of keyValuePairs) {

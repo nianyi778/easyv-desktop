@@ -2,16 +2,16 @@ import './index.css'
 import { getScreens } from '@/utils/screen';
 import { getResourceFile } from '@/utils/file';
 import { useCallback, useState } from 'react';
-import { Image, Checkbox, message } from 'antd';
+import { Image, Checkbox, message, Button, Input, Space, Popconfirm, Result, FloatButton } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { defaultScreenImg } from '@/constants/defaultConfig';
 import { useRequest } from 'ahooks';
 import Skeleton from './components/skeleton';
-import { Button, Input, Space, Popconfirm, Result } from 'antd';
-import { ExperimentOutlined, SearchOutlined } from '@ant-design/icons';
+import { ExperimentOutlined, SearchOutlined, SettingOutlined } from '@ant-design/icons';
 import ImportScreen from './components/importScreen';
 
 function Index() {
+    const navigate = useNavigate();
     const { data, loading, refresh } = useRequest(() => getScreens())
     const [manage, setManage] = useState(false);
     const [checkeds, setCheckeds] = useState<number[]>([]);
@@ -71,6 +71,9 @@ function Index() {
             <div className='h-[calc(100%-40px)] overflow-y-auto pb-[20px]'>
                 <Item data={data} loading={loading} manage={manage} onHide={onHide} setCheckeds={setCheckeds} checkeds={checkeds} ></Item>
             </div>
+            <FloatButton.Group shape="circle" style={{ right: 24 }}>
+                <FloatButton icon={<SettingOutlined />} onClick={() => navigate('/settings')} />
+            </FloatButton.Group>
         </div>
     )
 }
