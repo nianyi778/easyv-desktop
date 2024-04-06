@@ -2,6 +2,14 @@
 
 > [易知微](https://easyv.cloud) 数字孪生可视化桌面应用平台
 
+<img width="800" alt="首页" src="https://github.com/lidakai/easyv-desktop/assets/23355645/0d94b78a-fce3-4160-ba8f-8270cff581eb">
+<img width="1512" alt="详情页" src="https://github.com/lidakai/easyv-desktop/assets/23355645/c1a6950c-80b2-4076-94a9-d028146637d4">
+<img width="333" alt="菜单栏2" src="https://github.com/lidakai/easyv-desktop/assets/23355645/58ebf277-0540-4d11-b06d-9f4477990d8d">
+<img width="270" alt="菜单栏1" src="https://github.com/lidakai/easyv-desktop/assets/23355645/09292dfe-2bcc-4827-b72a-ec2b37e3e861">
+<img width="592" alt="菜单3" src="https://github.com/lidakai/easyv-desktop/assets/23355645/cd29f61a-9a90-4b4f-90a3-4b247527aac6">
+
+
+
 ## totoList
 
 - [x] 大屏渲染
